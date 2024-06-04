@@ -38,23 +38,15 @@ namespace Components {
       //! Handler implementation for recvTransmission
       //!
       //! recvTransmission: Flight Logic is pinged to know that a message has been received
-      void recvTransmission_handler(
-          NATIVE_INT_TYPE portNum //!< The port number
-      ) override;
+      // void recvTransmission_handler(
+      //     NATIVE_INT_TYPE portNum //!< The port number
+      // ) override;
 
     PRIVATE:
 
       // ----------------------------------------------------------------------
       // Handler implementations for commands
       // ----------------------------------------------------------------------
-
-      //! Handler implementation for command TODO
-      //!
-      //! TODO
-      void TODO_cmdHandler(
-          FwOpcodeType opCode, //!< The opcode
-          U32 cmdSeq //!< The command sequence number
-      ) override;
 
       //! Handler implementation for command takePic
       //!
@@ -80,6 +72,17 @@ namespace Components {
           FwOpcodeType opCode, //!< The opcode
           U32 cmdSeq //!< The command sequence number
       ) override;
+
+    PRIVATE:
+
+      // ----------------------------------------------------------------------
+      // Handler implementations for user-defined internal interfaces
+      // ----------------------------------------------------------------------
+
+      //! Handler implementation for startup
+      //!
+      //! startup: runs the startup code
+      void startup_internalInterfaceHandler() override;
 
   };
 

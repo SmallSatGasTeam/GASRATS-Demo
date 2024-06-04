@@ -30,25 +30,15 @@ namespace Components {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
-  void FlightLogic ::
-    recvTransmission_handler(NATIVE_INT_TYPE portNum)
-  {
-    // TODO
-  }
+  // void FlightLogic ::
+  //   recvTransmission_handler(NATIVE_INT_TYPE portNum)
+  // {
+  //   // TODO
+  // }
 
   // ----------------------------------------------------------------------
   // Handler implementations for commands
   // ----------------------------------------------------------------------
-
-  void FlightLogic ::
-    TODO_cmdHandler(
-        FwOpcodeType opCode,
-        U32 cmdSeq
-    )
-  {
-    // TODO
-    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
-  }
 
   void FlightLogic ::
     takePic_cmdHandler(
@@ -79,6 +69,12 @@ namespace Components {
   {
     // TODO
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
+  }
+
+  void FlightLogic ::
+    startup_internalInterfaceHandler()
+  {
+    // TODO
   }
 
 }

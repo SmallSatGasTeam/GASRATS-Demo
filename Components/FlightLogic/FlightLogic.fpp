@@ -2,11 +2,6 @@ module Components {
     @ The application layer of the FSW.
     active component FlightLogic {
 
-        # One async command/port is required for active components
-        # This should be overridden by the developers with a useful command/port
-        @ TODO
-        async command TODO opcode 0
-
         #-----------------------------------------------------------------------
         # FlightLogic Ports 
         #-----------------------------------------------------------------------
@@ -26,20 +21,23 @@ module Components {
         @ hardwareHealth: Checks health of the hardware
         output port hardwareHealth : FL.getHealth
 
-        @ epsHealth: special port for checking the health of the EPS on startup
-        output port epsHealth : FL.epsHealth
+        # @ epsHealth: special port for checking the health of the EPS on startup
+        # output port epsHealth : FL.epsHealth
 
         @ takePic: pings the camera to take a picture
         output port takePic : FL.ping
 
-        @ pingWatchdog: pings the watchdog
-        output port pingWatchdog : FL.ping
+        # @ pingWatchdog: pings the watchdog
+        # output port pingWatchdog : FL.ping
 
         @ sendTransmission: pings the transceiver to send a transmission
         output port sendTransmission : FL.ping
 
         @ recvTransmission: Flight Logic is pinged to know that a message has been received
-        sync input port recvTransmission : FL.ping
+        # sync input port recvTransmission : FL.ping
+
+        @ startup: runs the startup code
+        internal port startup
 
         # Note, currently this doesn't actually handle any of the data to send
         # a transmission, we're probably just going to have the data collector
@@ -83,7 +81,7 @@ module Components {
         #-----------------------------------------------------------------------
 
         @ watchdog: denotes that the watchdog has been pinged
-        event watchdog severity activity low format "Pinged watchdog"
+        # event watchdog severity activity low format "Pinged watchdog"
 
 
         #-----------------------------------------------------------------------
