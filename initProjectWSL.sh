@@ -8,5 +8,5 @@ python3 -m venv fprime-venv
 . fprime-venv/bin/activate
 # Installs all requirements necessary and then runs preliminary generate and build on the project
 pip install -r fprime/requirements.txt
-fprime-util generate -j $(nproc)
+fprime-util generate
 fprime-util build
