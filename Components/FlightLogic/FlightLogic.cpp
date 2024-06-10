@@ -47,6 +47,7 @@ namespace Components {
     )
   {
     // TODO
+    this->takePic_out(0);
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 
@@ -72,9 +73,20 @@ namespace Components {
   }
 
   void FlightLogic ::
+    startupCommand_cmdHandler(
+        FwOpcodeType opCode,
+        U32 cmdSeq
+    )
+  {
+    this->startup_internalInterfaceInvoke();
+    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
+  }
+
+  void FlightLogic ::
     startup_internalInterfaceHandler()
   {
-    // TODO
+    this->deployAntenna_out(0);
+    this->deployCamera_out(0);
   }
 
 }
