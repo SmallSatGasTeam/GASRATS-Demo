@@ -73,6 +73,14 @@ namespace Components {
           U32 cmdSeq //!< The command sequence number
       ) override;
 
+      //! Handler implementation for command startupCommand
+      //!
+      //! startupCommand: temporary to test startup ports while we still don't have startup working
+      void startupCommand_cmdHandler(
+          FwOpcodeType opCode, //!< The opcode
+          U32 cmdSeq //!< The command sequence number
+      ) override;
+
     PRIVATE:
 
       // ----------------------------------------------------------------------

@@ -75,6 +75,9 @@ module Components {
         @ resetFlags: resets startup flags to original condition
         sync command resetFlags
 
+        @ startupCommand: temporary to test startup ports while we still don't have startup working
+        sync command startupCommand
+
 
         #-----------------------------------------------------------------------
         # Events

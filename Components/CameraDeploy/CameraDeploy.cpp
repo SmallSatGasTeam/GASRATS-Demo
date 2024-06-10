@@ -40,7 +40,7 @@ namespace Components {
     return true;
   }
 
-    void CameraDeploy ::
+  void CameraDeploy ::
     takePic_handler(NATIVE_INT_TYPE portNum)
   {
     // TODO

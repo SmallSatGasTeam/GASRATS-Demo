@@ -92,15 +92,17 @@ module FSWDeployment {
     stack size Default.STACK_SIZE \
     priority 100
 
+  instance cameraDeploy: Components.CameraDeploy base id 0x0F00\
+    queue size Default.QUEUE_SIZE \
+    stack size Default.STACK_SIZE \
+    priority 99
+
   # ----------------------------------------------------------------------
   # Queued component instances
   # ----------------------------------------------------------------------
 
   instance $health: Svc.Health base id 0x2000 \
     queue size 25
-
-  instance cameraDeploy: Components.CameraDeploy base id 0x2100 \
-    queue size Default.QUEUE_SIZE
 
   # ----------------------------------------------------------------------
   # Passive component instances

@@ -9,6 +9,10 @@ Topology FSWDeployment.FSWDeployment:
   FSWDeployment.deframer.schedIn
   FSWDeployment.fileDownlink.FileComplete
   FSWDeployment.fileDownlink.SendFile
+  FSWDeployment.flightLogic.getClock
+  FSWDeployment.flightLogic.hardwareHealth
+  FSWDeployment.flightLogic.sendTransmission
+  FSWDeployment.flightLogic.softwareHealth
   FSWDeployment.health.WdogStroke
   FSWDeployment.tlmSend.TlmGet
 
