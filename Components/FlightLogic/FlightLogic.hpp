@@ -8,6 +8,7 @@
 #define Components_FlightLogic_HPP
 
 #include "Components/FlightLogic/FlightLogicComponentAc.hpp"
+#include "build-fprime-automatic-native/Types/deployedEnumAc.hpp"
 
 namespace Components {
 
@@ -41,6 +42,19 @@ namespace Components {
       // void recvTransmission_handler(
       //     NATIVE_INT_TYPE portNum //!< The port number
       // ) override;
+
+      // ----------------------------------------------------------------------
+      // Handler implementations for user-defined typed input ports
+      // ----------------------------------------------------------------------
+
+      //! Handler implementation for startup
+      //!
+      //! recvTransmission: Flight Logic is pinged to know that a message has been received
+      //! startup: runs the startup code
+      void startup_handler(
+          NATIVE_INT_TYPE portNum, //!< The port number
+          NATIVE_UINT_TYPE context //!< The call order
+      ) override;
 
     PRIVATE:
 
@@ -82,16 +96,9 @@ namespace Components {
       ) override;
 
     PRIVATE:
-
-      // ----------------------------------------------------------------------
-      // Handler implementations for user-defined internal interfaces
-      // ----------------------------------------------------------------------
-
-      //! Handler implementation for startup
-      //!
-      //! startup: runs the startup code
-      void startup_internalInterfaceHandler() override;
-
+      GASRATS::deployed::T antennaState;
+      GASRATS::deployed::T cameraState;
+      GASRATS::deployed::T initialState;
   };
 
 }

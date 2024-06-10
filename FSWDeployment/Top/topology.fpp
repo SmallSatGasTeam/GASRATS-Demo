@@ -112,6 +112,7 @@ module FSWDeployment {
       rateGroup3.RateGroupMemberOut[0] -> $health.Run
       rateGroup3.RateGroupMemberOut[1] -> blockDrv.Sched
       rateGroup3.RateGroupMemberOut[2] -> bufferManager.schedIn
+      rateGroup3.RateGroupMemberOut[3] -> flightLogic.startup
     }
 
     connections Sequencer {

@@ -83,6 +83,7 @@
         <channel name="flightLogic.hardwareHealth"/>
         <channel name="flightLogic.antennaState"/>
         <channel name="flightLogic.cameraState"/>
+        <channel name="flightLogic.initialState"/>
     </packet>
 
     <packet name="AntennaDeploy" id="9" level="3">

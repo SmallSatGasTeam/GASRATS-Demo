@@ -37,26 +37,24 @@ module Components {
         # sync input port recvTransmission : FL.ping
 
         @ startup: runs the startup code
-        internal port startup
+        sync input port startup : Svc.Sched
 
         # Note, currently this doesn't actually handle any of the data to send
         # a transmission, we're probably just going to have the data collector
         # send that data directly to the queue of the transmission handler
 
-
-
         #-----------------------------------------------------------------------
         # Parameters
         #-----------------------------------------------------------------------
 
-        @ antennaDeployed: Startup flag indicating successful deployment of antenna
-        param antennaDeployed: bool default false
+        # @ antennaDeployed: Startup flag indicating successful deployment of antenna
+        # param antennaDeployed: bool default false
 
-        @ initialCompleted: Startup flag indicating successful initial beacon
-        param initialCompleted: bool default false
+        # @ initialCompleted: Startup flag indicating successful initial beacon
+        # param initialCompleted: bool default false
 
-        @ collectData: Parameter indicating whether or not data should be collected
-        param collectData: bool default true
+        # @ collectData: Parameter indicating whether or not data should be collected
+        # param collectData: bool default true
 
 
         #-----------------------------------------------------------------------
@@ -83,8 +81,16 @@ module Components {
         # Events
         #-----------------------------------------------------------------------
 
-        @ watchdog: denotes that the watchdog has been pinged
+        # @ watchdog: denotes that the watchdog has been pinged
         # event watchdog severity activity low format "Pinged watchdog"
+
+        @ deployFailure : Warning a component failed to deploy
+        event deployFailure(comp: string) \
+            severity warning high \
+            format "{} failed to deploy."
+
+        @ runningStartup: Startup is being run
+        event runningStartup severity warning low format "Running startup."
 
 
         #-----------------------------------------------------------------------
@@ -100,10 +106,13 @@ module Components {
         telemetry hardwareHealth: GASRATS.Health update on change #It's probably worth turning this into an integer so we can put warnings on it
 
         @ antennaState: tells if antenna is deployed or undeployed
-        telemetry antennaState: GASRATS.deployed update on change
+        telemetry antennaState: GASRATS.deployed 
 
         @cameraState: tells if camera is deployed or not
-        telemetry cameraState: GASRATS.deployed update on change
+        telemetry cameraState: GASRATS.deployed 
+
+        @initialState: tells the state of the beacon
+        telemetry initialState: GASRATS.deployed 
 
 
 
