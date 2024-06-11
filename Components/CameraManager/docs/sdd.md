@@ -1,6 +1,6 @@
-# Components::CameraDeploy
+# Components::CameraManager
 
-Deploys the camera
+Manages commands relating to the camera and translates them into commands for the deploy driver or the camera driver.
 
 ## Usage Examples
 Add usage examples here

@@ -56,6 +56,18 @@ namespace Components {
           NATIVE_UINT_TYPE context //!< The call order
       ) override;
 
+      // ----------------------------------------------------------------------
+      // Handler implementations for user-defined typed input ports
+      // ----------------------------------------------------------------------
+
+      //! Handler implementation for pingIn
+      //!
+      //! pingIn : receives health pings
+      void pingIn_handler(
+          NATIVE_INT_TYPE portNum, //!< The port number
+          U32 key //!< Value to return to pinger
+      ) override;
+
     PRIVATE:
 
       // ----------------------------------------------------------------------

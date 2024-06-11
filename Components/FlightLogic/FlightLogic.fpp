@@ -39,6 +39,11 @@ module Components {
         @ startup: runs the startup code
         sync input port startup : Svc.Sched
 
+        @ pingIn : receives health pings
+        async input port pingIn: Svc.Ping
+
+        @ pingOut : Returns health ping
+        output port pingOut: Svc.Ping
         # Note, currently this doesn't actually handle any of the data to send
         # a transmission, we're probably just going to have the data collector
         # send that data directly to the queue of the transmission handler

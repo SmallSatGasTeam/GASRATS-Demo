@@ -43,7 +43,7 @@ module FSWDeployment {
     instance systemResources
     instance antennaDeploy
     instance flightLogic
-    instance cameraDeploy
+    instance cameraManager
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -140,8 +140,8 @@ module FSWDeployment {
     connections FSWDeployment {
       # Add here connections to user-defined components
       flightLogic.deployAntenna -> antennaDeploy.deploy
-      flightLogic.deployCamera -> cameraDeploy.deploy
-      flightLogic.takePic -> cameraDeploy.takePic
+      flightLogic.deployCamera -> cameraManager.deploy
+      flightLogic.takePic -> cameraManager.takePic
     }
 
   }

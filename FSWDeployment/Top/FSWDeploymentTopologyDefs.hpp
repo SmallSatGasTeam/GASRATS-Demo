@@ -83,6 +83,12 @@ enum { WARN = 3, FATAL = 5 };
 namespace rateGroup3 {
 enum { WARN = 3, FATAL = 5 };
 }
+namespace flightLogic {
+enum { WARN = 3, FATAL = 5 };
+}
+namespace cameraManager {
+enum { WARN = 3, FATAL = 5 };
+} 
 }  // namespace PingEntries
 }  // namespace FSWDeployment
 #endif

@@ -1,18 +1,18 @@
 // ======================================================================
-// \title  CameraDeploy.hpp
+// \title  CameraManager.hpp
 // \author jjhessing
-// \brief  hpp file for CameraDeploy component implementation class
+// \brief  hpp file for CameraManager component implementation class
 // ======================================================================
 
-#ifndef Components_CameraDeploy_HPP
-#define Components_CameraDeploy_HPP
+#ifndef Components_CameraManager_HPP
+#define Components_CameraManager_HPP
 
-#include "Components/CameraDeploy/CameraDeployComponentAc.hpp"
+#include "Components/CameraManager/CameraManagerComponentAc.hpp"
 
 namespace Components {
 
-  class CameraDeploy :
-    public CameraDeployComponentBase
+  class CameraManager :
+    public CameraManagerComponentBase
   {
 
     public:
@@ -21,15 +21,13 @@ namespace Components {
       // Component construction and destruction
       // ----------------------------------------------------------------------
 
-      //! Construct CameraDeploy object
-      CameraDeploy(
+      //! Construct CameraManager object
+      CameraManager(
           const char* const compName //!< The component name
       );
 
-      //! Destroy CameraDeploy object
-      ~CameraDeploy();
-
-      U16 picCount = 0;
+      //! Destroy CameraManager object
+      ~CameraManager();
 
     PRIVATE:
 
@@ -44,12 +42,26 @@ namespace Components {
           NATIVE_INT_TYPE portNum //!< The port number
       ) override;
 
+      //! Handler implementation for pingIn
+      //!
+      //! pingIn : receives health pings
+      void pingIn_handler(
+          NATIVE_INT_TYPE portNum, //!< The port number
+          U32 key //!< Value to return to pinger
+      ) override;
+
       //! Handler implementation for takePic
       //!
       //! takePic: takes a picture
       void takePic_handler(
           NATIVE_INT_TYPE portNum //!< The port number
       ) override;
+
+    PRIVATE:
+      //! Variable picCount
+      //!
+      //! Tracks how many pictures have been taken
+      U32 picCount;
 
   };
 

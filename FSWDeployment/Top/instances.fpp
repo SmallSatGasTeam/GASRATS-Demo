@@ -92,7 +92,7 @@ module FSWDeployment {
     stack size Default.STACK_SIZE \
     priority 100
 
-  instance cameraDeploy: Components.CameraDeploy base id 0x0F00\
+  instance cameraManager: Components.CameraManager base id 0x0F00\
     queue size Default.QUEUE_SIZE \
     stack size Default.STACK_SIZE \
     priority 99

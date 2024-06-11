@@ -7,8 +7,8 @@
 #
 ####
 set(SOURCE_FILES
-  "${CMAKE_CURRENT_LIST_DIR}/CameraDeploy.fpp"
-  "${CMAKE_CURRENT_LIST_DIR}/CameraDeploy.cpp"
+  "${CMAKE_CURRENT_LIST_DIR}/CameraManager.fpp"
+  "${CMAKE_CURRENT_LIST_DIR}/CameraManager.cpp"
 )
 
 # Uncomment and add any modules that this component depends on, else

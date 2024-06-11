@@ -63,17 +63,19 @@ enum TopologyConstants {
 // Ping entries are autocoded, however; this code is not properly exported. Thus, it is copied here.
 Svc::Health::PingEntry pingEntries[] = {
     {PingEntries::blockDrv::WARN, PingEntries::blockDrv::FATAL, "blockDrv"},
-    {PingEntries::tlmSend::WARN, PingEntries::tlmSend::FATAL, "chanTlm"},
+    {PingEntries::cameraManager::WARN, PingEntries::cameraManager::FATAL, "cameraManager"},
     {PingEntries::cmdDisp::WARN, PingEntries::cmdDisp::FATAL, "cmdDisp"},
     {PingEntries::cmdSeq::WARN, PingEntries::cmdSeq::FATAL, "cmdSeq"},
     {PingEntries::eventLogger::WARN, PingEntries::eventLogger::FATAL, "eventLogger"},
     {PingEntries::fileDownlink::WARN, PingEntries::fileDownlink::FATAL, "fileDownlink"},
     {PingEntries::fileManager::WARN, PingEntries::fileManager::FATAL, "fileManager"},
     {PingEntries::fileUplink::WARN, PingEntries::fileUplink::FATAL, "fileUplink"},
+    {PingEntries::flightLogic::WARN, PingEntries::flightLogic::FATAL, "flightLogic"},
     {PingEntries::prmDb::WARN, PingEntries::prmDb::FATAL, "prmDb"},
     {PingEntries::rateGroup1::WARN, PingEntries::rateGroup1::FATAL, "rateGroup1"},
     {PingEntries::rateGroup2::WARN, PingEntries::rateGroup2::FATAL, "rateGroup2"},
     {PingEntries::rateGroup3::WARN, PingEntries::rateGroup3::FATAL, "rateGroup3"},
+    {PingEntries::rateGroup3::WARN, PingEntries::rateGroup3::FATAL, "tlmSend"},
 };
 
 /**

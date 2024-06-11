@@ -38,54 +38,6 @@ namespace Components {
   //   // TODO
   // }
 
-  // ----------------------------------------------------------------------
-  // Handler implementations for commands
-  // ----------------------------------------------------------------------
-
-  void FlightLogic ::
-    takePic_cmdHandler(
-        FwOpcodeType opCode,
-        U32 cmdSeq
-    )
-  {
-    // TODO
-    this->takePic_out(0);
-    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
-  }
-
-  void FlightLogic ::
-    sendTransmission_cmdHandler(
-        FwOpcodeType opCode,
-        U32 cmdSeq,
-        U32 duration
-    )
-  {
-    // TODO
-    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
-  }
-
-  void FlightLogic ::
-    resetFlags_cmdHandler(
-        FwOpcodeType opCode,
-        U32 cmdSeq
-    )
-  {
-    // TODO
-    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
-  }
-
-  void FlightLogic ::
-    startupCommand_cmdHandler(
-        FwOpcodeType opCode,
-        U32 cmdSeq
-    )
-  {
-    this->deployAntenna_out(0);
-    this->deployCamera_out(0);
-    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
-  }
-
-
   void FlightLogic ::
     startup_handler(
         NATIVE_INT_TYPE portNum,
@@ -159,5 +111,62 @@ namespace Components {
     this->tlmWrite_antennaState(this->antennaState);
     this->tlmWrite_cameraState(this->cameraState);
     this->tlmWrite_initialState(this->initialState);
+  }
+
+  void FlightLogic ::
+    pingIn_handler(
+        NATIVE_INT_TYPE portNum,
+        U32 key
+    )
+  {
+    //Respond to ping from health component
+    this->pingOut_out(0,key);
+  }
+
+  // ----------------------------------------------------------------------
+  // Handler implementations for commands
+  // ----------------------------------------------------------------------
+
+  void FlightLogic ::
+    takePic_cmdHandler(
+        FwOpcodeType opCode,
+        U32 cmdSeq
+    )
+  {
+    // TODO
+    this->takePic_out(0);
+    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
+  }
+
+  void FlightLogic ::
+    sendTransmission_cmdHandler(
+        FwOpcodeType opCode,
+        U32 cmdSeq,
+        U32 duration
+    )
+  {
+    // TODO
+    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
+  }
+
+  void FlightLogic ::
+    resetFlags_cmdHandler(
+        FwOpcodeType opCode,
+        U32 cmdSeq
+    )
+  {
+    // TODO
+    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
+  }
+
+  void FlightLogic ::
+    startupCommand_cmdHandler(
+        FwOpcodeType opCode,
+        U32 cmdSeq
+    )
+  {
+    this->deployAntenna_out(0);
+    this->deployCamera_out(0);
+    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 }

@@ -90,9 +90,9 @@
         <channel name="antennaDeploy.antennaState"/>
     </packet>
 
-    <packet name="CameraDeploy" id="10" level="3">
-        <channel name="cameraDeploy.cameraDeployed"/>
-        <channel name="cameraDeploy.picsTaken"/>
+    <packet name="CameraManager" id="10" level="3">
+        <channel name="cameraManager.cameraDeployed"/>
+        <channel name="cameraManager.picsTaken"/>
     </packet>
 
     <!-- Ignored packets -->

@@ -1,6 +1,6 @@
 module Components {
-    @ Deploys the camera
-    active component CameraDeploy {
+    @ Manages commands relating to the camera and translates them into commands for the deploy driver or the camera driver.
+    active component CameraManager {
 
         #-----------------------------------------------------------------------
         # Ports 
@@ -11,6 +11,12 @@ module Components {
 
         @ takePic: takes a picture
         async input port takePic : FL.ping
+
+        @ pingIn : receives health pings
+        async input port pingIn: Svc.Ping
+
+        @ pingOut : Returns health ping
+        output port pingOut: Svc.Ping
 
         #-----------------------------------------------------------------------
         # Events
@@ -30,7 +36,7 @@ module Components {
         telemetry cameraDeployed : GASRATS.deployed
 
         @ picsTaken
-        telemetry picsTaken : U16
+        telemetry picsTaken : U32
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #

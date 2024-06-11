@@ -1,10 +1,10 @@
 // ======================================================================
-// \title  CameraDeploy.cpp
+// \title  CameraManager.cpp
 // \author jjhessing
-// \brief  cpp file for CameraDeploy component implementation class
+// \brief  cpp file for CameraManager component implementation class
 // ======================================================================
 
-#include "Components/CameraDeploy/CameraDeploy.hpp"
+#include "Components/CameraManager/CameraManager.hpp"
 #include "FpConfig.hpp"
 
 namespace Components {
@@ -13,15 +13,15 @@ namespace Components {
   // Component construction and destruction
   // ----------------------------------------------------------------------
 
-  CameraDeploy ::
-    CameraDeploy(const char* const compName) :
-      CameraDeployComponentBase(compName)
+  CameraManager ::
+    CameraManager(const char* const compName) :
+      CameraManagerComponentBase(compName)
   {
-
+    this->picCount = 0;
   }
 
-  CameraDeploy ::
-    ~CameraDeploy()
+  CameraManager ::
+    ~CameraManager()
   {
 
   }
@@ -30,20 +30,27 @@ namespace Components {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
-  bool CameraDeploy ::
+  bool CameraManager ::
     deploy_handler(NATIVE_INT_TYPE portNum)
   {
-    // TODO
     this->tlmWrite_cameraDeployed(GASRATS::deployed::DEPLOYED);
     this->log_ACTIVITY_HI_cameraDeployed();
 
     return true;
   }
 
-  void CameraDeploy ::
+  void CameraManager ::
+    pingIn_handler(
+        NATIVE_INT_TYPE portNum,
+        U32 key
+    )
+  {
+    this->pingOut_out(0,key);
+  }
+
+  void CameraManager ::
     takePic_handler(NATIVE_INT_TYPE portNum)
   {
-    // TODO
     this->picCount++;
     this->log_ACTIVITY_HI_picTaken(this->picCount);
     this->tlmWrite_picsTaken(this->picCount);
