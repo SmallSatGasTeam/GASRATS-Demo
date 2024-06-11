@@ -17,9 +17,13 @@ namespace Components {
     FlightLogic(const char* const compName) :
       FlightLogicComponentBase(compName)
   {
+    //Assign initial values to component variables
     this->antennaState = GASRATS::deployed::UNDEPLOYED;
     this->cameraState = GASRATS::deployed::UNDEPLOYED;
-    this->initialState = GASRATS::deployed::UNDEPLOYED;
+    this->beaconState = GASRATS::beacon::INITIAL;
+    this->failCount = 0;
+    this->epsCurrent = 0;
+    this->epsVoltage = 0;
   }
 
   FlightLogic ::
@@ -44,73 +48,79 @@ namespace Components {
         NATIVE_UINT_TYPE context
     )
   {
-    //this->log_WARNING_LO_runningStartup();
-    // Perform software checks
+    //this->log_WARNING_LO_runningStartup(); //For debugging
 
     // Perform hardware checks
+    this->epsHealth_out(0,epsVoltage, epsCurrent);
 
-    // If startup
-    if(antennaState == GASRATS::deployed::UNDEPLOYED && 
-    cameraState == GASRATS::deployed::UNDEPLOYED
-    && initialState == GASRATS::deployed::UNDEPLOYED) {
-      // Check EPS conditions TODO
-      // If conditions are okay TODO
-      if(true) {
-        // deploy antenna
-        if(deployAntenna_out(0)) {
-          this->antennaState = GASRATS::deployed::DEPLOYED;
-        }
-        // If failed, give a second try
-        else if (deployAntenna_out(0)) {
-          this->antennaState = GASRATS::deployed::DEPLOYED;
-        }
-        // If failed twice, throw an error
-        else {
-          this->log_WARNING_HI_deployFailure("Antenna");
-        }
+    //If battery is within okay conditions
+    if(epsCurrent > CURRENT_MIN && epsVoltage > VOLTAGE_MIN) { 
+      // If startup
+      if(antennaState == GASRATS::deployed::UNDEPLOYED && 
+      cameraState == GASRATS::deployed::UNDEPLOYED
+      && beaconState == GASRATS::beacon::INITIAL) {
+        // If conditions are okay TODO
+        if(true) {
+          // deploy antenna
+          if(deployAntenna_out(0)) {
+            this->antennaState = GASRATS::deployed::DEPLOYED;
+          }
+          // If failed, give a second try
+          else if (deployAntenna_out(0)) {
+            this->antennaState = GASRATS::deployed::DEPLOYED;
+          }
+          // If failed twice, throw an error
+          else {
+            this->log_WARNING_HI_deployFailure("Antenna");
+          }
 
-        // Set beacon state to initial beacon TODO
-        this->initialState = GASRATS::deployed::DEPLOYED;
+          // Deploy camera
+          if(deployCamera_out(0)) {
+            this->cameraState = GASRATS::deployed::DEPLOYED;
+            // Take photo
+            this->takePic_out(0);
+          }
+          //If failed try again
+          else if(deployCamera_out(0)) {
+            this->cameraState = GASRATS::deployed::DEPLOYED;
+          }
+          // else throw failure
+          else {
+            this->log_WARNING_HI_deployFailure("Camera");
+          }
 
-        // Deploy camera
-        if(deployCamera_out(0)) {
-          this->cameraState = GASRATS::deployed::DEPLOYED;
-          // Take photo
-          this->takePic_out(0);
-        }
-        //If failed try again
-        else if(deployCamera_out(0)) {
-          this->cameraState = GASRATS::deployed::DEPLOYED;
-        }
-        // else throw failure
-        else {
-          this->log_WARNING_HI_deployFailure("Camera");
-        }
-        // Wait for ground connection TODO
+          // Transmit TODO
+            // The transmission should pull the beacon state and handle sending the first transmission
+            // as soon as confirmation of connection is sent. It can then change the beacon state itself
+            // removing the need to handle the initial transmission in flight logic
 
-        // Transmit TODO
+          this->beaconState = GASRATS::beacon::STANDARD; // !! This is temporary to allow the code to move on from the startup phase
+        
+          //If everything has been completed successfully
+          if (antennaState == GASRATS::deployed::UNDEPLOYED && 
+          cameraState == GASRATS::deployed::UNDEPLOYED
+          && beaconState == GASRATS::beacon::INITIAL)
+          failCount = 0;
+        }
+        // Else keep trying startup for MAX_MIN_TILL_FAIL minutes
+        else if(failCount < maxIter) {
+          failCount++;
+        }
+        // Else restart TODO
       }
-      // Else TODO
-
-        // Wait for good conditions, or restart
-
-        // Else
-
-        // If startup flags are good
-
-        // Await commands
-
-        // Ping the watchdog
-
-        // Check if battery voltage is high enough
-
-        // Else
-
-        // Re-run startup
+      //Else startup flags are good
+      else {
+        //Await commands
+      }
+    }
+    //Else run low power mode
+    else {
+      //TODO
+        //Is there anything we need to do in low power mode? or do we just ignore commands or what?
     }
     this->tlmWrite_antennaState(this->antennaState);
     this->tlmWrite_cameraState(this->cameraState);
-    this->tlmWrite_initialState(this->initialState);
+    this->tlmWrite_beaconState(this->beaconState);
   }
 
   void FlightLogic ::

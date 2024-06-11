@@ -9,6 +9,7 @@
 
 #include "Components/FlightLogic/FlightLogicComponentAc.hpp"
 #include "build-fprime-automatic-native/Types/deployedEnumAc.hpp"
+#include "Components/componentConfig/Constants.hpp"
 
 namespace Components {
 
@@ -108,9 +109,41 @@ namespace Components {
       ) override;
 
     PRIVATE:
+      //! Private variable tracking antenna deployment
+      //!
+      //! GASRATS::deployed showing antenna deployment state
       GASRATS::deployed::T antennaState;
+
+      //! Private variable tracking camera deployment
+      //!
+      //! GASRATS::deployed showing camera deployment state
       GASRATS::deployed::T cameraState;
-      GASRATS::deployed::T initialState;
+
+      //! Private variable tracking camera deployment
+      //!
+      //! GASRATS::beacon showing if initial beacon is active
+      GASRATS::beacon::T beaconState;
+
+      //! Private constant variable storing max number of iterations
+      //!
+      //! U16 storing MAX_MIN_TILL_FAIL * 4 * 60 so system waits MAX_MIN_TILL FAIL
+      //! minutes before restarting the system
+      const U16 maxIter = 4*60*MAX_MIN_TILL_FAIL;
+
+      //! Private variable storing times startup has failed
+      //!
+      //! U16
+      U16 failCount;
+
+      //! Private variable storing epsVoltage
+      //!
+      //! F32, is passed by reference to epsHealthManager
+      F32 epsVoltage;
+
+      //! Private variable storing epsCurrent
+      //!
+      //! F32, is passed by reference to epsCurrent
+      F32 epsCurrent;
   };
 
 }
