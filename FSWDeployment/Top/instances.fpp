@@ -97,6 +97,9 @@ module FSWDeployment {
     stack size Default.STACK_SIZE \
     priority 99
 
+  instance transmissionManager: Components.TransmissionManager base id 0x1000 \
+    queue size Default.QUEUE_SIZE
+
   # ----------------------------------------------------------------------
   # Queued component instances
   # ----------------------------------------------------------------------
