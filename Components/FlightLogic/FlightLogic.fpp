@@ -15,20 +15,14 @@ module Components {
         @ deployCamera: deploys the Camera
         output port deployCamera : FL.deploy
 
-        @ softwareHealth : Checks health of the software
-        output port softwareHealth : FL.getHealth
-
         @ hardwareHealth: Checks health of the hardware
         output port hardwareHealth : FL.getHealth
 
-        # @ epsHealth: special port for checking the health of the EPS on startup
-        # output port epsHealth : FL.epsHealth
+        @ epsHealth: special port for checking the health of the EPS on startup
+        output port epsHealth : FL.epsHealth
 
         @ takePic: pings the camera to take a picture
         output port takePic : FL.ping
-
-        # @ pingWatchdog: pings the watchdog
-        # output port pingWatchdog : FL.ping
 
         @ sendTransmission: pings the transceiver to send a transmission
         output port sendTransmission : FL.ping
@@ -116,8 +110,8 @@ module Components {
         @cameraState: tells if camera is deployed or not
         telemetry cameraState: GASRATS.deployed 
 
-        @initialState: tells the state of the beacon
-        telemetry initialState: GASRATS.deployed 
+        @beaconState: tells the state of the beacon
+        telemetry beaconState: GASRATS.beacon 
 
 
 

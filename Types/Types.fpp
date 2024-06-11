@@ -14,4 +14,9 @@ module GASRATS {
         DEPLOYED
         UNDEPLOYED
     }
+
+    enum beacon {
+        INITIAL
+        STANDARD
+    }
 }
