@@ -24,6 +24,7 @@ namespace Components {
     this->failCount = 0;
     this->epsCurrent = 0;
     this->epsVoltage = 0;
+    this->lowPower = true;
   }
 
   FlightLogic ::
@@ -54,7 +55,8 @@ namespace Components {
     this->epsHealth_out(0,epsVoltage, epsCurrent);
 
     //If battery is within okay conditions
-    if(epsCurrent > CURRENT_MIN && epsVoltage > VOLTAGE_MIN) { 
+    if(epsCurrent > CURRENT_MIN && epsVoltage > VOLTAGE_MIN) {
+      lowPower = false;
       // If startup
       if(antennaState == GASRATS::deployed::UNDEPLOYED && 
       cameraState == GASRATS::deployed::UNDEPLOYED
@@ -115,6 +117,7 @@ namespace Components {
     }
     //Else run low power mode
     else {
+      lowPower = true;
       //TODO
         //Is there anything we need to do in low power mode? or do we just ignore commands or what?
     }
@@ -131,6 +134,12 @@ namespace Components {
   {
     //Respond to ping from health component
     this->pingOut_out(0,key);
+  }
+
+  GASRATS::beacon FlightLogic ::
+    sendBeaconState_handler(NATIVE_INT_TYPE portNum)
+  {
+    return this->beaconState;
   }
 
   // ----------------------------------------------------------------------

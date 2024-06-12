@@ -10,4 +10,6 @@ module FL {
     port deploy () -> bool
     @ Pings another component and returns a bool
     port getHealth () -> GASRATS.Health
+    @ Gets state of the beacon
+    port beaconState () -> GASRATS.beacon
 }

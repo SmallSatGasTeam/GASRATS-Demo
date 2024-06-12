@@ -38,6 +38,9 @@ module Components {
 
         @ pingOut : Returns health ping
         output port pingOut: Svc.Ping
+
+        @ sendBeaconState : returns the state of the beacon
+        sync input port sendBeaconState : FL.beaconState
         # Note, currently this doesn't actually handle any of the data to send
         # a transmission, we're probably just going to have the data collector
         # send that data directly to the queue of the transmission handler

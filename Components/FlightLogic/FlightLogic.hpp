@@ -57,6 +57,13 @@ namespace Components {
           NATIVE_UINT_TYPE context //!< The call order
       ) override;
 
+      //! Handler implementation for sendBeaconState
+      //!
+      //! sendBeaconState : returns the state of the beacon
+      GASRATS::beacon sendBeaconState_handler(
+          NATIVE_INT_TYPE portNum //!< The port number
+      ) override;
+
       // ----------------------------------------------------------------------
       // Handler implementations for user-defined typed input ports
       // ----------------------------------------------------------------------
@@ -123,6 +130,11 @@ namespace Components {
       //!
       //! GASRATS::beacon showing if initial beacon is active
       GASRATS::beacon::T beaconState;
+
+      //! Private variable tracking low power mode
+      //!
+      //! bool, true when in low power mode
+      bool lowPower;
 
       //! Private constant variable storing max number of iterations
       //!
