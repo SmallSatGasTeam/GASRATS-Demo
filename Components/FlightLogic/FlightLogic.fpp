@@ -1,5 +1,7 @@
 module Components {
     @ The application layer of the FSW.
+
+    # include "../Definitions.fppi"
     active component FlightLogic {
 
         #-----------------------------------------------------------------------
@@ -28,7 +30,7 @@ module Components {
         output port sendTransmission : FL.ping
 
         @ recvTransmission: Flight Logic is pinged to know that a message has been received
-        # sync input port recvTransmission : FL.ping
+        sync input port recvTransmission: FL.ping
 
         @ startup: runs the startup code
         sync input port startup : Svc.Sched

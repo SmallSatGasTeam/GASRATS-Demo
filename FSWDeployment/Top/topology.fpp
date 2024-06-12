@@ -44,6 +44,7 @@ module FSWDeployment {
     instance antennaDeploy
     instance flightLogic
     instance cameraManager
+    instance transmissionManager
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -142,6 +143,8 @@ module FSWDeployment {
       flightLogic.deployAntenna -> antennaDeploy.deploy
       flightLogic.deployCamera -> cameraManager.deploy
       flightLogic.takePic -> cameraManager.takePic
+      flightLogic.sendTransmission -> transmissionManager.recvData
+      transmissionManager.sendData -> flightLogic.recvTransmission
     }
 
   }
