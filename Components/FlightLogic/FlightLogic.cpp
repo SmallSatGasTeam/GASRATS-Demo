@@ -55,7 +55,7 @@ namespace Components {
     //this->log_WARNING_LO_runningStartup(); //For debugging
 
     // Perform hardware checks
-    this->epsHealth_out(0,epsVoltage, epsCurrent);
+    // this->epsHealth_out(0,epsVoltage, epsCurrent);
 
     //If battery is within okay conditions
     if(epsCurrent > CURRENT_MIN && epsVoltage > VOLTAGE_MIN) {
@@ -167,7 +167,7 @@ namespace Components {
         U32 duration
     )
   {
-    this->sendTrans_out(opCode, duration);
+    this->sendTrans_out(0, duration);
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 

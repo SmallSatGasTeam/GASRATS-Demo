@@ -6,7 +6,6 @@
 
 #include "Components/TransmissionManager/TransmissionManager.hpp"
 #include "FpConfig.hpp"
-#include <iostream>
 
 namespace Components {
 
@@ -37,8 +36,7 @@ namespace Components {
         U32 value
     )
   {
-    std::cout << "Hello, world!" << std::endl;
-    this->log_ACTIVITY_HI_success(1234);
+    this->log_ACTIVITY_HI_success(value);
   }
 
   // ----------------------------------------------------------------------

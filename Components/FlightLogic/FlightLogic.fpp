@@ -26,10 +26,10 @@ module Components {
         output port takePic : FL.ping
 
         @ sendTransmission: pings the transceiver to send a transmission
-        output port sendTransmission : FL.ping
+        output port sendTrans : FL.data
 
         @ recvTransmission: Flight Logic is pinged to know that a message has been received
-        sync input port recvTransmission: FL.ping
+        sync input port recvTransmission: FL.data
 
         @ startup: runs the startup code
         sync input port startup : Svc.Sched
