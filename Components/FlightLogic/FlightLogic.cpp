@@ -37,11 +37,11 @@ namespace Components {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
-  // void FlightLogic ::
-  //   recvTransmission_handler(NATIVE_INT_TYPE portNum)
-  // {
-  //   // TODO
-  // }
+  void FlightLogic ::
+    recvTransmission_handler(NATIVE_INT_TYPE portNum)
+  {
+    // TODO
+  }
 
   void FlightLogic ::
     startup_handler(
@@ -61,7 +61,7 @@ namespace Components {
       if(antennaState == GASRATS::deployed::UNDEPLOYED && 
       cameraState == GASRATS::deployed::UNDEPLOYED
       && beaconState == GASRATS::beacon::INITIAL) {
-        // If conditions are okay TODO
+        // If conditions are okay !!! TODO !!!
         if(true) {
           // deploy antenna
           if(deployAntenna_out(0)) {
@@ -108,7 +108,7 @@ namespace Components {
         else if(failCount < maxIter) {
           failCount++;
         }
-        // Else restart TODO
+        // Else restart !!! TODO !!!
       }
       //Else startup flags are good
       else {

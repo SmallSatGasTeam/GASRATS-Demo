@@ -40,9 +40,9 @@ namespace Components {
       //! Handler implementation for recvTransmission
       //!
       //! recvTransmission: Flight Logic is pinged to know that a message has been received
-      // void recvTransmission_handler(
-      //     NATIVE_INT_TYPE portNum //!< The port number
-      // ) override;
+      void recvTransmission_handler(
+          NATIVE_INT_TYPE portNum //!< The port number
+      ) override;
 
       // ----------------------------------------------------------------------
       // Handler implementations for user-defined typed input ports

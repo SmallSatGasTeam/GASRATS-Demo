@@ -1,7 +1,6 @@
+# include "../Definitions.fppi"
 module Components {
     @ The application layer of the FSW.
-
-    # include "../Definitions.fppi"
     active component FlightLogic {
 
         #-----------------------------------------------------------------------
