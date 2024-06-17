@@ -143,7 +143,7 @@ module FSWDeployment {
       flightLogic.deployAntenna -> antennaDeploy.deploy
       flightLogic.deployCamera -> cameraManager.deploy
       flightLogic.takePic -> cameraManager.takePic
-      flightLogic.sendTransmission -> transmissionManager.recvData
+      flightLogic.sendTrans -> transmissionManager.recvData
       transmissionManager.sendData -> flightLogic.recvTransmission
     }
 

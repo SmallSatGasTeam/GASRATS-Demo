@@ -32,15 +32,12 @@ namespace Components {
 
     PRIVATE:
 
-      // ----------------------------------------------------------------------
-      // Handler implementations for user-defined typed input ports
-      // ----------------------------------------------------------------------
-
       //! Handler implementation for recvTransmission
       //!
       //! recvTransmission: Flight Logic is pinged to know that a message has been received
-      void recvTransmission_handler(
-          NATIVE_INT_TYPE portNum //!< The port number
+      U32 recvTransmission_handler(
+          NATIVE_INT_TYPE portNum, //!< The port number
+          U32 value
       ) override;
 
       // ----------------------------------------------------------------------
