@@ -8,7 +8,6 @@
 #define Components_FlightLogic_HPP
 
 #include "Components/FlightLogic/FlightLogicComponentAc.hpp"
-#include "build-fprime-automatic-native/Types/deployedEnumAc.hpp"
 #include "Components/componentConfig/Constants.hpp"
 
 namespace Components {
@@ -107,14 +106,6 @@ namespace Components {
           U32 cmdSeq //!< The command sequence number
       ) override;
 
-      //! Handler implementation for command startupCommand
-      //!
-      //! startupCommand: temporary to test startup ports while we still don't have startup working
-      void startupCommand_cmdHandler(
-          FwOpcodeType opCode, //!< The opcode
-          U32 cmdSeq //!< The command sequence number
-      ) override;
-
     PRIVATE:
       //! Private variable tracking antenna deployment
       //!
@@ -136,16 +127,12 @@ namespace Components {
       //! bool, true when in low power mode
       bool lowPower;
 
-      //! Private constant variable storing max number of iterations
-      //!
-      //! U16 storing MAX_MIN_TILL_FAIL * 4 * 60 so system waits MAX_MIN_TILL FAIL
-      //! minutes before restarting the system
-      const U16 maxIter = 4*60*MAX_MIN_TILL_FAIL;
-
       //! Private variable storing times startup has failed
       //!
       //! U16
       U16 failCount;
+
+      U16 waitCount;
 
       //! Private variable storing epsVoltage
       //!
@@ -156,6 +143,8 @@ namespace Components {
       //!
       //! F32, is passed by reference to epsCurrent
       F32 epsCurrent;
+
+      bool detumbled;
   };
 
 }

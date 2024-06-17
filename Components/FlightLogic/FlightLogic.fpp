@@ -76,9 +76,6 @@ module Components {
         @ resetFlags: resets startup flags to original condition
         sync command resetFlags
 
-        @ startupCommand: temporary to test startup ports while we still don't have startup working
-        sync command startupCommand
-
 
         #-----------------------------------------------------------------------
         # Events
@@ -92,8 +89,14 @@ module Components {
             severity warning high \
             format "{} failed to deploy."
 
-        @ runningStartup: Startup is being run
-        event runningStartup severity warning low format "Running startup."
+        @ runningStartup: Startup is being run (For debugging only)
+        event runningStartup(num: U32) severity warning low format "Running startup {}."
+
+        @ detumble: Notifies that the OBC has told the ADCS micro controller to detumble
+        event detumble severity activity low format "Running detumbling."
+
+        @ rebooting: Notifies that the OBC is rebooting the satellite
+        event rebooting severity fatal format "Rebooting!"
 
 
         #-----------------------------------------------------------------------
@@ -117,6 +120,11 @@ module Components {
         @beaconState: tells the state of the beacon
         telemetry beaconState: GASRATS.beacon 
 
+        @ powerState: Shows whether or not we're in low power mode
+        telemetry powerState: bool
+
+        @ detumblingState: Shows whether or not the OBC thinks we're detumbled
+        telemetry detumblingState: bool
 
 
         ###############################################################################
