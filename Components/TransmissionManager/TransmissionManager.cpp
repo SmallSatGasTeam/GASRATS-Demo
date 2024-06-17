@@ -6,6 +6,7 @@
 
 #include "Components/TransmissionManager/TransmissionManager.hpp"
 #include "FpConfig.hpp"
+#include <iostream>
 
 namespace Components {
 
@@ -30,10 +31,14 @@ namespace Components {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
-  void TransmissionManager ::
-    recvData_handler(NATIVE_INT_TYPE portNum)
+  U32 TransmissionManager ::
+    recvData_handler(
+        NATIVE_INT_TYPE portNum,
+        U32 value
+    )
   {
-    // TODO
+    std::cout << "Hello, world!" << std::endl;
+    this->log_ACTIVITY_HI_success(1234);
   }
 
   // ----------------------------------------------------------------------

@@ -38,8 +38,9 @@ namespace Components {
       //! Handler implementation for recvData
       //!
       //! This is synchronous because it can return a value if it has successfully received data
-      void recvData_handler(
-          NATIVE_INT_TYPE portNum //!< The port number
+      U32 recvData_handler(
+          NATIVE_INT_TYPE portNum, //!< The port number
+          U32 value
       ) override;
 
     PRIVATE:

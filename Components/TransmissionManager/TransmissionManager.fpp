@@ -14,8 +14,12 @@ module Components {
         ###############################################################################
 
         @ This is synchronous because it can return a value if it has successfully received data
-        sync input port recvData: FL.ping
-        output port sendData: FL.ping
+        sync input port recvData: FL.data
+        output port sendData: FL.data
+
+        event success(arg1: U32) \
+            severity activity high \
+            format "We recieved the data: {}"
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #

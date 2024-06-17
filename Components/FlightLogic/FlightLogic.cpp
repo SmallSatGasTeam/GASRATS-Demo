@@ -37,10 +37,13 @@ namespace Components {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
-  void FlightLogic ::
-    recvTransmission_handler(NATIVE_INT_TYPE portNum)
+  U32 FlightLogic ::
+    recvTransmission_handler(
+        NATIVE_INT_TYPE portNum,
+        U32 value
+    )
   {
-    // TODO
+    return value;
   }
 
   void FlightLogic ::
@@ -164,7 +167,7 @@ namespace Components {
         U32 duration
     )
   {
-    // TODO
+    this->sendTrans_out(opCode, duration);
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 
