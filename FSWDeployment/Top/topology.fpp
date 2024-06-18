@@ -147,6 +147,9 @@ module FSWDeployment {
       flightLogic.takePic -> cameraManager.takePic
       flightLogic.sendTrans -> transmissionManager.recvData
       transmissionManager.sendData -> flightLogic.recvTransmission
+      dataCollector.ping -> flightLogic.dataRequest
+      flightLogic.fakeData -> dataCollector.aggregate
+      flightLogic.epsHealth -> epsManager.returnHealth
     }
 
   }
