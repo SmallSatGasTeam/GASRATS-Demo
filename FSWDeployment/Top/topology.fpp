@@ -154,6 +154,7 @@ module FSWDeployment {
       flightLogic.epsHealth -> epsManager.returnHealth
       imuInterface.collector -> dataCollector.aggregate
       imuInterface.requestI2CData -> i2cDriver.read
+      dataCollector.ping -> imuInterface.dataRequest
     }
 
   }

@@ -18,7 +18,7 @@ module Components {
         sync input port aggregate: serial
 
         @ Port meant for pinging all connected ports for their data
-        output port ping: FL.data
+        output port ping: [2] FL.data
 
         ###############################################################################
         # Events 
