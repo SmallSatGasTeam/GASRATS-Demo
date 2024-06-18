@@ -1,8 +1,6 @@
 module Components {
-    @ Everything goes through this component, it manages all transmissions.
-    # include "../Definitions.fppi"
-
-    active component TransmissionManager {
+    @ This component will periodically ping for data from all other components, and aggregate and save the data.
+    active component DataCollector {
 
         # One async command/port is required for active components
         # This should be overridden by the developers with a useful command/port
@@ -10,21 +8,25 @@ module Components {
         async command TODO opcode 0
 
         ###############################################################################
-        # Ports
+        # Ports 
         ###############################################################################
 
-        @ This is synchronous because it can return a value if it has successfully received data
-        sync input port recvData: FL.data
-        output port sendData: FL.data
+        @ Receiving calls from the rate group
+        sync input port run: Svc.Sched
 
+        @ Recieving data from multiple channels
+        sync input port aggregate: serial
+
+        @ Port meant for pinging all connected ports for their data
+        output port ping: FL.data
 
         ###############################################################################
         # Events 
         ###############################################################################
 
-        event success(arg1: U32) \
+        event dataSuccess \
             severity activity high \
-            format "We recieved the data: {}"
+            format "The data collector has recieved the data!"
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
@@ -49,6 +51,12 @@ module Components {
 
         @ Port for sending telemetry channels to downlink
         telemetry port tlmOut
+
+        @ Port to return the value of a parameter
+        param get port prmGetOut
+
+        @Port to set the value of a parameter
+        param set port prmSetOut
 
     }
 }

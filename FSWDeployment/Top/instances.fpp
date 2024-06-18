@@ -100,6 +100,9 @@ module FSWDeployment {
   instance transmissionManager: Components.TransmissionManager base id 0x1000 \
     queue size Default.QUEUE_SIZE
 
+  instance dataCollector: Components.DataCollector base id 0x1100 \
+    queue size Default.QUEUE_SIZE
+
   # ----------------------------------------------------------------------
   # Queued component instances
   # ----------------------------------------------------------------------

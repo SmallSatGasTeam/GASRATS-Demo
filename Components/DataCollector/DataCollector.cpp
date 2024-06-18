@@ -1,10 +1,10 @@
 // ======================================================================
-// \title  TransmissionManager.cpp
-// \author jjhessing
-// \brief  cpp file for TransmissionManager component implementation class
+// \title  DataCollector.cpp
+// \author devin
+// \brief  cpp file for DataCollector component implementation class
 // ======================================================================
 
-#include "Components/TransmissionManager/TransmissionManager.hpp"
+#include "Components/DataCollector/DataCollector.hpp"
 #include "FpConfig.hpp"
 
 namespace Components {
@@ -13,15 +13,15 @@ namespace Components {
   // Component construction and destruction
   // ----------------------------------------------------------------------
 
-  TransmissionManager ::
-    TransmissionManager(const char* const compName) :
-      TransmissionManagerComponentBase(compName)
+  DataCollector ::
+    DataCollector(const char* const compName) :
+      DataCollectorComponentBase(compName)
   {
 
   }
 
-  TransmissionManager ::
-    ~TransmissionManager()
+  DataCollector ::
+    ~DataCollector()
   {
 
   }
@@ -30,21 +30,33 @@ namespace Components {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
-  U32 TransmissionManager ::
-    recvData_handler(
+  void DataCollector ::
+    run_handler(
         NATIVE_INT_TYPE portNum,
-        U32 value
+        NATIVE_UINT_TYPE context
     )
   {
-    this->log_ACTIVITY_HI_success(value);
-    return value;
+    this->ping_out(0, 123);
+  }
+
+  // ----------------------------------------------------------------------
+  // Handler implementations for user-defined serial input ports
+  // ----------------------------------------------------------------------
+
+  void DataCollector ::
+    aggregate_handler(
+        NATIVE_INT_TYPE portNum,
+        Fw::SerializeBufferBase& buffer
+    )
+  {
+    this->log_ACTIVITY_HI_dataSuccess();
   }
 
   // ----------------------------------------------------------------------
   // Handler implementations for commands
   // ----------------------------------------------------------------------
 
-  void TransmissionManager ::
+  void DataCollector ::
     TODO_cmdHandler(
         FwOpcodeType opCode,
         U32 cmdSeq

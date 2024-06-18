@@ -46,6 +46,7 @@ module FSWDeployment {
     instance cameraManager
     instance transmissionManager
     instance epsManager
+    instance dataCollector
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -146,7 +147,6 @@ module FSWDeployment {
       flightLogic.takePic -> cameraManager.takePic
       flightLogic.sendTrans -> transmissionManager.recvData
       transmissionManager.sendData -> flightLogic.recvTransmission
-      flightLogic.epsHealth -> epsManager.returnHealth
     }
 
   }

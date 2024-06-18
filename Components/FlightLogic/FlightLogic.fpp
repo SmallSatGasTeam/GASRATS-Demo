@@ -28,6 +28,9 @@ module Components {
         @ sendTransmission: pings the transceiver to send a transmission
         output port sendTrans : FL.data
 
+        @ fakeData: just a stream of the same number being sent to the Data Collector
+        output port fakeData: FL.serialData
+
         @ recvTransmission: Flight Logic is pinged to know that a message has been received
         sync input port recvTransmission: FL.data
 
@@ -36,6 +39,9 @@ module Components {
 
         @ pingIn : receives health pings
         async input port pingIn: Svc.Ping
+
+        @ dataRequest: receives a ping from the data collector to send out data
+        sync input port dataRequest: FL.data
 
         @ pingOut : Returns health ping
         output port pingOut: Svc.Ping

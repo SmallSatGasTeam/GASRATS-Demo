@@ -14,4 +14,6 @@ module FL {
     port beaconState () -> GASRATS.beacon
     @ Just to transmit dummy data
     port data (value: U32) -> U32
+    @ For serialized inputs (can't return anything)
+    port serialData (value: U32)
 }
