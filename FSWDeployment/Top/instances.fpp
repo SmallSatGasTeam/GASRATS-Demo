@@ -136,4 +136,6 @@ module FSWDeployment {
 
   instance antennaDeploy: Components.AntennaDeploy base id 0x4C00
 
+  instance epsManager: Components.EPSManager base id 0x4D00
+
 }

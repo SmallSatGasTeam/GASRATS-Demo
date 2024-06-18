@@ -84,8 +84,8 @@
         <channel name="flightLogic.antennaState"/>
         <channel name="flightLogic.cameraState"/>
         <channel name="flightLogic.beaconState"/>
-        <channel name="flightLogic.powerState"/>
-        <channel name="flightLogic.detumblingState"/>
+        <channel name="flightLogic.lowPower"/>
+        <channel name="flightLogic.detumbled"/>
     </packet>
 
     <packet name="AntennaDeploy" id="9" level="3">
@@ -95,6 +95,11 @@
     <packet name="CameraManager" id="10" level="3">
         <channel name="cameraManager.cameraDeployed"/>
         <channel name="cameraManager.picsTaken"/>
+    </packet>
+
+    <packet name="EPSManager" id="11" level="3">
+        <channel name="epsManager.voltage"/>
+        <channel name="epsManager.current"/>
     </packet>
 
     <!-- Ignored packets -->

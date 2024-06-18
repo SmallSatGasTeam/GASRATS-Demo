@@ -56,7 +56,7 @@ namespace Components {
     //this->log_WARNING_LO_runningStartup(this->waitCount); //For debugging
 
     // Perform hardware checks
-    // this->epsHealth_out(0,epsVoltage, epsCurrent);
+    this->epsHealth_out(0,epsVoltage, epsCurrent);
 
     //If battery is within okay conditions
     if(epsCurrent > CURRENT_MIN && epsVoltage > VOLTAGE_MIN) {
@@ -104,7 +104,7 @@ namespace Components {
             }
           }
 
-          //this->beaconState = GASRATS::beacon::STANDARD; // !! This is temporary to allow the code to move on from the startup phase
+          this->beaconState = GASRATS::beacon::STANDARD; // !! This is temporary to allow the code to move on from the startup phase
         
           //If everything has been completed successfully
           if (antennaState == GASRATS::deployed::DEPLOYED && 
@@ -138,8 +138,8 @@ namespace Components {
     this->tlmWrite_antennaState(this->antennaState);
     this->tlmWrite_cameraState(this->cameraState);
     this->tlmWrite_beaconState(this->beaconState);
-    this->tlmWrite_detumblingState(this->detumbled);
-    this->tlmWrite_powerState(this->lowPower);
+    this->tlmWrite_detumbled(this->detumbled);
+    this->tlmWrite_lowPower(this->lowPower);
   }
 
   void FlightLogic ::

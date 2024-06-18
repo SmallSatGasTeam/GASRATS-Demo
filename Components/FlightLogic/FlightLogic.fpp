@@ -120,11 +120,11 @@ module Components {
         @beaconState: tells the state of the beacon
         telemetry beaconState: GASRATS.beacon 
 
-        @ powerState: Shows whether or not we're in low power mode
-        telemetry powerState: bool
+        @ lowPower: Shows whether or not we're in low power mode
+        telemetry lowPower: bool
 
-        @ detumblingState: Shows whether or not the OBC thinks we're detumbled
-        telemetry detumblingState: bool
+        @ detumbled: Shows whether or not the OBC thinks we're detumbled
+        telemetry detumbled: bool
 
 
         ###############################################################################
