@@ -103,6 +103,11 @@ module FSWDeployment {
   instance dataCollector: Components.DataCollector base id 0x1100 \
     queue size Default.QUEUE_SIZE
 
+  instance imuInterface: Components.imuInterface base id 0x1200 \
+    queue size Default.QUEUE_SIZE
+
+  instance i2cDriver: Drv.LinuxI2cDriver base id 0x1300
+
   # ----------------------------------------------------------------------
   # Queued component instances
   # ----------------------------------------------------------------------

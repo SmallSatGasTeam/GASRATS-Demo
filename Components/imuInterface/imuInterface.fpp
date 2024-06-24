@@ -1,6 +1,6 @@
 module Components {
-    @ This component will periodically ping for data from all other components, and aggregate and save the data.
-    active component DataCollector {
+    @ This will be the component that draws information from the IMU we have
+    active component imuInterface {
 
         # One async command/port is required for active components
         # This should be overridden by the developers with a useful command/port
@@ -8,25 +8,25 @@ module Components {
         async command TODO opcode 0
 
         ###############################################################################
-        # Ports 
+        # Ports
         ###############################################################################
 
-        @ Receiving calls from the rate group
-        sync input port run: Svc.Sched
+        @ dataRequest: receives a ping from the data collector to send out data
+        sync input port dataRequest: FL.data
 
-        @ Recieving data from multiple channels
-        sync input port aggregate: serial
+        @ output data for the data collector
+        output port collector: FL.serialData
 
-        @ Port meant for pinging all connected ports for their data
-        output port ping: [2] FL.data
+        @ Gets the data from the I2C device through pass by refrence
+        output port requestI2CData: Drv.I2c
 
         ###############################################################################
         # Events 
         ###############################################################################
 
-        event dataSuccess \
+        event imuSuccess \
             severity activity high \
-            format "The data collector has recieved the data!"
+            format "The IMU sent the data"
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #

@@ -16,4 +16,6 @@ module FL {
     port data (value: U32) -> U32
     @ For serialized inputs (can't return anything)
     port serialData (value: U32)
+    @ For outputting buffers from the I2C driver
+    port bufferData (value: U32)
 }
