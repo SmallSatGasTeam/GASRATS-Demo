@@ -79,8 +79,6 @@
     </packet>
 
     <packet name="FlightLogic" id="8" level="3">
-        <channel name="flightLogic.softwareHealth"/>
-        <channel name="flightLogic.hardwareHealth"/>
         <channel name="flightLogic.antennaState"/>
         <channel name="flightLogic.cameraState"/>
         <channel name="flightLogic.beaconState"/>

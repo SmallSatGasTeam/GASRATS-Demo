@@ -7,17 +7,11 @@ module Components {
         # FlightLogic Ports 
         #-----------------------------------------------------------------------
 
-        @ getClock: pulls the clock from the on board clock
-        output port getClock: FL.getClock
-
         @ deployAntenna: deploys the Antenna
         output port deployAntenna : FL.deploy
 
         @ deployCamera: deploys the Camera
         output port deployCamera : FL.deploy
-
-        @ hardwareHealth: Checks health of the hardware
-        output port hardwareHealth : FL.getHealth
 
         @ epsHealth: special port for checking the health of the EPS on startup
         output port epsHealth : FL.epsHealth
@@ -109,21 +103,13 @@ module Components {
         # Telemetry
         #-----------------------------------------------------------------------
 
-        @ softwareHealth
-        telemetry softwareHealth: U8 update on change \
-            low {red 0, orange 1, yellow 2} \
-            high {red 6, orange 5, yellow 4}
-
-        @ hardwareHealth
-        telemetry hardwareHealth: GASRATS.Health update on change #It's probably worth turning this into an integer so we can put warnings on it
-
         @ antennaState: tells if antenna is deployed or undeployed
         telemetry antennaState: GASRATS.deployed 
 
-        @cameraState: tells if camera is deployed or not
+        @ cameraState: tells if camera is deployed or not
         telemetry cameraState: GASRATS.deployed 
 
-        @beaconState: tells the state of the beacon
+        @ beaconState: tells the state of the beacon
         telemetry beaconState: GASRATS.beacon 
 
         @ lowPower: Shows whether or not we're in low power mode

@@ -111,7 +111,7 @@ namespace Components {
           U32 cmdSeq //!< The command sequence number
       ) override;
 
-    PRIVATE:
+    public:
       //! Private variable tracking antenna deployment
       //!
       //! GASRATS::deployed showing antenna deployment state

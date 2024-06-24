@@ -210,6 +210,11 @@ namespace Components {
     this->lowPower = true;
     this->waitCount = 0;
     this->detumbled = false;
+    this->tlmWrite_antennaState(this->antennaState);
+    this->tlmWrite_cameraState(this->cameraState);
+    this->tlmWrite_beaconState(this->beaconState);
+    this->tlmWrite_detumbled(this->detumbled);
+    this->tlmWrite_lowPower(this->lowPower);
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 }
