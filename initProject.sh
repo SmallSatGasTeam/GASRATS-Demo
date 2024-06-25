@@ -2,8 +2,7 @@
 # Can be run using any Linux based command prompt using "bash initProject.sh"
 
 # Initializes the fprime submodule
-git submodule init
-git submodule update
+git submodule update --init --recursive
 
 # Creates a python virtual environment in the directory the repo was cloned in
 python3 -m venv fprime-venv
