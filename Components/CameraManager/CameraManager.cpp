@@ -5,6 +5,7 @@
 // ======================================================================
 
 #include "Components/CameraManager/CameraManager.hpp"
+#include "Components/componentConfig/Constants.hpp"
 #include "FpConfig.hpp"
 #include <iostream>
 #include <cstdlib>
@@ -54,8 +55,11 @@ namespace Components {
   void CameraManager ::
     takePic_handler(NATIVE_INT_TYPE portNum)
   {
-    std::string stillautocommand = "libcamera-still -r -e png -o /home/gas/photos/fprimeTest.jpg --autofocus-on-capture --hdr --rawfull --awb auto --denoise auto";
-    std::system(stillautocommand.c_str());
+    #ifndef VIRTUAL
+      std::string stillautocommand = "libcamera-still -r -e png -o /home/gas/photos/fprimeTest.jpg --autofocus-on-capture --hdr --rawfull --awb auto --denoise auto";
+      std::system(stillautocommand.c_str());
+    #endif
+
     this->picCount++;
     this->log_ACTIVITY_HI_picTaken(this->picCount);
     this->tlmWrite_picsTaken(this->picCount);

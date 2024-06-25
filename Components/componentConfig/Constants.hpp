@@ -34,4 +34,6 @@
 
 #define VIRTUAL
 
+#define MAX_BACKGROUND_MESSAGES 15
+
 #endif

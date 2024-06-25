@@ -71,6 +71,13 @@ namespace Components {
           U32 cmdSeq //!< The command sequence number
       ) override;
 
+    PRIVATE:
+      // ----------------------------------------------------------------------
+      // Variables
+      // ----------------------------------------------------------------------
+      int iter;
+
+
   };
 
 }

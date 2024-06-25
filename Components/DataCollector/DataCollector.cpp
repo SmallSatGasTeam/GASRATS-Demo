@@ -6,6 +6,7 @@
 
 #include "Components/DataCollector/DataCollector.hpp"
 #include "FpConfig.hpp"
+#include "Components/componentConfig/Constants.hpp"
 
 namespace Components {
 
@@ -17,7 +18,7 @@ namespace Components {
     DataCollector(const char* const compName) :
       DataCollectorComponentBase(compName)
   {
-
+    this->iter = 0;
   }
 
   DataCollector ::
@@ -49,7 +50,10 @@ namespace Components {
         Fw::SerializeBufferBase& buffer
     )
   {
-    this->log_ACTIVITY_HI_dataSuccess();
+    if(iter < MAX_BACKGROUND_MESSAGES) {
+      this->log_ACTIVITY_HI_dataSuccess();
+      this->iter++;
+    }
   }
 
   // ----------------------------------------------------------------------

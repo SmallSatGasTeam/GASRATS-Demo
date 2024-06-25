@@ -188,10 +188,10 @@ namespace Components {
     sendTransmission_cmdHandler(
         FwOpcodeType opCode,
         U32 cmdSeq,
-        U32 duration
+        U32 data
     )
   {
-    this->sendTrans_out(0, duration);
+    this->sendTrans_out(0, data);
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 

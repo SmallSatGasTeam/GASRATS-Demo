@@ -39,9 +39,12 @@ namespace Components {
     // this will hold all the data from the imu, unfortuenately idk how to make an output port take in a Buffer type so it's just more fake data for now
     Fw::Buffer imuData;
 
-    // the number '0011110' is the slave address for the Magnetorqer registers
-    this->requestI2CData_out(0, 0011110, imuData); // this will update the buffer 'imuData' with the data from the slave device
-    this->collector_out(0, 1234); // this is supposted to output the buffer data but idk how to make an output with type 'Buffer'
+    #ifndef VIRTUAL
+      // the number '0011110' is the slave address for the Magnetorqer registers
+      this->requestI2CData_out(0, 0011110, imuData); // this will update the buffer 'imuData' with the data from the slave device
+      this->collector_out(0, 1234); // this is supposted to output the buffer data but idk how to make an output with type 'Buffer'
+    #endif
+
     this->log_ACTIVITY_HI_imuSuccess(); // this just announces that the data has been recieved 
     
     return value;

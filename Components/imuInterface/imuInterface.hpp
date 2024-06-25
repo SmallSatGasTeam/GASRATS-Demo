@@ -8,6 +8,7 @@
 #define Components_imuInterface_HPP
 
 #include "Components/imuInterface/imuInterfaceComponentAc.hpp"
+#include "Components/componentConfig/Constants.hpp"
 
 namespace Components {
 

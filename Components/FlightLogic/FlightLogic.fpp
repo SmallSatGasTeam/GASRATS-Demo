@@ -69,7 +69,7 @@ module Components {
 
         @ sendTransmission: commands system to transmit for x miliseconds
         async command sendTransmission (
-            duration: U32
+            data: U32
         ) \
             priority 75 drop
 
