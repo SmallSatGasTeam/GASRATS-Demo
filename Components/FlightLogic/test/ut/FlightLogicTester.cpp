@@ -34,12 +34,17 @@ namespace Components {
   // Tests
   // ----------------------------------------------------------------------
 
+  //! testTakePic
+  //!
+  //! Tests the takePic command
   void FlightLogicTester ::
     testTakePic()
   {
+    //Run the takePic command and dispatch it
     this->sendCmd_takePic(0,0);
     this->component.doDispatch();
 
+    //Check command response was received correctly
     ASSERT_CMD_RESPONSE_SIZE(1);
     ASSERT_CMD_RESPONSE(
       0,
@@ -49,12 +54,18 @@ namespace Components {
     );
   }
 
+  //! testResetFlags
+  //!
+  //! Tests the resetFlags command
   void FlightLogicTester ::
     testResetFlags() {
-      int iter = 0;
+      int iter = 0; //Used to measure the size of tlm history
+      
+      //Run resetFlags command
       this->sendCmd_resetFlags(0,0);
       iter++;
 
+      //Check command response
       ASSERT_CMD_RESPONSE_SIZE(1);
       ASSERT_CMD_RESPONSE(
         0,
@@ -63,16 +74,21 @@ namespace Components {
         Fw::CmdResponse::OK
       );
 
+      //Check that telemetry has been correctly reset
       ASSERT_TLM_SIZE(5);
-
       this->checkAllDefault(0);
 
+      //Run system until deployed to change tlm
       iter += this->runTillDeployed(iter, 2, false);
 
+      //Check tlm has been updated
       ASSERT_TLM_SIZE(5*iter);
       this->checkDeployed(iter-1);
 
+      //Reset tlm with command resetflags
       this->sendCmd_resetFlags(0,1);
+
+      //Check command response
       ASSERT_CMD_RESPONSE_SIZE(2);
       ASSERT_CMD_RESPONSE(
         1,
@@ -81,109 +97,180 @@ namespace Components {
         Fw::CmdResponse::OK
       );
       iter++;
+
+      //Check tlm was reset
       ASSERT_TLM_SIZE(5*iter);
       this->checkAllDefault(iter-1);
     }
 
-    void FlightLogicTester::testSendTransmission() {
-      this->sendCmd_sendTransmission(0,0,1);
-      this->component.doDispatch();
+  //! testSendTransmission
+  //!
+  //! Tests the sendTransmission command
+  void FlightLogicTester::testSendTransmission() {
+    //Send sendTransmission command
+    this->sendCmd_sendTransmission(0,0,1);
+    this->component.doDispatch();
 
-      ASSERT_CMD_RESPONSE_SIZE(1);
-      ASSERT_CMD_RESPONSE(
-        0,
-        Components::FlightLogic::OPCODE_SENDTRANSMISSION,
-        0,
-        Fw::CmdResponse::OK
-      );
-    }
+    //Check command response
+    ASSERT_CMD_RESPONSE_SIZE(1);
+    ASSERT_CMD_RESPONSE(
+      0,
+      Components::FlightLogic::OPCODE_SENDTRANSMISSION,
+      0,
+      Fw::CmdResponse::OK
+    );
+  }
 
-    void FlightLogicTester::testStartup() {
-      int iter = 0;
 
-      this->invoke_to_startup(0,0);
-      iter++;
+  //! testStartup
+  //!
+  //! Tests the startup port
+  //! This test covers the requirement of waiting 30 minutes before
+  //! deployment, immediately deploying the antenna, deploying the camera,
+  //! taking a picture, and triggering the INITIAL beacon on startup
+  void FlightLogicTester::testStartup() {
+    int iter = 0; //Used to track tlm history size
 
-      ASSERT_TLM_SIZE(5);
+    //run startup once
+    this->invoke_to_startup(0,0);
+    iter++;
 
-      this->checkDeployTlm(0);
+    //Check tlm
+    ASSERT_TLM_SIZE(5);
+    this->checkDeployTlm(0);
 
-      iter += this->runTillDeployed(iter,1, true);
+    //Run startup until deployment
+    iter += this->runTillDeployed(iter,1, true);
 
-      ASSERT_TLM_SIZE(5*(iter));
-      this->checkDeployed(iter-1);
+    //Check the tlm
+    ASSERT_TLM_SIZE(5*(iter));
+    this->checkDeployed(iter-1);
 
-    }
+  }
 
-    void FlightLogicTester::testDetumble() {
-      this->invoke_to_startup(0,0);
+  //! testDetumble
+  //!
+  //! Tests that the startup function will prompt the microcontroller to detumble
+  //!   if it hasn't detumbled yet
+  void FlightLogicTester::testDetumble() {
+    //Run startup port
+    this->invoke_to_startup(0,0);
 
-      ASSERT_TLM_detumbled_SIZE(1);
-      ASSERT_TLM_detumbled(0,true);
+    //Check if detumbled was triggered
+    ASSERT_TLM_detumbled_SIZE(1);
+    ASSERT_TLM_detumbled(0,true);
 
-      this->sendCmd_resetFlags(0,0);
+    //Reset flags to test again
+    this->sendCmd_resetFlags(0,0);
 
-      ASSERT_TLM_detumbled_SIZE(2);
-      ASSERT_TLM_detumbled(1,false);
+    //Check detumbled tlm was reset
+    ASSERT_TLM_detumbled_SIZE(2);
+    ASSERT_TLM_detumbled(1,false);
 
-      this->invoke_to_startup(0,1);
+    //Run startup
+    this->invoke_to_startup(0,1);
 
-      ASSERT_TLM_detumbled_SIZE(3);
-      ASSERT_TLM_detumbled(2,true);
-    }
+    //Check detumbled switched to true
+    ASSERT_TLM_detumbled_SIZE(3);
+    ASSERT_TLM_detumbled(2,true);
+  }
 
-    void FlightLogicTester::testLowPower() {
-      this->invoke_to_startup(0,0);
-      ASSERT_TLM_lowPower_SIZE(1);
-      ASSERT_TLM_lowPower(0,false);
+  //! testLowPower
+  //!
+  //! Tests that the startup function will throw the low power flag if EPS voltage
+  //!   or current drops below a certain point
+  void FlightLogicTester::testLowPower() {
+    //Check that lowPower was not triggered
+    this->invoke_to_startup(0,0);
+    ASSERT_TLM_lowPower_SIZE(1);
+    ASSERT_TLM_lowPower(0,false);
 
-      this->powerLow = true;
-      this->invoke_to_startup(0,1);
-      ASSERT_TLM_lowPower_SIZE(2);
-      ASSERT_TLM_lowPower(1,true);
-    }
+    //Have test EPSManager port return low power values
+    this->powerLow = true;
 
+    //Check that this triggers low power mode
+    this->invoke_to_startup(0,1);
+    ASSERT_TLM_lowPower_SIZE(2);
+    ASSERT_TLM_lowPower(1,true);
+  }
+
+  //! testAntennaFailure
+  //!
+  //! Tests that startup will throw a fatal error if the antenna fails to deploy
   void FlightLogicTester::testAntennaFailure(){
-    int size = 1;
+    int size = 1; //Used to track tlm history size
+
+    //Set test port to return antenna failure
     antennaFail = true;
+
+    //Check that antenna doesn't deploy
     size += runTillDeployed(0,1,false);
     ASSERT_TLM_antennaState_SIZE(size);
     ASSERT_TLM_antennaState(size-1,GASRATS::deployed::UNDEPLOYED);
     ASSERT_EVENTS_deployFailure_SIZE(1);
     
+    //Check for system failure
     size += runFor(STARTUP_MAX_ITER);
     ASSERT_EVENTS_rebooting_SIZE(1);
   }
 
+
+  //! testCameraFailure
+  //!
+  //! Tests that startup will throw a fatal error if the camera fails to deploy
   void FlightLogicTester::testCameraFailure(){
-    int size = 1;
+    int size = 1; //Tracks size of tlm history
+
+    //Set test port to report camera deployment failure
     cameraFail = true;
+
+    //Check that camera doesn't deploy
     size += runTillDeployed(0,1,false);
     ASSERT_TLM_cameraState_SIZE(size);
     ASSERT_TLM_cameraState(size-1,GASRATS::deployed::UNDEPLOYED);
     ASSERT_EVENTS_deployFailure_SIZE(1);
     
+    //Check that failed deployment causes system failure
     size += runFor(STARTUP_MAX_ITER);
     ASSERT_EVENTS_rebooting_SIZE(1);
   }
 
-  //!!! These two are acting weird
+  //! testHealthPing
+  //!
+  //! Tests that the component is pinging the health componenet
   void FlightLogicTester::testHealthPing() {
+    //Run pingIn input port
     this->invoke_to_pingIn(0,87);
     this->component.doDispatch();
-    ASSERT_from_pingOut_SIZE(0); //!!! You'd expect this to be 1 but it's not. That being said it's still printing so its running as we want
+
+    //Check output port runs
+    this->pushFromPortEntry_pingOut(87);
+    ASSERT_from_pingOut_SIZE(1); 
   }
 
+  //! testDataRequest
+  //!
+  //! Tests the dataRequest port
   void FlightLogicTester::testDataRequest() {
+    //Run dataRequest input port
     this->invoke_to_dataRequest(0,72);
-    ASSERT_from_fakeData_SIZE(0); //!!! This one is a problem child as well
+    //Check fakeData output port
+    this->pushFromPortEntry_fakeData(72);
+    ASSERT_from_fakeData_SIZE(1);
   }
 
+  //! testDataRequest
+  //!
+  //! Tests the recvTransmission port
   void FlightLogicTester::testRecvTransmission() {
+    //Check that recvTransmission returns the correct value
     ASSERT_EQ(43,this->invoke_to_recvTransmission(0,43));
   }
-
+  //! testSendBeaconState
+  //! 
+  //! Tests the sendBeaconState port
   void FlightLogicTester::testSendBeaconState() {
+    //Check sendBeaconState returns correct value
     ASSERT_EQ(GASRATS::beacon::INITIAL, this->invoke_to_sendBeaconState(0));
   }
 
@@ -210,10 +297,12 @@ namespace Components {
         F32& current
     )
   {
+    //If in low power mode send failing power values
     if(powerLow) {
       voltage = 1;
       current = .05;
     }
+    //Otherwise return normal values
     else {
       voltage = 5;
       current = 1;
@@ -236,7 +325,7 @@ namespace Components {
         U32 key
     )
   {
-    std::cout << "Key: " << key << std::endl;
+    //std::cout << "Key: " << key << std::endl;
     return;
   }
 
@@ -259,6 +348,10 @@ namespace Components {
   // Helper functions
   // ----------------------------
 
+  //! checkAllDefault
+  //!
+  //! Checks that all telemetry matches default values
+  //!   index: The index in the history to be checked
   void FlightLogicTester::checkAllDefault(int index) {
     ASSERT_TLM_antennaState_SIZE(index+1);
     ASSERT_TLM_antennaState(index,GASRATS::deployed::T::UNDEPLOYED);
@@ -276,6 +369,10 @@ namespace Components {
     ASSERT_TLM_antennaState(index,GASRATS::deployed::T::UNDEPLOYED);
   }
 
+  //! checkDeployTlm
+  //!
+  //! Checks that telemetry matches expected mid deploy values
+  //!   index: The index in the history to be checked
   void FlightLogicTester::checkDeployTlm(int index) {
     ASSERT_TLM_antennaState_SIZE(index+1);
     ASSERT_TLM_antennaState(index,GASRATS::deployed::T::UNDEPLOYED);
@@ -296,6 +393,10 @@ namespace Components {
     ASSERT_TLM_lowPower(index,false);
   }
 
+  //! checkDeployed
+  //!
+  //! Checks that telemetry matches expected post deploy values
+  //!   index: The index in the history to be checked
   void FlightLogicTester::checkDeployed(int index) {
     ASSERT_TLM_antennaState_SIZE(index+1);
     ASSERT_TLM_antennaState(index,GASRATS::deployed::T::DEPLOYED);
@@ -316,6 +417,12 @@ namespace Components {
     ASSERT_TLM_lowPower(index,false);
   }
 
+  //! runTillDeployed
+  //!
+  //! Runs startup until past iterations after deploy
+  //!   start: Current iteration of startup
+  //!   past: Number of iterations to continue past startup
+  //!   checks: flag to decide whether or not to run checks each iteration
   int FlightLogicTester::runTillDeployed(int start, int past, bool checks) {
     for(int i = start; i <= DEPLOY_WAIT_ITER+past; i++) {
       this->invoke_to_startup(0,i);
@@ -332,6 +439,10 @@ namespace Components {
     return DEPLOY_WAIT_ITER + past;
   }
 
+  //! runFor
+  //!
+  //! Runs startup for iter iterations
+  //!   iter: number of iterations to run startup
   int FlightLogicTester::runFor(int iter) {
     for(int i = 0; i < iter; i++) {
       this->invoke_to_startup(0,i);
