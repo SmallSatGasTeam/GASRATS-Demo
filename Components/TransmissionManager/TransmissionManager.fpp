@@ -4,27 +4,49 @@ module Components {
 
     active component TransmissionManager {
 
-        # One async command/port is required for active components
-        # This should be overridden by the developers with a useful command/port
-        @ TODO
-        async command TODO opcode 0
-
         ###############################################################################
         # Ports
         ###############################################################################
 
         @ This is synchronous because it can return a value if it has successfully received data
-        sync input port recvData: FL.data
-        output port sendData: FL.data
+        sync input port recvData: FL.serialData
+        output port sendData: FL.serialData
+
+        @ Can pull or set the beacon state
+        output port beaconState: FL.beaconState
 
 
         ###############################################################################
         # Events 
         ###############################################################################
 
+        @ Verifies data has been received
         event success(arg1: U32) \
             severity activity high \
-            format "We recieved the data: {}"
+            format "We recieved the data: {x}"
+
+        @ Verifies satellite is sending data
+        event sending(data: U32)\
+            severity activity high \
+            format "Sending {x}"
+
+        @ Announces beacon has been set to a specific state
+        event beaconSet(state: GASRATS.beacon) \
+            severity activity high \
+            format "Beacon has been set to {}"
+
+        ###############################################################################
+        # Commands 
+        ###############################################################################
+
+        @ Confirms connection with the ground
+        sync command confirmConnection
+
+        @ Command used to set the beacon to a specific state. Only use to set to INITIAL or STANDARD
+        async command setBeacon (state: GASRATS.beacon)
+
+        @ Sends data from the satellite to ground
+        async command sendTransToGround (data: U32)
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #

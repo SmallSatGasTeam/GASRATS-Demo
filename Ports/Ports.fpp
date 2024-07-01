@@ -11,7 +11,7 @@ module FL {
     @ Pings another component and returns a bool
     port getHealth () -> GASRATS.Health
     @ Gets state of the beacon
-    port beaconState () -> GASRATS.beacon
+    port beaconState (value: GASRATS.beacon) -> GASRATS.beacon
     @ Just to transmit dummy data
     port data (value: U32) -> U32
     @ For serialized inputs (can't return anything)

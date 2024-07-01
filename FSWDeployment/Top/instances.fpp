@@ -98,7 +98,9 @@ module FSWDeployment {
     priority 99
 
   instance transmissionManager: Components.TransmissionManager base id 0x1000 \
-    queue size Default.QUEUE_SIZE
+    queue size Default.QUEUE_SIZE \
+    stack size Default.STACK_SIZE \
+    priority 75
 
   instance dataCollector: Components.DataCollector base id 0x1100 \
     queue size Default.QUEUE_SIZE
@@ -107,6 +109,11 @@ module FSWDeployment {
     queue size Default.QUEUE_SIZE
 
   instance i2cDriver: Drv.LinuxI2cDriver base id 0x1300
+
+  instance dummyTranceiverDriver: Components.DummyTranceiverDriver base id 0x1400 \
+    queue size Default.QUEUE_SIZE \
+    stack size Default.STACK_SIZE \
+    priority 75
 
   # ----------------------------------------------------------------------
   # Queued component instances
@@ -120,7 +127,7 @@ module FSWDeployment {
   # ----------------------------------------------------------------------
 
   @ Communications driver. May be swapped with other com drivers like UART or TCP
-  instance comDriver: Drv.TcpClient base id 0x4000
+  instance comDriver: Drv.TcpServer base id 0x4000
 
   instance framer: Svc.Framer base id 0x4100
 

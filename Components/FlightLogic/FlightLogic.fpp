@@ -4,7 +4,7 @@ module Components {
     active component FlightLogic {
 
         #-----------------------------------------------------------------------
-        # FlightLogic Ports 
+        # FlightLogic Output Ports 
         #-----------------------------------------------------------------------
 
         @ deployAntenna: deploys the Antenna
@@ -19,14 +19,15 @@ module Components {
         @ takePic: pings the camera to take a picture
         output port takePic : FL.ping
 
-        @ sendTransmission: pings the transceiver to send a transmission
-        output port sendTrans : FL.data
-
         @ fakeData: just a stream of the same number being sent to the Data Collector
         output port fakeData: FL.serialData
 
-        @ recvTransmission: Flight Logic is pinged to know that a message has been received
-        sync input port recvTransmission: FL.data
+        @ pingOut : Returns health ping
+        output port pingOut: Svc.Ping
+
+        #-----------------------------------------------------------------------
+        # FlightLogic Input Ports 
+        #-----------------------------------------------------------------------
 
         @ startup: runs the startup code
         sync input port startup : Svc.Sched
@@ -37,14 +38,8 @@ module Components {
         @ dataRequest: receives a ping from the data collector to send out data
         sync input port dataRequest: FL.data
 
-        @ pingOut : Returns health ping
-        output port pingOut: Svc.Ping
-
-        @ sendBeaconState : returns the state of the beacon
-        sync input port sendBeaconState : FL.beaconState
-        # Note, currently this doesn't actually handle any of the data to send
-        # a transmission, we're probably just going to have the data collector
-        # send that data directly to the queue of the transmission handler
+        @ sendBeaconState : sets the beacon if prompted, then returns the state of the beacon
+        sync input port beaconState : FL.beaconState
 
         #-----------------------------------------------------------------------
         # Parameters
@@ -67,12 +62,6 @@ module Components {
         @ takePic: sends command to camera to take a picture
         async command takePic priority 50 drop
 
-        @ sendTransmission: commands system to transmit for x miliseconds
-        async command sendTransmission (
-            data: U32
-        ) \
-            priority 75 drop
-
         @ resetFlags: resets startup flags to original condition
         sync command resetFlags
 
@@ -80,9 +69,6 @@ module Components {
         #-----------------------------------------------------------------------
         # Events
         #-----------------------------------------------------------------------
-
-        # @ watchdog: denotes that the watchdog has been pinged
-        # event watchdog severity activity low format "Pinged watchdog"
 
         @ deployFailure : Warning a component failed to deploy
         event deployFailure(comp: string) \

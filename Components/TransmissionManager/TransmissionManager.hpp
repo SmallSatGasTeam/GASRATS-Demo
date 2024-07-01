@@ -38,7 +38,7 @@ namespace Components {
       //! Handler implementation for recvData
       //!
       //! This is synchronous because it can return a value if it has successfully received data
-      U32 recvData_handler(
+      void recvData_handler(
           NATIVE_INT_TYPE portNum, //!< The port number
           U32 value
       ) override;
@@ -49,12 +49,30 @@ namespace Components {
       // Handler implementations for commands
       // ----------------------------------------------------------------------
 
-      //! Handler implementation for command TODO
+      //! Handler implementation for command confirmConnection
       //!
-      //! TODO
-      void TODO_cmdHandler(
+      //! Confirms connection with the ground
+      void confirmConnection_cmdHandler(
           FwOpcodeType opCode, //!< The opcode
           U32 cmdSeq //!< The command sequence number
+      ) override;
+
+      //! Handler implementation for command setBeacon
+      //!
+      //! Command used to set the beacon to a specific state. Only use to set to INITIAL or STANDARD
+      void setBeacon_cmdHandler(
+          FwOpcodeType opCode, //!< The opcode
+          U32 cmdSeq, //!< The command sequence number
+          GASRATS::beacon state
+      ) override;
+
+      //! Handler implementation for command sendTransToGround
+      //!
+      //! Sends data from the satellite to ground
+      void sendTransToGround_cmdHandler(
+          FwOpcodeType opCode, //!< The opcode
+          U32 cmdSeq, //!< The command sequence number
+          U32 data
       ) override;
 
   };

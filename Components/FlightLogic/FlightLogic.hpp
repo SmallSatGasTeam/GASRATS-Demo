@@ -32,14 +32,6 @@ namespace Components {
 
     PRIVATE:
 
-      //! Handler implementation for recvTransmission
-      //!
-      //! recvTransmission: Flight Logic is pinged to know that a message has been received
-      U32 recvTransmission_handler(
-          NATIVE_INT_TYPE portNum, //!< The port number
-          U32 value
-      ) override;
-
       // ----------------------------------------------------------------------
       // Handler implementations for user-defined typed input ports
       // ----------------------------------------------------------------------
@@ -61,11 +53,12 @@ namespace Components {
           NATIVE_UINT_TYPE context //!< The call order
       ) override;
 
-      //! Handler implementation for sendBeaconState
+      //! Handler implementation for beaconState
       //!
-      //! sendBeaconState : returns the state of the beacon
-      GASRATS::beacon sendBeaconState_handler(
-          NATIVE_INT_TYPE portNum //!< The port number
+      //! beaconState : sets the beacon if prompted, then returns the state of the beacon
+      GASRATS::beacon beaconState_handler(
+          NATIVE_INT_TYPE portNum, //!< The port number
+          const GASRATS::beacon& value
       ) override;
 
       // ----------------------------------------------------------------------
@@ -92,15 +85,6 @@ namespace Components {
       void takePic_cmdHandler(
           FwOpcodeType opCode, //!< The opcode
           U32 cmdSeq //!< The command sequence number
-      ) override;
-
-      //! Handler implementation for command sendTransmission
-      //!
-      //! sendTransmission: commands system to transmit for x miliseconds
-      void sendTransmission_cmdHandler(
-          FwOpcodeType opCode, //!< The opcode
-          U32 cmdSeq, //!< The command sequence number
-          U32 duration
       ) override;
 
       //! Handler implementation for command resetFlags

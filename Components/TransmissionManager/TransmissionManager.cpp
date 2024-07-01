@@ -30,14 +30,14 @@ namespace Components {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
-  U32 TransmissionManager ::
+  void TransmissionManager ::
     recvData_handler(
         NATIVE_INT_TYPE portNum,
         U32 value
     )
   {
     this->log_ACTIVITY_HI_success(value);
-    return value;
+    return;
   }
 
   // ----------------------------------------------------------------------
@@ -45,12 +45,37 @@ namespace Components {
   // ----------------------------------------------------------------------
 
   void TransmissionManager ::
-    TODO_cmdHandler(
+    confirmConnection_cmdHandler(
         FwOpcodeType opCode,
         U32 cmdSeq
     )
   {
-    // TODO
+    this->beaconState_out(0,GASRATS::beacon::T::STANDARD);
+    this->log_ACTIVITY_HI_beaconSet(GASRATS::beacon::T::STANDARD);
+    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
+  }
+
+  void TransmissionManager ::
+    setBeacon_cmdHandler(
+        FwOpcodeType opCode,
+        U32 cmdSeq,
+        GASRATS::beacon state
+    )
+  {
+    this->beaconState_out(0,state);
+    this->log_ACTIVITY_HI_beaconSet(state);
+    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
+  }
+
+  void TransmissionManager ::
+    sendTransToGround_cmdHandler(
+        FwOpcodeType opCode,
+        U32 cmdSeq,
+        U32 data
+    )
+  {
+    this->sendData_out(0,data);
+    this->log_ACTIVITY_HI_sending(data);
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 

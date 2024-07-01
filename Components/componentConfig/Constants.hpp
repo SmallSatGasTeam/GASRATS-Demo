@@ -32,8 +32,6 @@
 //! The number of iterations the startup handler must run through to have waited the full wait time
 #define DEPLOY_WAIT_ITER 60*DEPLOY_WAIT_TIME
 
-#define VIRTUAL
-
 #define MAX_BACKGROUND_MESSAGES 15
 
 #endif

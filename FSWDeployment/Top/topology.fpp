@@ -49,6 +49,7 @@ module FSWDeployment {
     instance dataCollector
     instance imuInterface
     instance i2cDriver
+    instance dummyTranceiverDriver
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -147,11 +148,12 @@ module FSWDeployment {
       flightLogic.deployAntenna -> antennaDeploy.deploy
       flightLogic.deployCamera -> cameraManager.deploy
       flightLogic.takePic -> cameraManager.takePic
-      flightLogic.sendTrans -> transmissionManager.recvData
-      transmissionManager.sendData -> flightLogic.recvTransmission
       dataCollector.ping -> flightLogic.dataRequest
       flightLogic.fakeData -> dataCollector.aggregate
       flightLogic.epsHealth -> epsManager.returnHealth
+      transmissionManager.beaconState -> flightLogic.beaconState
+      transmissionManager.sendData -> dummyTranceiverDriver.sendTransToGround
+      dummyTranceiverDriver.recvTransFromGround -> transmissionManager.recvData
       imuInterface.collector -> dataCollector.aggregate
       imuInterface.requestI2CData -> i2cDriver.read
       dataCollector.ping -> imuInterface.dataRequest

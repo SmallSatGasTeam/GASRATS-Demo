@@ -5,6 +5,7 @@
 // ======================================================================
 
 #include "Components/FlightLogic/FlightLogic.hpp"
+#include <cstdlib>
 
 namespace Components {
 
@@ -38,14 +39,14 @@ namespace Components {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
-  U32 FlightLogic ::
-    recvTransmission_handler(
-        NATIVE_INT_TYPE portNum,
-        U32 value
-    )
-  {
-    return value;
-  }
+  // U32 FlightLogic ::
+  //   recvTransmission_handler(
+  //       NATIVE_INT_TYPE portNum,
+  //       U32 value
+  //   )
+  // {
+  //   return value;
+  // }
 
   U32 FlightLogic ::
     dataRequest_handler(
@@ -120,8 +121,7 @@ namespace Components {
         
           //If everything has been completed successfully
           if (antennaState == GASRATS::deployed::DEPLOYED && 
-          cameraState == GASRATS::deployed::DEPLOYED
-          && beaconState == GASRATS::beacon::STANDARD)
+          cameraState == GASRATS::deployed::DEPLOYED)
           this->failCount = 0;
           // Else keep trying startup for MAX_MIN_TILL_FAIL minutes
           else if(this->failCount < STARTUP_MAX_ITER) {
@@ -129,8 +129,10 @@ namespace Components {
           }
           //Else restart
           else {
+            #ifndef VIRTUAL
+              std::system("shutdown -r 1");
+            #endif
             this->log_FATAL_rebooting();
-            //system("shutdown -r now"); //!!! Uncomment this code if program is being run on a Pi, otherwise you probably don't want to reset your computer
           }
         }
         // Else increment
@@ -165,8 +167,14 @@ namespace Components {
   }
 
   GASRATS::beacon FlightLogic ::
-    sendBeaconState_handler(NATIVE_INT_TYPE portNum)
+    beaconState_handler(
+      NATIVE_INT_TYPE portNum,
+      const GASRATS::beacon& value
+    )
   {
+    if(value != GASRATS::beacon::RETURN_STATE) {
+      this->beaconState = value;
+    }
     return this->beaconState;
   }
 
@@ -181,17 +189,6 @@ namespace Components {
     )
   {
     this->takePic_out(0);
-    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
-  }
-
-  void FlightLogic ::
-    sendTransmission_cmdHandler(
-        FwOpcodeType opCode,
-        U32 cmdSeq,
-        U32 data
-    )
-  {
-    this->sendTrans_out(0, data);
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 

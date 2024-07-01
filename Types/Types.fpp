@@ -16,7 +16,9 @@ module GASRATS {
     }
 
     enum beacon {
+        RETURN_STATE
         INITIAL
         STANDARD
     }
+
 }
