@@ -8,6 +8,8 @@
 #define Components_TransmissionManager_HPP
 
 #include "Components/TransmissionManager/TransmissionManagerComponentAc.hpp"
+#include "Components/componentConfig/Constants.hpp"
+#include <cstdlib>
 
 namespace Components {
 
@@ -35,6 +37,14 @@ namespace Components {
       // Handler implementations for user-defined typed input ports
       // ----------------------------------------------------------------------
 
+      //! Handler implementation for beacon
+      //!
+      //! Port that calls the beacon
+      void beacon_handler(
+          NATIVE_INT_TYPE portNum, //!< The port number
+          NATIVE_UINT_TYPE context //!< The call order
+      ) override;
+      
       //! Handler implementation for recvData
       //!
       //! This is synchronous because it can return a value if it has successfully received data
@@ -74,6 +84,23 @@ namespace Components {
           U32 cmdSeq, //!< The command sequence number
           U32 data
       ) override;
+
+    private:
+
+      // ----------------------------------------------------------------------
+      // Class variables
+      // ----------------------------------------------------------------------
+
+      //! iter
+      //!
+      //! Counts iterations between beacons to help with beacon timing
+      U32 iter;
+
+      //! The Scotsman
+      //!
+      //! For some reason, it's in the FSW requirements to have the initial beacon
+      //! send the Scotsman. So here it is for easy use later.
+      Fw::String scotsman = "Show me a Scotsman, who doesn't love the thistle. Show me an Englishman, who doesn't love the rose. Show me a true-blooded Aggie from Utah, who doesn't love the spot . . . Where the sagebrush grows!";
 
   };
 

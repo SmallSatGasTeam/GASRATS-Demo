@@ -17,7 +17,7 @@ namespace Components {
     TransmissionManager(const char* const compName) :
       TransmissionManagerComponentBase(compName)
   {
-
+    this->iter = 0;
   }
 
   TransmissionManager ::
@@ -31,12 +31,41 @@ namespace Components {
   // ----------------------------------------------------------------------
 
   void TransmissionManager ::
+    beacon_handler(
+        NATIVE_INT_TYPE portNum,
+        NATIVE_UINT_TYPE context
+    )
+  {
+    if(this->iter >= BEACON_INTERVAL){
+      this->iter = 0;
+      //Send out either initial beacon or standard beacon
+      switch(this->beaconState_out(0,GASRATS::beacon::RETURN_STATE)) {
+        case GASRATS::beacon::INITIAL:
+          this->sendData_out(0,0x01);
+          break;
+
+        case GASRATS::beacon::STANDARD:
+          this->sendData_out(0,0xFFFFFFFF);
+          break;
+        
+        default:
+          this->log_WARNING_LO_invalidBeaconState();
+          this->beaconState_out(0,GASRATS::beacon::INITIAL);
+          break;
+      }
+    }
+    else {
+      iter++;
+    }
+  }
+
+  void TransmissionManager ::
     recvData_handler(
         NATIVE_INT_TYPE portNum,
         U32 value
     )
   {
-    this->log_ACTIVITY_HI_success(value);
+    this->log_ACTIVITY_LO_success(value);
     return;
   }
 
@@ -74,8 +103,8 @@ namespace Components {
         U32 data
     )
   {
-    this->sendData_out(0,data);
-    this->log_ACTIVITY_HI_sending(data);
+    //this->sendData_out(0,data);
+    this->log_ACTIVITY_LO_sending(data);
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 

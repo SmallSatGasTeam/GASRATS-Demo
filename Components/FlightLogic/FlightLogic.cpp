@@ -116,8 +116,6 @@ namespace Components {
               this->log_WARNING_HI_deployFailure("Camera");
             }
           }
-
-          this->beaconState = GASRATS::beacon::STANDARD; // !! This is temporary to allow the code to move on from the startup phase
         
           //If everything has been completed successfully
           if (antennaState == GASRATS::deployed::DEPLOYED && 

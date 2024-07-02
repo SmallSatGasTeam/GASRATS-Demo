@@ -8,14 +8,11 @@ Topology FSWDeployment.FSWDeployment:
   FSWDeployment.dataCollector.run
   FSWDeployment.deframer.framedPoll
   FSWDeployment.deframer.schedIn
-  FSWDeployment.dummyTranceiverDriver.recvTransFromGround
-  FSWDeployment.dummyTranceiverDriver.sendTransToGround
   FSWDeployment.fileDownlink.FileComplete
   FSWDeployment.fileDownlink.SendFile
   FSWDeployment.health.WdogStroke
   FSWDeployment.i2cDriver.write
   FSWDeployment.i2cDriver.writeRead
   FSWDeployment.tlmSend.TlmGet
-  FSWDeployment.transmissionManager.recvData
-  FSWDeployment.transmissionManager.sendData
+  FSWDeployment.transmissionManager.deallocating
 

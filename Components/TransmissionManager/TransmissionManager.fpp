@@ -11,9 +11,11 @@ module Components {
         @ This is synchronous because it can return a value if it has successfully received data
         sync input port recvData: FL.serialData
         output port sendData: FL.serialData
-
         @ Can pull or set the beacon state
         output port beaconState: FL.beaconState
+
+        @ Port that calls the beacon
+        sync input port beacon : Svc.Sched
 
 
         ###############################################################################
@@ -22,18 +24,22 @@ module Components {
 
         @ Verifies data has been received
         event success(arg1: U32) \
-            severity activity high \
+            severity activity low \
             format "We recieved the data: {x}"
 
         @ Verifies satellite is sending data
         event sending(data: U32)\
-            severity activity high \
+            severity activity low \
             format "Sending {x}"
 
         @ Announces beacon has been set to a specific state
         event beaconSet(state: GASRATS.beacon) \
             severity activity high \
             format "Beacon has been set to {}"
+
+        event invalidBeaconState \
+            severity warning low \
+            format "WARNING, beacon state invalid. Resetting state to INITIAL"
 
         ###############################################################################
         # Commands 

@@ -32,6 +32,18 @@
 //! The number of iterations the startup handler must run through to have waited the full wait time
 #define DEPLOY_WAIT_ITER 60*DEPLOY_WAIT_TIME
 
+//! MAX_BACKGROUND_MESSAGES
+//!
+//! The number of iterations any background events will run
 #define MAX_BACKGROUND_MESSAGES 15
+
+//! BEACON_MIN
+//!
+//! The number of minutes between each beacon
+#define BEACON_MIN .1
+
+#define BEACON_INTERVAL 60*BEACON_MIN
+
+#define VIRTUAL
 
 #endif

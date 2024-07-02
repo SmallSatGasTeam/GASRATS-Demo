@@ -30,6 +30,7 @@ namespace Components {
       ~DummyTranceiverDriver();
 
     PRIVATE:
+    
 
       // ----------------------------------------------------------------------
       // Handler implementations for user-defined typed input ports
@@ -38,7 +39,7 @@ namespace Components {
       //! Handler implementation for sendTransToGround
       void sendTransToGround_handler(
           NATIVE_INT_TYPE portNum, //!< The port number
-          U32 value
+          U32 value //!< The serialization buffer
       ) override;
 
     PRIVATE:
