@@ -17,12 +17,12 @@ export ARM_TOOLS_PATH=/opt/toolchains
 echo $ARM_TOOLS_PATH
 
 # generates the deployment
-# IMPORTANT: after generating, change 'instance comDriver' in FSWDeployment/Top/instances.fpp to be a TCPClient instead of TCPServer
+# IMPORTANT: after generating, change 'instance comDriver' in FSWDeployment/Top/instances.fpp to be a TCPClient instead of TCP 
 fprime-util generate arm-hf-linux
 fprime-util build arm-hf-linux -j $(nproc)
 
 # sends the deployment to pi1
-scp -r build-artifacts/arm-hf-linux/FSWDeployment gas@pi1.gas.usu.edu:deployment
+scp -r build-artifacts/arm-hf-linux/FSWDeployment gas@pi0.gas.usu.edu:deployment
 
 # starts the gds on this machine
-fprime-gds -n --dictionary build-artifacts/arm-hf-linux/FSWDeployment/dict/FSWDeploymentTopologyAppDictionary.xml --ip-client --ip-address pi1.gas.usu.edu
+fprime-gds -n --dictionary build-artifacts/arm-hf-linux/FSWDeployment/dict/FSWDeploymentTopologyAppDictionary.xml --ip-client --ip-address pi0.gas.usu.edu
