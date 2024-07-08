@@ -17,6 +17,7 @@ export ARM_TOOLS_PATH=/opt/toolchains
 echo $ARM_TOOLS_PATH
 
 # generates the deployment
+# IMPORTANT: after generating, change 'instance comDriver' in FSWDeployment/Top/instances.fpp to be a TCPClient instead of TCP 
 fprime-util generate arm-hf-linux
 fprime-util build arm-hf-linux -j $(nproc)
 

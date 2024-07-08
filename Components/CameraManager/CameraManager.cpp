@@ -55,12 +55,13 @@ namespace Components {
   void CameraManager ::
     takePic_handler(NATIVE_INT_TYPE portNum)
   {
+    this->picCount++;
+
     #ifndef VIRTUAL
-      std::string stillautocommand = "libcamera-still -r -e png -o /home/gas/photos/fprimeTest.jpg --autofocus-on-capture --hdr --rawfull --awb auto --denoise auto";
+      std::string stillautocommand = "libcamera-still -r -e png -o /home/gas/photos/fprimeTest" << std::to_string(this->picCount) << ".jpg --autofocus-on-capture --hdr --rawfull --awb auto --denoise auto";
       std::system(stillautocommand.c_str());
     #endif
 
-    this->picCount++;
     this->log_ACTIVITY_HI_picTaken(this->picCount);
     this->tlmWrite_picsTaken(this->picCount);
   }

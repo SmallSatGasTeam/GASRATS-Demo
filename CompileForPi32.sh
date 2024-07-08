@@ -1,8 +1,6 @@
 #!/bin/bash
 
 # generates the deployment
-fprime-util purge arm-hf-linux
-fprime-util generate arm-hf-linux
 fprime-util build arm-hf-linux -j $(nproc)
 
 # sends the deployment to pi1
