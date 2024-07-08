@@ -8,9 +8,12 @@ module Components {
         # Ports
         ###############################################################################
 
-        @ This is synchronous because it can return a value if it has successfully received data
-        sync input port recvData: FL.serialData
+        @ Port used to receive data from the ground
+        async input port recvData: FL.serialData
+
+        @ Port used to send data to the ground
         output port sendData: FL.serialData
+
         @ Can pull or set the beacon state
         output port beaconState: FL.beaconState
 
@@ -37,6 +40,7 @@ module Components {
             severity activity high \
             format "Beacon has been set to {}"
 
+        @ Warns the beacon has somehow entered an invalid state
         event invalidBeaconState \
             severity warning low \
             format "WARNING, beacon state invalid. Resetting state to INITIAL"

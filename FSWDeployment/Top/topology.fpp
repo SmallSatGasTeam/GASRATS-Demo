@@ -8,6 +8,7 @@ module FSWDeployment {
       rateGroup1
       rateGroup2
       rateGroup3
+      rateGroup4
     }
 
   topology FSWDeployment {
@@ -38,6 +39,7 @@ module FSWDeployment {
     instance rateGroup1
     instance rateGroup2
     instance rateGroup3
+    instance rateGroup4
     instance rateGroupDriver
     instance textLogger
     instance systemResources
@@ -109,7 +111,7 @@ module FSWDeployment {
       rateGroup1.RateGroupMemberOut[1] -> fileDownlink.Run
       rateGroup1.RateGroupMemberOut[2] -> systemResources.run
       rateGroup1.RateGroupMemberOut[3] -> flightLogic.startup
-      rateGroup1.RateGroupMemberOut[4] -> transmissionManager.beacon
+      # rateGroup1.RateGroupMemberOut[4] -> transmissionManager.beacon
 
       # Rate group 2
       rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup2] -> rateGroup2.CycleIn
@@ -120,6 +122,10 @@ module FSWDeployment {
       rateGroup3.RateGroupMemberOut[0] -> $health.Run
       rateGroup3.RateGroupMemberOut[1] -> blockDrv.Sched
       rateGroup3.RateGroupMemberOut[2] -> bufferManager.schedIn
+
+      # Rate group 4
+      rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup4] -> rateGroup4.CycleIn
+      rateGroup4.RateGroupMemberOut[0] -> transmissionManager.beacon
     }
 
     connections Sequencer {

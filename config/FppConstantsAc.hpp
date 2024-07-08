@@ -21,7 +21,7 @@ enum FppConstant_PassiveRateGroupOutputPorts {
 
 //! Used to drive rate groups
 enum FppConstant_RateGroupDriverRateGroupPorts {
-  RateGroupDriverRateGroupPorts = 3
+  RateGroupDriverRateGroupPorts = 4
 };
 
 //! Used for command and registration ports
