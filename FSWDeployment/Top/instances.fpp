@@ -33,6 +33,11 @@ module FSWDeployment {
     stack size Default.STACK_SIZE \
     priority 118
 
+  instance rateGroup4: Svc.ActiveRateGroup base id 0x1500 \
+    queue size Default.QUEUE_SIZE \
+    stack size Default.STACK_SIZE \
+    priority 117
+
   instance cmdDisp: Svc.CommandDispatcher base id 0x0500 \
     queue size 20 \
     stack size Default.STACK_SIZE \

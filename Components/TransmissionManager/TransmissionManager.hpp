@@ -47,7 +47,7 @@ namespace Components {
       
       //! Handler implementation for recvData
       //!
-      //! This is synchronous because it can return a value if it has successfully received data
+      //! Port used to receive data from the ground
       void recvData_handler(
           NATIVE_INT_TYPE portNum, //!< The port number
           U32 value
@@ -91,16 +91,11 @@ namespace Components {
       // Class variables
       // ----------------------------------------------------------------------
 
-      //! iter
-      //!
-      //! Counts iterations between beacons to help with beacon timing
-      U32 iter;
-
       //! The Scotsman
       //!
       //! For some reason, it's in the FSW requirements to have the initial beacon
       //! send the Scotsman. So here it is for easy use later.
-      Fw::String scotsman = "Show me a Scotsman, who doesn't love the thistle. Show me an Englishman, who doesn't love the rose. Show me a true-blooded Aggie from Utah, who doesn't love the spot . . . Where the sagebrush grows!";
+      // Fw::String scotsman = "Show me a Scotsman, who doesn't love the thistle. Show me an Englishman, who doesn't love the rose. Show me a true-blooded Aggie from Utah, who doesn't love the spot . . . Where the sagebrush grows!";
 
   };
 

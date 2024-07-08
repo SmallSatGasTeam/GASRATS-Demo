@@ -19,6 +19,8 @@ module GASRATS {
         RETURN_STATE
         INITIAL
         STANDARD
+        ERROR
+        OFF
     }
 
 }

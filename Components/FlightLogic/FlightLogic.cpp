@@ -20,7 +20,7 @@ namespace Components {
     //Assign initial values to component variables
     this->antennaState = GASRATS::deployed::UNDEPLOYED;
     this->cameraState = GASRATS::deployed::UNDEPLOYED;
-    this->beaconState = GASRATS::beacon::INITIAL;
+    this->beaconState = GASRATS::beacon::OFF;
     this->failCount = 0;
     this->epsCurrent = 1;
     this->epsVoltage = 5;
@@ -100,6 +100,9 @@ namespace Components {
             }
           }
 
+          //Turn on the initial beacon
+          this->beaconState = GASRATS::beacon::INITIAL;
+
           // Deploy camera
           if(cameraState == GASRATS::deployed::UNDEPLOYED) {
             if(deployCamera_out(0)) {
@@ -145,6 +148,7 @@ namespace Components {
     else {
       lowPower = true;
       detumbled = false;
+      this->beaconState = GASRATS::beacon::ERROR;
     }
 
     this->tlmWrite_antennaState(this->antennaState);
@@ -198,7 +202,7 @@ namespace Components {
   {
     this->antennaState = GASRATS::deployed::UNDEPLOYED;
     this->cameraState = GASRATS::deployed::UNDEPLOYED;
-    this->beaconState = GASRATS::beacon::INITIAL;
+    this->beaconState = GASRATS::beacon::OFF;
     this->failCount = 0;
     this->epsCurrent = 1;
     this->epsVoltage = 5;

@@ -14,5 +14,4 @@ Topology FSWDeployment.FSWDeployment:
   FSWDeployment.i2cDriver.write
   FSWDeployment.i2cDriver.writeRead
   FSWDeployment.tlmSend.TlmGet
-  FSWDeployment.transmissionManager.deallocating
 
