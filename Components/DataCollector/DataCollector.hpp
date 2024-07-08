@@ -35,6 +35,14 @@ namespace Components {
       // Handler implementations for user-defined typed input ports
       // ----------------------------------------------------------------------
 
+      //! Handler implementation for imuIncoming
+      //!
+      //! Reciving buffer data
+      void imuIncoming_handler(
+          NATIVE_INT_TYPE portNum, //!< The port number
+          Fw::Buffer& fwBuffer //!< The buffer
+      ) override;
+
       //! Handler implementation for run
       //!
       //! Receiving calls from the rate group

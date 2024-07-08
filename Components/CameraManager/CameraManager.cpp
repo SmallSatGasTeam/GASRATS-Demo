@@ -58,7 +58,7 @@ namespace Components {
     this->picCount++;
 
     #ifndef VIRTUAL
-      std::string stillautocommand = "libcamera-still -r -e png -o /home/gas/photos/fprimeTest" << std::to_string(this->picCount) << ".jpg --autofocus-on-capture --hdr --rawfull --awb auto --denoise auto";
+      std::string stillautocommand = "libcamera-still -r -e png -o /home/gas/photos/fprimeTest" + std::to_string(this->picCount) + ".jpg --autofocus-on-capture --hdr --rawfull --awb auto --denoise auto";
       std::system(stillautocommand.c_str());
     #endif
 
