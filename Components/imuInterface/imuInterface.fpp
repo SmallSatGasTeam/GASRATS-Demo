@@ -11,11 +11,14 @@ module Components {
         # Ports
         ###############################################################################
 
-        @ dataRequest: receives a ping from the data collector to send out data
-        sync input port dataRequest: FL.data
+        @ collectorRequest: receives a ping from the data collector to send out data
+        sync input port collectorRequest: FL.data
 
         @ output data for the data collector
         output port collector: FL.serialData
+
+        @ other way to output data for the data collector
+        output port gyroData: Fw.BufferSend
 
         @ Gets the data from the I2C device through pass by refrence
         output port requestI2CData: Drv.I2c
@@ -27,6 +30,10 @@ module Components {
         event imuSuccess \
             severity activity high \
             format "The IMU sent the data"
+        
+        event imuFailure \
+            severity warning high \
+            format "The IMU didn't connect"
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #

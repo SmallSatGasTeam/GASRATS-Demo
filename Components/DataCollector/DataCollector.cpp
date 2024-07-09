@@ -7,6 +7,8 @@
 #include "Components/DataCollector/DataCollector.hpp"
 #include "FpConfig.hpp"
 #include "Components/componentConfig/Constants.hpp"
+#include <iostream>
+
 
 namespace Components {
 
@@ -30,6 +32,18 @@ namespace Components {
   // ----------------------------------------------------------------------
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
+
+  void DataCollector ::
+    imuIncoming_handler(
+        NATIVE_INT_TYPE portNum,
+        Fw::Buffer& fwBuffer
+    )
+  {
+    U32 my_data = 0;
+    U8*  my_byte = fwBuffer.getData();
+    std::cout << my_byte << std::endl;
+    this->log_ACTIVITY_HI_dataSuccess();
+  }
 
   void DataCollector ::
     run_handler(

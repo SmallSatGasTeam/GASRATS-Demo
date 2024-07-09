@@ -17,6 +17,9 @@ module Components {
         @ Recieving data from multiple channels
         sync input port aggregate: serial
 
+        @ Reciving buffer data
+        sync input port imuIncoming: Fw.BufferSend
+
         @ Port meant for pinging all connected ports for their data
         output port ping: [2] FL.data
 

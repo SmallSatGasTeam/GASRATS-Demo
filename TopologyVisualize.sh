@@ -1,4 +1,5 @@
 #!/bin/bash
+rm -rf visualize
 mkdir visualize
 mkdir visualize/converted-txt
 mkdir visualize/converted-json
