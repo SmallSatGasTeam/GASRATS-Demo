@@ -38,14 +38,6 @@ namespace Components {
       // Handler implementations for user-defined typed input ports
       // ----------------------------------------------------------------------
 
-      //! Handler implementation for dataRequest
-      //!
-      //! dataRequest: receives a ping from the data collector to send out data
-      U32 dataRequest_handler(
-          NATIVE_INT_TYPE portNum, //!< The port number
-          U32 value
-      ) override;
-
       //! Handler implementation for startup
       //!
       //! recvTransmission: Flight Logic is pinged to know that a message has been received

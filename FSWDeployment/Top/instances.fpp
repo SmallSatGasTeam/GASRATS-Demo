@@ -107,14 +107,6 @@ module FSWDeployment {
     stack size Default.STACK_SIZE \
     priority 75
 
-  instance dataCollector: Components.DataCollector base id 0x1100 \
-    queue size Default.QUEUE_SIZE
-
-  instance imuInterface: Components.imuInterface base id 0x1200 \
-    queue size Default.QUEUE_SIZE
-
-  instance i2cDriver: Drv.LinuxI2cDriver base id 0x1300
-
   instance dummyTranceiverDriver: Components.DummyTranceiverDriver base id 0x1400 \
     queue size Default.QUEUE_SIZE \
     stack size Default.STACK_SIZE \

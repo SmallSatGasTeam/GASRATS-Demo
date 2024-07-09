@@ -39,25 +39,6 @@ namespace Components {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
-  // U32 FlightLogic ::
-  //   recvTransmission_handler(
-  //       NATIVE_INT_TYPE portNum,
-  //       U32 value
-  //   )
-  // {
-  //   return value;
-  // }
-
-  U32 FlightLogic ::
-    dataRequest_handler(
-        NATIVE_INT_TYPE portNum,
-        U32 value
-    )
-  {
-    this->fakeData_out(0, 122333);
-    return value;
-  }
-
   void FlightLogic ::
     startup_handler(
         NATIVE_INT_TYPE portNum,
@@ -69,8 +50,6 @@ namespace Components {
 
     // Perform hardware checks
     this->epsHealth_out(0,epsVoltage, epsCurrent);
-
-    this->fakeData_out(0, 12345);
 
     //If battery is within okay conditions
     if(epsCurrent > CURRENT_MIN && epsVoltage > VOLTAGE_MIN) {

@@ -19,9 +19,6 @@ module Components {
         @ takePic: pings the camera to take a picture
         output port takePic : FL.ping
 
-        @ fakeData: just a stream of the same number being sent to the Data Collector
-        output port fakeData: FL.serialData
-
         @ pingOut : Returns health ping
         output port pingOut: Svc.Ping
 
@@ -35,25 +32,8 @@ module Components {
         @ pingIn : receives health pings
         async input port pingIn: Svc.Ping
 
-        @ dataRequest: receives a ping from the data collector to send out data
-        sync input port dataRequest: FL.data
-
         @ sendBeaconState : sets the beacon if prompted, then returns the state of the beacon
         sync input port beaconState : FL.beaconState
-
-        #-----------------------------------------------------------------------
-        # Parameters
-        #-----------------------------------------------------------------------
-
-        # @ antennaDeployed: Startup flag indicating successful deployment of antenna
-        # param antennaDeployed: bool default false
-
-        # @ initialCompleted: Startup flag indicating successful initial beacon
-        # param initialCompleted: bool default false
-
-        # @ collectData: Parameter indicating whether or not data should be collected
-        # param collectData: bool default true
-
 
         #-----------------------------------------------------------------------
         # Commands
