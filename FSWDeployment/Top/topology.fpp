@@ -111,6 +111,7 @@ module FSWDeployment {
       rateGroup1.RateGroupMemberOut[1] -> fileDownlink.Run
       rateGroup1.RateGroupMemberOut[2] -> systemResources.run
       rateGroup1.RateGroupMemberOut[3] -> flightLogic.startup
+      rateGroup1.RateGroupMemberOut[4] -> dataCollector.run
       # rateGroup1.RateGroupMemberOut[4] -> transmissionManager.beacon
 
       # Rate group 2
@@ -126,7 +127,6 @@ module FSWDeployment {
       # Rate group 4
       rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup4] -> rateGroup4.CycleIn
       rateGroup4.RateGroupMemberOut[0] -> transmissionManager.beacon
-      rateGroup4.RateGroupMemberOut[1] -> dataCollector.run
     }
 
     connections Sequencer {

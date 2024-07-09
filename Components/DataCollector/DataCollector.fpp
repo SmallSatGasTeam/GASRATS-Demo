@@ -1,5 +1,5 @@
 module Components {
-    @ This component will periodically ping for data from all other components, and aggregate and save the data.
+    @ This component will periodically ping for data from all other components, and aggregate and save the data.    
     active component DataCollector {
 
         # One async command/port is required for active components
@@ -30,6 +30,10 @@ module Components {
         event dataSuccess \
             severity activity high \
             format "The data collector has recieved the data!"
+
+        event dataOut \
+            severity activity high \
+            format "The imu gave us DATA!"
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #

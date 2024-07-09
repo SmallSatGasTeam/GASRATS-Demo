@@ -12,7 +12,7 @@ module Components {
         ###############################################################################
 
         @ collectorRequest: receives a ping from the data collector to send out data
-        sync input port collectorRequest: FL.data
+        sync input port dataRequest: FL.data
 
         @ output data for the data collector
         output port collector: FL.serialData
@@ -31,9 +31,25 @@ module Components {
             severity activity high \
             format "The IMU sent the data"
         
-        event imuFailure \
+        event imuAddressFailure \
             severity warning high \
-            format "The IMU didn't connect"
+            format "Invalid Address"
+
+        event imuWriteError \
+            severity warning high \
+            format "Write Failed"
+
+        event imuReadError \
+            severity warning high \
+            format "Read Failed"
+
+        event imuOpenError \
+            severity warning high \
+            format "Failed to open device"
+        
+        event imuOtherError \
+            severity warning high \
+            format "Other"
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
