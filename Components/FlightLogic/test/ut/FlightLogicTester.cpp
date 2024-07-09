@@ -103,25 +103,6 @@ namespace Components {
       this->checkAllDefault(iter-1);
     }
 
-  //! testSendTransmission
-  //!
-  //! Tests the sendTransmission command
-  void FlightLogicTester::testSendTransmission() {
-    //Send sendTransmission command
-    this->sendCmd_sendTransmission(0,0,1);
-    this->component.doDispatch();
-
-    //Check command response
-    ASSERT_CMD_RESPONSE_SIZE(1);
-    ASSERT_CMD_RESPONSE(
-      0,
-      Components::FlightLogic::OPCODE_SENDTRANSMISSION,
-      0,
-      Fw::CmdResponse::OK
-    );
-  }
-
-
   //! testStartup
   //!
   //! Tests the startup port
@@ -259,19 +240,49 @@ namespace Components {
     ASSERT_from_fakeData_SIZE(1);
   }
 
-  //! testDataRequest
-  //!
-  //! Tests the recvTransmission port
-  void FlightLogicTester::testRecvTransmission() {
-    //Check that recvTransmission returns the correct value
-    ASSERT_EQ(43,this->invoke_to_recvTransmission(0,43));
-  }
   //! testSendBeaconState
   //! 
   //! Tests the sendBeaconState port
-  void FlightLogicTester::testSendBeaconState() {
+  void FlightLogicTester::testBeaconState() {
     //Check sendBeaconState returns correct value
-    ASSERT_EQ(GASRATS::beacon::INITIAL, this->invoke_to_sendBeaconState(0));
+    ASSERT_EQ(GASRATS::beacon::OFF, this->invoke_to_beaconState(0,GASRATS::beacon::RETURN_STATE));
+    this->invoke_to_startup(0,0);
+    ASSERT_TLM_beaconState_SIZE(1);
+    ASSERT_TLM_beaconState(0, GASRATS::beacon::OFF);
+
+    ASSERT_EQ(GASRATS::beacon::INITIAL, this->invoke_to_beaconState(0,GASRATS::beacon::INITIAL));
+    this->invoke_to_startup(0,0);
+    ASSERT_TLM_beaconState_SIZE(2);
+    ASSERT_TLM_beaconState(1, GASRATS::beacon::INITIAL);
+
+    ASSERT_EQ(GASRATS::beacon::STANDARD, this->invoke_to_beaconState(0,GASRATS::beacon::STANDARD));
+    this->invoke_to_startup(0,0);
+    ASSERT_TLM_beaconState_SIZE(3);
+    ASSERT_TLM_beaconState(2, GASRATS::beacon::STANDARD);
+
+    ASSERT_EQ(GASRATS::beacon::ERROR, this->invoke_to_beaconState(0,GASRATS::beacon::ERROR));
+    this->invoke_to_startup(0,0);
+    ASSERT_TLM_beaconState_SIZE(4);
+    ASSERT_TLM_beaconState(3, GASRATS::beacon::ERROR);
+  }
+
+  //! testBeacon
+  //! 
+  //! Tests the beacon is off until after the delay. Then checks that beacon is INITIAL until
+  //! confirmConnection makes it STANDARD
+  void FlightLogicTester::testBeacon(){
+    U32 hist = 1;
+
+    hist += this->runTillDeployed(0, 5, false);
+    ASSERT_TLM_beaconState_SIZE(hist);
+    ASSERT_TLM_beaconState(hist-1, GASRATS::beacon::INITIAL);
+
+    this->invoke_to_beaconState(0, GASRATS::beacon::STANDARD);
+    this->invoke_to_startup(0,0);
+    hist++;
+    ASSERT_TLM_beaconState_SIZE(hist);
+    ASSERT_TLM_beaconState(hist-1, GASRATS::beacon::STANDARD);
+
   }
 
   // ----------------------------------------------------------------------
@@ -357,7 +368,7 @@ namespace Components {
     ASSERT_TLM_antennaState(index,GASRATS::deployed::T::UNDEPLOYED);
 
     ASSERT_TLM_beaconState_SIZE(index+1);
-    ASSERT_TLM_beaconState(index,GASRATS::beacon::T::INITIAL);
+    ASSERT_TLM_beaconState(index,GASRATS::beacon::T::OFF);
     
     ASSERT_TLM_cameraState_SIZE(index+1);
     ASSERT_TLM_cameraState(index,GASRATS::deployed::T::UNDEPLOYED);
@@ -378,7 +389,7 @@ namespace Components {
     ASSERT_TLM_antennaState(index,GASRATS::deployed::T::UNDEPLOYED);
 
     ASSERT_TLM_beaconState_SIZE(index+1);
-    ASSERT_TLM_beaconState(index,GASRATS::beacon::T::INITIAL);
+    ASSERT_TLM_beaconState(index,GASRATS::beacon::T::OFF);
     
     ASSERT_TLM_cameraState_SIZE(index+1);
     ASSERT_TLM_cameraState(index,GASRATS::deployed::T::UNDEPLOYED);
@@ -402,7 +413,7 @@ namespace Components {
     ASSERT_TLM_antennaState(index,GASRATS::deployed::T::DEPLOYED);
 
     ASSERT_TLM_beaconState_SIZE(index+1);
-    ASSERT_TLM_beaconState(index,GASRATS::beacon::T::STANDARD);
+    ASSERT_TLM_beaconState(index,GASRATS::beacon::T::INITIAL);
     
     ASSERT_TLM_cameraState_SIZE(index+1);
     ASSERT_TLM_cameraState(index,GASRATS::deployed::T::DEPLOYED);

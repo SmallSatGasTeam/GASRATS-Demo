@@ -25,8 +25,8 @@ namespace Components {
     this->epsCurrent = 1;
     this->epsVoltage = 5;
     this->lowPower = true;
-    this->waitCount = 0;
     this->detumbled = false;
+    this->bootTime = std::chrono::system_clock::now();
   }
 
   FlightLogic ::
@@ -65,6 +65,7 @@ namespace Components {
     )
   {
     //this->log_WARNING_LO_runningStartup(this->waitCount); //For debugging
+    std::chrono::duration<int,std::ratio<1>> waitTime(static_cast<int>(DEPLOY_WAIT_ITER));
 
     // Perform hardware checks
     this->epsHealth_out(0,epsVoltage, epsCurrent);
@@ -84,7 +85,7 @@ namespace Components {
       cameraState == GASRATS::deployed::UNDEPLOYED
       || beaconState == GASRATS::beacon::INITIAL) {
         // If we've waited an adequate amount of time
-        if(waitCount > DEPLOY_WAIT_ITER) {
+        if(std::chrono::system_clock::now() >= (this->bootTime + waitTime)) {
           // deploy antenna
           if(antennaState == GASRATS::deployed::UNDEPLOYED) {
             if(deployAntenna_out(0)) {
@@ -136,10 +137,7 @@ namespace Components {
             this->log_FATAL_rebooting();
           }
         }
-        // Else increment
-        else {
-          this->waitCount++;
-        }
+        // Else do nothing and try again next iteration
       }
       //Else startup flags are good
       //Await commands (AKA, leave this thread and move on)
@@ -207,7 +205,6 @@ namespace Components {
     this->epsCurrent = 1;
     this->epsVoltage = 5;
     this->lowPower = true;
-    this->waitCount = 0;
     this->detumbled = false;
     this->tlmWrite_antennaState(this->antennaState);
     this->tlmWrite_cameraState(this->cameraState);

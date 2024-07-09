@@ -60,11 +60,6 @@ namespace Components {
       //! Tests the resetFlags command
       void testResetFlags();
 
-      //! testSendTransmission
-      //!
-      //! Tests the sendTransmission command
-      void testSendTransmission();
-
       //! testStartup
       //!
       //! Tests the startup port
@@ -105,15 +100,16 @@ namespace Components {
       //! Tests the dataRequest port
       void testDataRequest();
 
-      //! testDataRequest
-      //!
-      //! Tests the recvTransmission port
-      void testRecvTransmission();
-
       //! testSendBeaconState
       //!
       //! Tests the sendBeaconState port
-      void testSendBeaconState();
+      void testBeaconState();
+
+      //! testBeacon
+      //! 
+      //! Tests the beacon is off until after the delay. Then checks that beacon is INITIAL until
+      //! confirmConnection makes it STANDARD
+      void testBeacon();
 
     private:
 

@@ -164,7 +164,7 @@ module FSWDeployment {
       imuInterface.collector -> dataCollector.aggregate
       imuInterface.requestI2CData -> i2cDriver.read
       dataCollector.ping[0] -> flightLogic.dataRequest
-      dataCollector.ping[1] -> imuInterface.dataRequest
+      dataCollector.ping[1] -> imuInterface.collectorRequest
       imuInterface.gyroData -> dataCollector.imuIncoming
     }
 
