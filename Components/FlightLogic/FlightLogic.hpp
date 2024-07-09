@@ -9,6 +9,8 @@
 
 #include "Components/FlightLogic/FlightLogicComponentAc.hpp"
 #include "Components/componentConfig/Constants.hpp"
+#include <chrono>
+#include <ratio>
 
 namespace Components {
 
@@ -121,8 +123,6 @@ namespace Components {
       //! U16
       U16 failCount;
 
-      U16 waitCount;
-
       //! Private variable storing epsVoltage
       //!
       //! F32, is passed by reference to epsHealthManager
@@ -133,7 +133,16 @@ namespace Components {
       //! F32, is passed by reference to epsCurrent
       F32 epsCurrent;
 
+      //! Private variable storing detumble state
+      //!
+      //! bool, true when satellite has been detumbled
       bool detumbled;
+
+      //! Private variable storing boot time
+      //!
+      //! time_point, set on construction of the Flight Logic component
+      //! holds the time the system was last booted.
+      std::chrono::system_clock::time_point bootTime;
   };
 
 }
