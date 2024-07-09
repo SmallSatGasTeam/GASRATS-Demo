@@ -16,11 +16,6 @@ TEST(Nominal, testResetFlags) {
   tester.testResetFlags();
 }
 
-TEST(Nominal, testSendTransmission) {
-  Components::FlightLogicTester tester;
-  tester.testSendTransmission();
-}
-
 TEST(Nominal, testDetumble) {
   Components::FlightLogicTester tester;
   tester.testDetumble();
@@ -56,14 +51,14 @@ TEST(Nominal, testDataRequest) {
   tester.testDataRequest();
 }
 
-TEST(Nominal, testRecvTransmission) {
+TEST(Nominal, testBeacon) {
   Components::FlightLogicTester tester;
-  tester.testRecvTransmission();
+  tester.testBeacon();
 }
 
-TEST(Nominal, testSendBeaconState) {
+TEST(Nominal, testBeaconState) {
   Components::FlightLogicTester tester;
-  tester.testSendBeaconState();
+  tester.testBeaconState();
 }
 
 int main(int argc, char** argv) {

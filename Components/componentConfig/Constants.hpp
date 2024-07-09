@@ -44,6 +44,6 @@
 
 #define BEACON_INTERVAL 60*BEACON_MIN
 
-// #define VIRTUAL
+#define VIRTUAL
 
 #endif
