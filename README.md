@@ -32,9 +32,14 @@ To run this code on a pi, comment out VIRTUAL in the [config file](./Components/
 
 Generate and build the program using arm-hf-linux cross-compiler and upload the executable file to a pi of your choice. (GAS pi 0 is best if you have access to it.) After the executable is uploaded, find it on the pi and run it using `sudo ./FSWDeployment -a 0.0.0.0 -p 50000`. Finally, on your own computer run `fprime-gds -n --dictionary build-artifacts/arm-hf-linux/FSWDeployment/dict/FSWDeploymentTopologyAppDictionary.xml --ip-client --ip-address <address of your pi>`.
 
-Alternatively, the FirstTimeCompile32.sh will install the build tools for the cross-compiler and then automatically generate, build, and upload the executable to pi0.
+Alternatively, the [FirstTimeCompile32.sh](./FirstTimeCompile32.sh) will install the build tools for the cross-compiler and then automatically generate, build, and upload the executable to pi0.
 
-If you already have the arm-hf-linux, generate for arm-hf-linux and then run CompileForPi32.sh to automatically build the project, upload it to pi0, and start the gds.
+If you already have the arm-hf-linux, generate for arm-hf-linux and then run [CompileForPi32.sh](./CompileForPi32.sh) to automatically build the project, upload it to pi0, and start the gds.
 
 Both scripts still require manually running the executable file on the pi.
+
+
+## Component Connection Diagram
+
+![FSWDeployment Diagram](./FSWDeployment%20Visualization.png)
 
