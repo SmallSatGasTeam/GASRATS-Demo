@@ -58,6 +58,32 @@ namespace Components {
           U32 cmdSeq //!< The command sequence number
       ) override;
 
+    PRIVATE:
+
+      // ----------------------------------------------------------------------
+      // Helper Functions
+      // ----------------------------------------------------------------------
+
+      //! checkStatus
+      //!
+      //! Calls an event based on the status returned from the read/write operation
+      void checkStatus(Drv::I2cStatus status);
+
+    PRIVATE:
+
+      // ----------------------------------------------------------------------
+      // Helper Variables
+      // ----------------------------------------------------------------------
+      const I8 ADDRESS = 0x6B;
+      const I8 CTRL1 = 0x20;
+      const I8 CTRL4 = 0x23;
+      const I8 X_L = 0x28;
+      const I8 X_H = 0x29;
+      const I8 Y_L = 0x2A;
+      const I8 Y_H = 0x2B;
+      const I8 Z_L = 0x2C;
+      const I8 Z_H = 0x2D;
+
   };
 
 }

@@ -23,6 +23,9 @@ module Components {
         @ Gets the data from the I2C device through pass by refrence
         output port requestI2CData: Drv.I2c
 
+        @ Writes I2CData: Drv.I2c
+        output port i2cWrite: Drv.I2c
+
         ###############################################################################
         # Events 
         ###############################################################################

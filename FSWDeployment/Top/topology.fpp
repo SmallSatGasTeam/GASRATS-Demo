@@ -163,6 +163,7 @@ module FSWDeployment {
       dummyTranceiverDriver.recvTransFromGround -> transmissionManager.recvData
       imuInterface.collector -> dataCollector.aggregate
       imuInterface.requestI2CData -> i2cDriver.read
+      imuInterface.i2cWrite -> i2cDriver.write
       dataCollector.ping[0] -> flightLogic.dataRequest
       dataCollector.ping[1] -> imuInterface.dataRequest
       imuInterface.gyroData -> dataCollector.imuIncoming

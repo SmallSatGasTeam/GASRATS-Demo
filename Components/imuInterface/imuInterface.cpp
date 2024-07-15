@@ -38,15 +38,7 @@ namespace Components {
         U32 value
     )
   {
-    Drv::I2cStatus i2cStatus;
-
     #ifndef VIRTUAL
-      // you have to specify the device you're using by giving it to a LinuxI2cDriver instance
-      // const char* device = "/dev/i2c-1";
-      // Drv::LinuxI2cDriver i2cDriver("IMU I2C Driver");
-      // if (!i2cDriver.open(device)) {
-      //   this->log_WARNING_HI_imuOpenError();
-      // }
       const U32 needed_size = 1024;
       Fw::Buffer imuData = this->allocate_out(0, needed_size);
 
@@ -56,34 +48,11 @@ namespace Components {
       }
 
       // then you just have to give the i2c driver the slave address and a buffer that it'll put data into
-      U32 slave = 0x6B;
-      i2cStatus = this->requestI2CData_out(0, slave, imuData); // this will update the buffer 'imuData' with the data from the slave device
+      // this->checkStatus(this->requestI2CData_out(0, this->X_L, imuData)); // this will update the buffer 'imuData' with the data from the slave device
+      // this->checkStatus(this->requestI2CData_out(0, this->X_H, imuData));
+
+      this->checkStatus(this->requestI2CData_out(0,ADDRESS,imuData));
       // this->collector_out(0, 1234); // just a way to test if we're connected to the dataCollector
-
-
-      if (i2cStatus == Drv::I2cStatus::I2C_OK) {
-      this->log_ACTIVITY_HI_imuSuccess(); // this just announces that the data has been recieved 
-      } 
-
-      if (i2cStatus == Drv::I2cStatus::I2C_ADDRESS_ERR) {
-        this->log_WARNING_HI_imuAddressFailure();
-      } 
-
-      if (i2cStatus == Drv::I2cStatus::I2C_WRITE_ERR) {
-        this->log_WARNING_HI_imuWriteError();
-      } 
-
-      if (i2cStatus == Drv::I2cStatus::I2C_READ_ERR) {
-        this->log_WARNING_HI_imuReadError();
-      } 
-
-      if (i2cStatus == Drv::I2cStatus::I2C_OPEN_ERR) {
-        this->log_WARNING_HI_imuOpenError();
-      } 
-      
-      if (i2cStatus == Drv::I2cStatus::I2C_OTHER_ERR) {
-        this->log_WARNING_HI_imuOtherError();
-      } 
 
       this->gyroData_out(0, imuData);
 
@@ -106,6 +75,41 @@ namespace Components {
   {
     // TODO
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
+  }
+
+  // ----------------------------------------------------------------------
+  // Helper Functions
+  // ----------------------------------------------------------------------
+
+  void imuInterface::checkStatus(Drv::I2cStatus i2cStatus) {
+    switch (i2cStatus) {
+      case Drv::I2cStatus::I2C_OK:
+        this->log_ACTIVITY_HI_imuSuccess();
+        break;
+
+      case Drv::I2cStatus::I2C_ADDRESS_ERR:
+        this->log_WARNING_HI_imuAddressFailure();
+        break;
+
+      case Drv::I2cStatus::I2C_WRITE_ERR:
+        this->log_WARNING_HI_imuWriteError();
+        break;
+
+      case Drv::I2cStatus::I2C_READ_ERR:
+        this->log_WARNING_HI_imuReadError();
+        break;
+
+      case Drv::I2cStatus::I2C_OPEN_ERR:
+        this->log_WARNING_HI_imuOpenError();
+        break;
+
+      case Drv::I2cStatus::I2C_OTHER_ERR:
+       this->log_WARNING_HI_imuOtherError();
+       break;
+      
+      default:
+        break;
+    }
   }
 
 }
