@@ -8,6 +8,7 @@
 #include "FpConfig.hpp"
 #include "Components/componentConfig/Constants.hpp"
 #include <iostream>
+#include <string>
 
 
 namespace Components {
@@ -41,8 +42,7 @@ namespace Components {
   {
     U32 my_data = 0;
     U8*  my_byte = fwBuffer.getData();
-    std::cout << my_byte << std::endl;
-    this->log_ACTIVITY_HI_dataSuccess();
+    this->log_ACTIVITY_HI_dataOut();
   }
 
   void DataCollector ::
@@ -52,7 +52,7 @@ namespace Components {
     )
   {
     this->ping_out(0, 123);
-    this->ping_out(1,123);
+    this->ping_out(1, 123);
   }
 
   // ----------------------------------------------------------------------

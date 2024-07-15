@@ -4,7 +4,7 @@ mkdir visualize
 mkdir visualize/converted-txt
 mkdir visualize/converted-json
 
-fpl-extract-xml -d visualize build-fprime-automatic-native/FSWDeployment/Top/FSWDeploymentTopologyAppAi.xml
+fpl-extract-xml -d visualize build-fprime-automatic-arm-hf-linux/FSWDeployment/Top/FSWDeploymentTopologyAppAi.xml
 
 fpl-convert-xml visualize/Command.xml > visualize/converted-txt/Command.txt
 fpl-convert-xml visualize/CommandRegistration.xml > visualize/converted-txt/CommandRegistration.txt
