@@ -8,8 +8,6 @@
 #include "FpConfig.hpp"
 #include "Components/componentConfig/Constants.hpp"
 #include <iostream>
-#include <string>
-
 
 namespace Components {
 
@@ -41,8 +39,13 @@ namespace Components {
     )
   {
     U32 my_data = 0;
-    U8*  my_byte = fwBuffer.getData();
-    this->log_ACTIVITY_HI_dataOut();
+    U8  my_byte = 0;
+    Fw::SerializeBufferBase& sb = fwBuffer.getSerializeRepr();
+    sb.setBuffLen(fwBuffer.getSize());  // Set available data for deserialization to the whole memory region
+    sb.deserialize(my_data);
+    sb.deserialize(my_byte);
+
+    this->log_ACTIVITY_HI_dataOut(my_byte);
   }
 
   void DataCollector ::
