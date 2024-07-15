@@ -38,48 +38,50 @@ namespace Components {
         U32 value
     )
   {
-    // this will hold all the data from the imu, unfortuenately idk how to make an output port take in a Buffer type so it's just more fake data for now
+
     Fw::Buffer imuData;
     Drv::I2cStatus i2cStatus;
-    
 
     #ifndef VIRTUAL
+      // you have to specify the device you're using by giving it to a LinuxI2cDriver instance
       // const char* device = "/dev/i2c-1";
-      // Drv::LinuxI2cDriver i2cDriver("i2cDriver");
+      // Drv::LinuxI2cDriver i2cDriver("IMU I2C Driver");
       // if (!i2cDriver.open(device)) {
       //   this->log_WARNING_HI_imuOpenError();
       // }
-      // the number '0011110' is the slave address for the Magnetorqer registers
-      
-      i2cStatus = this->requestI2CData_out(0, 0x6B, imuData); // this will update the buffer 'imuData' with the data from the slave device
+
+      // then you just have to give the i2c driver the slave address and a buffer that it'll put data into
+      U32 slave = 0x6B;
+      i2cStatus = this->requestI2CData_out(0, slave, imuData); // this will update the buffer 'imuData' with the data from the slave device
       // this->collector_out(0, 1234); // just a way to test if we're connected to the dataCollector
-    #endif
 
-    if (i2cStatus == Drv::I2cStatus::I2C_OK) {
+
+      if (i2cStatus == Drv::I2cStatus::I2C_OK) {
       this->log_ACTIVITY_HI_imuSuccess(); // this just announces that the data has been recieved 
-    } 
+      } 
 
-    if (i2cStatus == Drv::I2cStatus::I2C_ADDRESS_ERR) {
-      this->log_WARNING_HI_imuAddressFailure();
-    } 
+      if (i2cStatus == Drv::I2cStatus::I2C_ADDRESS_ERR) {
+        this->log_WARNING_HI_imuAddressFailure();
+      } 
 
-    if (i2cStatus == Drv::I2cStatus::I2C_WRITE_ERR) {
-      this->log_WARNING_HI_imuWriteError();
-    } 
+      if (i2cStatus == Drv::I2cStatus::I2C_WRITE_ERR) {
+        this->log_WARNING_HI_imuWriteError();
+      } 
 
-    if (i2cStatus == Drv::I2cStatus::I2C_READ_ERR) {
-      this->log_WARNING_HI_imuReadError();
-    } 
+      if (i2cStatus == Drv::I2cStatus::I2C_READ_ERR) {
+        this->log_WARNING_HI_imuReadError();
+      } 
 
-    if (i2cStatus == Drv::I2cStatus::I2C_OPEN_ERR) {
-      this->log_WARNING_HI_imuOpenError();
-    } 
-    
-    if (i2cStatus == Drv::I2cStatus::I2C_OTHER_ERR) {
-      this->log_WARNING_HI_imuOtherError();
-    } 
+      if (i2cStatus == Drv::I2cStatus::I2C_OPEN_ERR) {
+        this->log_WARNING_HI_imuOpenError();
+      } 
+      
+      if (i2cStatus == Drv::I2cStatus::I2C_OTHER_ERR) {
+        this->log_WARNING_HI_imuOtherError();
+      } 
 
-    this->gyroData_out(0, imuData);
+      this->gyroData_out(0, imuData);
+    #endif
 
     return value;
   }
