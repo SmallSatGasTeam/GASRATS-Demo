@@ -5,7 +5,6 @@ Topology FSWDeployment.FSWDeployment:
   FSWDeployment.cmdSeq.seqDone
   FSWDeployment.cmdSeq.seqRunIn
   FSWDeployment.comQueue.run
-  FSWDeployment.dataCollector.run
   FSWDeployment.deframer.framedPoll
   FSWDeployment.deframer.schedIn
   FSWDeployment.fileDownlink.FileComplete
@@ -13,5 +12,7 @@ Topology FSWDeployment.FSWDeployment:
   FSWDeployment.health.WdogStroke
   FSWDeployment.i2cDriver.write
   FSWDeployment.i2cDriver.writeRead
+  FSWDeployment.imuInterface.allocate
+  FSWDeployment.imuInterface.deallocate
   FSWDeployment.tlmSend.TlmGet
 

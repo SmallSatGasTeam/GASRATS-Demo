@@ -38,8 +38,6 @@ namespace Components {
         U32 value
     )
   {
-
-    Fw::Buffer imuData;
     Drv::I2cStatus i2cStatus;
 
     #ifndef VIRTUAL
@@ -49,6 +47,13 @@ namespace Components {
       // if (!i2cDriver.open(device)) {
       //   this->log_WARNING_HI_imuOpenError();
       // }
+      const U32 needed_size = 1024;
+      Fw::Buffer imuData = this->allocate_out(0, needed_size);
+
+      if (imuData.getSize() < needed_size) {
+        this->deallocate_out(0, imuData);
+        this->log_WARNING_LO_MemoryAllocationFailed();
+      }
 
       // then you just have to give the i2c driver the slave address and a buffer that it'll put data into
       U32 slave = 0x6B;
@@ -81,7 +86,10 @@ namespace Components {
       } 
 
       this->gyroData_out(0, imuData);
+
+      this->deallocate_out(0, imuData);
     #endif
+
 
     return value;
   }

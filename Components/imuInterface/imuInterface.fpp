@@ -51,6 +51,9 @@ module Components {
             severity warning high \
             format "Other"
 
+        @ Allocation failed event
+        event MemoryAllocationFailed() severity warning low format "Failed to allocate memory"
+
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
         ###############################################################################
@@ -80,6 +83,12 @@ module Components {
 
         @Port to set the value of a parameter
         param set port prmSetOut
+
+        @ Allocation port for a buffer
+        output port allocate: Fw.BufferGet
+
+        @ Deallocation port for buffers
+        output port deallocate: Fw.BufferSend
 
     }
 }

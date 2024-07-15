@@ -166,6 +166,8 @@ module FSWDeployment {
       dataCollector.ping[0] -> flightLogic.dataRequest
       dataCollector.ping[1] -> imuInterface.dataRequest
       imuInterface.gyroData -> dataCollector.imuIncoming
+      imuInterface.allocate -> bufferManager.bufferGetCallee
+      imuInterface.deallocate -> bufferManager.bufferSendIn
     }
 
   }
