@@ -156,6 +156,6 @@ module FSWDeployment {
 
   instance epsManager: Components.EPSManager base id 0x4D00
 
-  instance i2cDriver: Drv.I2cDriver base id 0x4E00
+  instance i2cDriver: Drv.LinuxI2cDriver base id 0x4E00
 
 }

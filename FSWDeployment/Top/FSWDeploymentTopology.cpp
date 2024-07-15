@@ -165,6 +165,8 @@ void setupTopology(const TopologyState& state) {
         comDriver.configure(state.hostname, state.port);
         comDriver.startSocketTask(name, true, COMM_PRIORITY, Default::STACK_SIZE);
     }
+    const char* device = "/dev/i2c-1";
+    i2cDriver.open(device);
 }
 
 // Variables used for cycle simulation
