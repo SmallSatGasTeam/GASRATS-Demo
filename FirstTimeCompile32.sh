@@ -2,6 +2,30 @@
 # IMPORTANT: before running this check the fprime website to see if your dependencies are all good
 # https://nasa.github.io/fprime/Tutorials/CrossCompilationSetup/CrossCompilationSetupTutorial.html#1-introduction
 
+#Options
+while getopts ":hp:" opt; do
+    case $opt in
+        #help
+        h)
+            echo "Usage: $0 [-h help] [-pi pi #]"
+            exit 0
+            ;;
+        #pi number
+        p)
+            pi_num=$OPTARG
+            ;;
+        \?)
+            echo "Option -$OPTARG is invalid"
+            exit 1
+            ;;
+    esac
+done
+
+#If no optional argument provided, set pi_num to 0
+if [[ $OPTIND -eq 1 ]]; then
+    pi_num=0
+fi
+
 sudo mkdir -p /opt/toolchains
 sudo chown $USER /opt/toolchains
 
@@ -17,12 +41,12 @@ export ARM_TOOLS_PATH=/opt/toolchains
 echo $ARM_TOOLS_PATH
 
 # generates the deployment
-# IMPORTANT: after generating, change 'instance comDriver' in FSWDeployment/Top/instances.fpp to be a TCPClient instead of TCP 
+# IMPORTANT: after generating, change 'instance comDriver' in FSWDeployment/Top/instances.fpp to be a TCPServer instead of TCPClient
 fprime-util generate arm-hf-linux
 fprime-util build arm-hf-linux -j $(nproc)
 
 # sends the deployment to pi1
-scp -r build-artifacts/arm-hf-linux/FSWDeployment gas@pi0.gas.usu.edu:deployment
+scp -r build-artifacts/arm-hf-linux/FSWDeployment gas@pi$pi_num.gas.usu.edu:deployment
 
 # starts the gds on this machine
-fprime-gds -n --dictionary build-artifacts/arm-hf-linux/FSWDeployment/dict/FSWDeploymentTopologyAppDictionary.xml --ip-client --ip-address pi0.gas.usu.edu
+fprime-gds -n --dictionary build-artifacts/arm-hf-linux/FSWDeployment/dict/FSWDeploymentTopologyAppDictionary.xml --ip-client --ip-address pi$pi_num.gas.usu.edu
