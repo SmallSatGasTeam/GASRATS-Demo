@@ -31,9 +31,9 @@ module Components {
             severity activity high \
             format "The data collector has recieved the data!"
 
-        event dataOut(value: U8) \
+        event dataOut(x: I16, y: I16, z: I16) \
             severity activity high \
-            format "The imu gave us DATA! {}"
+            format "The imu gave us DATA! x: {} y: {} z: {}"
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
