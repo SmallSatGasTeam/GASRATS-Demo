@@ -38,27 +38,13 @@ namespace Components {
         Fw::Buffer& fwBuffer
     )
   {
-    U8 x_h = 0;
-    U8 x_l = 0;
-    U8 y_h = 0;
-    U8 y_l = 0;
-    U8 z_h = 0;
-    U8 z_l = 0;
+    U16 x,y,z;
     Fw::SerializeBufferBase& sb = fwBuffer.getSerializeRepr();
     sb.setBuffLen(fwBuffer.getSize());  // Set available data for deserialization to the whole memory region
 
-    sb.deserialize(x_h);
-    sb.deserialize(x_l);
-    sb.deserialize(y_h);
-    sb.deserialize(y_l);
-    sb.deserialize(z_h);
-    sb.deserialize(z_l);
-    // sb.deserialize(data);
-
-    // // Convert data to meaningful values
-    int16_t x = (x_l << 8) | x_h;
-    int16_t y = (y_l << 8) | y_h;
-    int16_t z = (z_l << 8) | z_h;
+    sb.deserialize(x);
+    sb.deserialize(y);
+    sb.deserialize(z);
 
     this->log_ACTIVITY_HI_dataOut(x, y, z);
   }

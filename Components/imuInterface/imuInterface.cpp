@@ -40,62 +40,40 @@ namespace Components {
   {
     #ifndef VIRTUAL
       const U32 needed_size = 1024;
-      const U32 secondary_size = 6;
+      Fw::Buffer imuConfig = this->allocate_out(0, needed_size);      
       Fw::Buffer imuData = this->allocate_out(0, needed_size);
 
-      if (imuData.getSize() < needed_size) {
+      if (imuData.getSize() < needed_size || imuConfig.getSize() < needed_size) {
         this->deallocate_out(0, imuData);
+        this->deallocate_out(0, imuConfig);
         this->log_WARNING_LO_MemoryAllocationFailed();
       }
 
-      Fw::Buffer autoIncrement = this->allocate_out(0, needed_size);
+      Fw::SerializeBufferBase & sb = imuConfig.getSerializeRepr();
+      Fw::SerializeBufferBase & sb1 = imuData.getSerializeRepr();      
 
-      if (autoIncrement.getSize() < needed_size) {
-        this->deallocate_out(0, autoIncrement);
-        this->log_WARNING_LO_MemoryAllocationFailed();
-      }
+      U8 reg = this->X_L | 0x80;
+      this->log_ACTIVITY_LO_print(reg);
 
-      Fw::Buffer xyz = this->allocate_out(0, secondary_size);
-
-      if (xyz.getSize() < secondary_size) {
-        this->deallocate_out(0, xyz);
-        this->log_WARNING_LO_MemoryAllocationFailed();
-      }
-
-      char reg[1] = {X_L | 0x80};
-      Fw::SerializeBufferBase& sb = autoIncrement.getSerializeRepr();
-      sb.resetSer();  // Return the serialization to the beginning of the memory region
+      sb.resetSer();
       sb.serialize(reg);
-       
-      U8 x_h = 0;
-      U8 x_l = 0;
-      U8 y_h = 0;
-      U8 y_l = 0;
-      U8 z_h = 0;
-      U8 z_l = 0;
-      Fw::SerializeBufferBase& sb1 = xyz.getSerializeRepr();
-      sb.resetSer();  // Return the serialization to the beginning of the memory region
-      sb.serialize(x_h);
-      sb.serialize(x_l);
-      sb.serialize(y_h);
-      sb.serialize(y_l);
-      sb.serialize(z_h);
-      sb.serialize(z_l);
+      sb1.resetDeser();
+      sb1.resetSer();
 
-      // then you just have to give the i2c driver the slave address and a buffer that it'll put data into
-      // this->checkStatus(this->requestI2CData_out(0, this->X_L, imuData)); // this will update the buffer 'imuData' with the data from the slave device
-      // this->checkStatus(this->requestI2CData_out(0, this->X_H, imuData));
+      this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfig));
+      this->checkStatus(this->requestI2CData_out(0,this->ADDRESS,imuData));
 
-      this->checkStatus(this->i2cWrite_out(0, ADDRESS, autoIncrement));
+      // sb1.setBuffLen(imuData.getSize());
 
-      this->checkStatus(this->requestI2CData_out(0, ADDRESS, xyz));
+      // U8 val;
 
-      this->checkStatus(this->requestI2CData_out(0,ADDRESS,imuData));
-      // this->collector_out(0, 1234); // just a way to test if we're connected to the dataCollector
+      // sb1.deserialize(val);
+      // this->log_ACTIVITY_LO_print(val);
 
-      this->gyroData_out(0, xyz);
+      this->gyroData_out(0, imuData);
 
       this->deallocate_out(0, imuData);
+      this->deallocate_out(0,imuConfig);
     #endif
 
 

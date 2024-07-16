@@ -57,6 +57,9 @@ module Components {
         @ Allocation failed event
         event MemoryAllocationFailed() severity warning low format "Failed to allocate memory"
 
+        @ For debugging, prints an integer
+        event print(val:U64) severity activity low format "Printing {x}"
+
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
         ###############################################################################
