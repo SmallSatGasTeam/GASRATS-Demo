@@ -53,7 +53,7 @@ namespace Components {
       Fw::SerializeBufferBase & sb1 = imuData.getSerializeRepr();      
 
       U8 reg = this->X_L | 0x80;
-      this->log_ACTIVITY_LO_print(reg);
+      //this->log_ACTIVITY_LO_print(reg);
 
       sb.resetSer();
       sb.serialize(reg);

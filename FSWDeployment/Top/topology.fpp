@@ -19,6 +19,7 @@ module FSWDeployment {
 
     instance $health
     instance blockDrv
+    instance bufferManager
     instance tlmSend
     instance cmdDisp
     instance cmdSeq
@@ -26,14 +27,17 @@ module FSWDeployment {
     instance comQueue
     instance comStub
     instance deframer
+    instance dpCatalog
+    instance dpManager
+    instance dpWriter
     instance eventLogger
     instance fatalAdapter
     instance fatalHandler
     instance fileDownlink
     instance fileManager
     instance fileUplink
-    instance bufferManager
     instance framer
+    instance i2cDriver
     instance posixTime
     instance prmDb
     instance rateGroup1
@@ -43,15 +47,16 @@ module FSWDeployment {
     instance rateGroupDriver
     instance textLogger
     instance systemResources
+
+
     instance antennaDeploy
-    instance flightLogic
     instance cameraManager
-    instance transmissionManager
-    instance epsManager
     instance dataCollector
-    instance imuInterface
-    instance i2cDriver
     instance dummyTranceiverDriver
+    instance epsManager
+    instance imuInterface
+    instance flightLogic
+    instance transmissionManager
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers

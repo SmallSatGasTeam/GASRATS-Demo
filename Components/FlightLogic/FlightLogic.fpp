@@ -129,11 +129,25 @@ module Components {
         @ Port for sending telemetry channels to downlink
         telemetry port tlmOut
 
-        @ Port to return the value of a parameter
-        param get port prmGetOut
+        @ A port for getting a data product container
+        product get port productGetOut
 
-        @Port to set the value of a parameter
-        param set port prmSetOut
+        @ A port for requesting a data product container
+        product request port productRequestOut
+
+        @ An async port for receiving a requested data product container
+        async product recv port productRecvIn priority 10 assert
+
+        @ A port for sending a filled data product container
+        product send port productSendOut
+
+        # @ Port to return the value of a parameter
+        # param get port prmGetOut
+
+        # @Port to set the value of a parameter
+        # param set port prmSetOut
+
+        
 
     }
 }
