@@ -5,7 +5,6 @@
 // ======================================================================
 
 #include "Components/FlightLogic/FlightLogic.hpp"
-#include <cstdlib>
 
 namespace Components {
 
@@ -17,16 +16,85 @@ namespace Components {
     FlightLogic(const char* const compName) :
       FlightLogicComponentBase(compName)
   {
-    //Assign initial values to component variables
-    this->antennaState = GASRATS::deployed::UNDEPLOYED;
-    this->cameraState = GASRATS::deployed::UNDEPLOYED;
-    this->beaconState = GASRATS::beacon::OFF;
-    this->failCount = 0;
-    this->epsCurrent = 1;
-    this->epsVoltage = 5;
-    this->lowPower = true;
-    this->detumbled = false;
-    this->bootTime = std::chrono::system_clock::now();
+    //Try to open the file
+    std::ifstream file;
+    file.open(filePath, std::ios::in);
+    if(file.is_open()) {
+      U64 temp;
+
+      //Assign antenna state
+      file >> temp;
+      std::cout << temp << std::endl;
+      switch (temp) {
+      case 0:
+        this->antennaState = GASRATS::deployed::DEPLOYED;
+        break;
+      
+      default:
+        this->antennaState = GASRATS::deployed::UNDEPLOYED;
+        break;
+      }
+
+      //Assign beacon state
+      file >> temp;
+      std::cout << temp << std::endl;
+      switch(temp) {
+        case 0:
+          this->beaconState = GASRATS::beacon::RETURN_STATE;
+          break;
+        case 1:
+          this->beaconState = GASRATS::beacon::INITIAL;
+          break;
+        case 2:
+          this->beaconState = GASRATS::beacon::STANDARD;
+          break;
+        case 3:
+          this->beaconState = GASRATS::beacon::ERROR;
+          break;
+        default:
+          this->beaconState = GASRATS::beacon::OFF;
+      }
+
+      //Assign boot time
+      file >> temp;
+      std::cout << temp << std::endl;
+      this->bootTime = std::chrono::system_clock::now();
+
+      //Assign camera state
+      file >> temp;
+      std::cout << temp << std::endl;
+      switch (temp) {
+      case 0:
+        this->cameraState = GASRATS::deployed::DEPLOYED;
+        break;
+      
+      default:
+        this->cameraState = GASRATS::deployed::UNDEPLOYED;
+        break;
+      }
+
+      //Assign detumbled
+      file >> detumbled;
+      std::cout << temp << std::endl;
+
+      //Assign low power
+      file >> lowPower;
+      std::cout << temp << std::endl;
+      file.close();
+    }
+    //Else assign initial values to component variables and throw a warning
+    else {
+      this->antennaState = GASRATS::deployed::UNDEPLOYED;
+      this->cameraState = GASRATS::deployed::UNDEPLOYED;
+      this->beaconState = GASRATS::beacon::OFF;
+      this->failCount = 0;
+      this->epsCurrent = 1;
+      this->epsVoltage = 5;
+      this->lowPower = true;
+      this->detumbled = false;
+      this->bootTime = std::chrono::system_clock::now();
+      this->log_WARNING_HI_fileFailed(filePath);
+    }
   }
 
   FlightLogic ::
@@ -65,7 +133,9 @@ namespace Components {
     )
   {
     //this->log_WARNING_LO_runningStartup(this->waitCount); //For debugging
+    //Variable declarations
     std::chrono::duration<int,std::ratio<1>> waitTime(static_cast<int>(DEPLOY_WAIT_ITER));
+    bool changed = false;
 
     // Perform hardware checks
     this->epsHealth_out(0,epsVoltage, epsCurrent);
@@ -90,10 +160,12 @@ namespace Components {
           if(antennaState == GASRATS::deployed::UNDEPLOYED) {
             if(deployAntenna_out(0)) {
               this->antennaState = GASRATS::deployed::DEPLOYED;
+              changed = true;
             }
             // If failed, give a second try
             else if (deployAntenna_out(0)) {
               this->antennaState = GASRATS::deployed::DEPLOYED;
+              changed = true;
             }
             // If failed twice, throw an error
             else {
@@ -108,17 +180,24 @@ namespace Components {
           if(cameraState == GASRATS::deployed::UNDEPLOYED) {
             if(deployCamera_out(0)) {
               this->cameraState = GASRATS::deployed::DEPLOYED;
+              changed = true;
               // Take photo
               this->takePic_out(0);
             }
             //If failed try again
             else if(deployCamera_out(0)) {
               this->cameraState = GASRATS::deployed::DEPLOYED;
+              changed = true;
             }
             // else throw failure
             else {
               this->log_WARNING_HI_deployFailure("Camera");
             }
+          }
+
+          //If a state has changed write it to the file
+          if(changed) {
+            //this->saveFlags_internalInterfaceInvoke();
           }
         
           //If everything has been completed successfully
@@ -174,6 +253,7 @@ namespace Components {
   {
     if(value != GASRATS::beacon::RETURN_STATE) {
       this->beaconState = value;
+      this->saveFlags_internalInterfaceInvoke();
     }
     return this->beaconState;
   }
@@ -211,6 +291,34 @@ namespace Components {
     this->tlmWrite_beaconState(this->beaconState);
     this->tlmWrite_detumbled(this->detumbled);
     this->tlmWrite_lowPower(this->lowPower);
+
+    this->saveFlags_internalInterfaceInvoke();
+
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
+  }
+
+  // ----------------------------------------------------------------------
+  // Handler implementations for user-defined internal interfaces
+  // ----------------------------------------------------------------------
+
+  void FlightLogic ::
+    saveFlags_internalInterfaceHandler()
+  {
+    //Open the file
+    std::ofstream file;
+    file.open(this->filePath, std::ios::out | std::ios::trunc);
+    if(!file.is_open()) {
+      this->log_WARNING_HI_fileFailed(this->filePath);
+      return;
+    }
+    
+    file << this->antennaState << std::endl;
+    file << this->beaconState << std::endl;
+    file << this->bootTime.time_since_epoch().count() << std::endl;
+    file << this->cameraState << std::endl;
+    file << this->detumbled << std::endl;
+    file << this->lowPower << std::endl;
+
+    file.close();
   }
 }

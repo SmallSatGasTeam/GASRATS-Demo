@@ -27,9 +27,6 @@ module FSWDeployment {
     instance comQueue
     instance comStub
     instance deframer
-    instance dpCatalog
-    instance dpManager
-    instance dpWriter
     instance eventLogger
     instance fatalAdapter
     instance fatalHandler

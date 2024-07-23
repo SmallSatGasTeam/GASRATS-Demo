@@ -15,3 +15,4 @@ visualize*
 .DS_Store
 *.gcov
 .*/
+files/*

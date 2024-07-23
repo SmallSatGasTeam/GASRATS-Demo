@@ -11,6 +11,10 @@
 #include "Components/componentConfig/Constants.hpp"
 #include <chrono>
 #include <ratio>
+#include <fstream>
+#include <cstdlib>
+#include <sstream>
+#include <iostream>
 
 namespace Components {
 
@@ -98,6 +102,17 @@ namespace Components {
       ) override;
 
     PRIVATE:
+
+      // ----------------------------------------------------------------------
+      // Handler implementations for user-defined internal interfaces
+      // ----------------------------------------------------------------------
+
+      //! Handler implementation for saveFlags
+      //!
+      //! Saves flags to a file
+      void saveFlags_internalInterfaceHandler() override;
+
+    PRIVATE:
       //! Private variable tracking antenna deployment
       //!
       //! GASRATS::deployed showing antenna deployment state
@@ -105,44 +120,51 @@ namespace Components {
 
       //! Private variable tracking camera deployment
       //!
-      //! GASRATS::deployed showing camera deployment state
-      GASRATS::deployed::T cameraState;
-
-      //! Private variable tracking camera deployment
-      //!
       //! GASRATS::beacon showing if initial beacon is active
       GASRATS::beacon::T beaconState;
-
-      //! Private variable tracking low power mode
-      //!
-      //! bool, true when in low power mode
-      bool lowPower;
-
-      //! Private variable storing times startup has failed
-      //!
-      //! U16
-      U16 failCount;
-
-      //! Private variable storing epsVoltage
-      //!
-      //! F32, is passed by reference to epsHealthManager
-      F32 epsVoltage;
-
-      //! Private variable storing epsCurrent
-      //!
-      //! F32, is passed by reference to epsCurrent
-      F32 epsCurrent;
-
-      //! Private variable storing detumble state
-      //!
-      //! bool, true when satellite has been detumbled
-      bool detumbled;
 
       //! Private variable storing boot time
       //!
       //! time_point, set on construction of the Flight Logic component
       //! holds the time the system was last booted.
       std::chrono::system_clock::time_point bootTime;
+
+      //! Private variable tracking camera deployment
+      //!
+      //! GASRATS::deployed showing camera deployment state
+      GASRATS::deployed::T cameraState;
+
+      //! Private variable storing detumble state
+      //!
+      //! bool, true when satellite has been detumbled
+      bool detumbled;
+
+      //! Private variable storing epsCurrent
+      //!
+      //! F32, is passed by reference to epsCurrent
+      F32 epsCurrent;
+
+      //! Private variable storing epsVoltage
+      //!
+      //! F32, is passed by reference to epsHealthManager
+      F32 epsVoltage;
+      //! Private variable storing times startup has failed
+      //!
+      //! U16
+      U16 failCount;
+
+      //! Private variable tracking low power mode
+      //!
+      //! bool, true when in low power mode
+      bool lowPower;
+
+      #ifdef VIRTUAL
+        char filePath [22] = "../../files/flags.txt";
+      #else
+        char filePath [34] = "/home/gas/FSWDeployment/flags.txt";
+      #endif
+
+      void configure();
   };
 
 }

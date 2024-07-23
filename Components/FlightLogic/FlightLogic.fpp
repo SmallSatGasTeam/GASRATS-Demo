@@ -42,6 +42,13 @@ module Components {
         sync input port beaconState : FL.beaconState
 
         #-----------------------------------------------------------------------
+        # FlightLogic InInternal Ports 
+        #-----------------------------------------------------------------------
+
+        @ Saves flags to a file
+        internal port saveFlags()
+
+        #-----------------------------------------------------------------------
         # Parameters
         #-----------------------------------------------------------------------
 
@@ -83,6 +90,9 @@ module Components {
 
         @ rebooting: Notifies that the OBC is rebooting the satellite
         event rebooting severity fatal format "Rebooting!"
+
+        @ Failed to open a file
+        event fileFailed(file: string) severity warning high format "Failed to open {}."
 
 
         #-----------------------------------------------------------------------

@@ -118,21 +118,6 @@ module FSWDeployment {
     stack size Default.STACK_SIZE \
     priority 117
 
-  # instance dpManager: Svc.DpManager base id 0x1600 \
-  #   queue size Default.QUEUE_SIZE \
-  #   stack size Default.STACK_SIZE \
-  #   priority 75
-
-  # instance dpWriter: Svc.DpWriter base id 0x1700 \
-  #   queue size Default.QUEUE_SIZE \
-  #   stack size Default.STACK_SIZE \
-  #   priority 75
-
-  # instance dpCatalog: Svc.DpCatalog base id 0x1800 \
-  #   queue size Default.QUEUE_SIZE \
-  #   stack size Default.STACK_SIZE \
-  #   priority 75
-
   # ----------------------------------------------------------------------
   # Queued component instances
   # ----------------------------------------------------------------------

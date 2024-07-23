@@ -42,6 +42,10 @@
 //! The number of minutes between each beacon
 #define BEACON_MIN .1
 
+//! BEACON_INTERVAL
+//!
+//! The number of seconds between each beacon, used to set rategroup 4
 #define BEACON_INTERVAL 60*BEACON_MIN
+
 
 #endif
