@@ -312,6 +312,7 @@ namespace Components {
       return;
     }
     
+    //Write the flags to the file.
     file << this->antennaState << std::endl;
     file << this->beaconState << std::endl;
     file << this->bootTime.time_since_epoch().count() << std::endl;

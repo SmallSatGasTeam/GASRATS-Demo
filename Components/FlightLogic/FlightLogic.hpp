@@ -163,8 +163,6 @@ namespace Components {
       #else
         char filePath [34] = "/home/gas/FSWDeployment/flags.txt";
       #endif
-
-      void configure();
   };
 
 }
