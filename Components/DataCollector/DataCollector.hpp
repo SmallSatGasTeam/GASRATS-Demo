@@ -79,6 +79,14 @@ namespace Components {
           U32 cmdSeq //!< The command sequence number
       ) override;
 
+      //! Handler implementation for epsIncoming
+      //!
+      //! Reciving eps buffer data
+      void epsIncoming_handler(
+          NATIVE_INT_TYPE portNum, //!< The port number
+          Fw::Buffer& fwBuffer //!< The buffer
+      ) override;
+
     PRIVATE:
       // ----------------------------------------------------------------------
       // Variables

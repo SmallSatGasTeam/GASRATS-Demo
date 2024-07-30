@@ -47,5 +47,7 @@
 //! The number of seconds between each beacon, used to set rategroup 4
 #define BEACON_INTERVAL 60*BEACON_MIN
 
+#define VIRTUAL
+
 
 #endif

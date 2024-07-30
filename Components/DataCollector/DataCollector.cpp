@@ -46,7 +46,7 @@ namespace Components {
     sb.deserialize(y);
     sb.deserialize(z);
 
-    this->log_ACTIVITY_HI_dataOut(x, y, z);
+    this->log_ACTIVITY_HI_dataOutImu(x, y, z);
   }
 
   void DataCollector ::
@@ -57,6 +57,22 @@ namespace Components {
   {
     this->ping_out(0, 123);
     this->ping_out(1, 123);
+  }
+
+  void DataCollector ::
+    epsIncoming_handler(
+        NATIVE_INT_TYPE portNum,
+        Fw::Buffer& fwBuffer
+    )
+  {
+    U8 data1, data2;
+    Fw::SerializeBufferBase& sb = fwBuffer.getSerializeRepr();
+    sb.setBuffLen(fwBuffer.getSize());  // Set available data for deserialization to the whole memory region
+
+    sb.deserialize(data1);
+    sb.deserialize(data2);
+    
+    this->log_ACTIVITY_HI_dataOutEps(data1, data2);
   }
 
   // ----------------------------------------------------------------------
