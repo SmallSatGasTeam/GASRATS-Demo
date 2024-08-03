@@ -68,6 +68,12 @@ module Components {
         @ Port for sending telemetry channels to downlink
         telemetry port tlmOut
 
+        @ Port for sending textual representation of events
+        text event port logTextOut
+
+        @ Port for sending events to downlink
+        event port logOut
+
         @ Allocation port for a buffer
         output port allocate: Fw.BufferGet
 

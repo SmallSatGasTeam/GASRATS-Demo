@@ -38,7 +38,7 @@ namespace Components {
     )
   {
     // TODO return
-    //!!! This is code to simulate the EPS. The code will only be run if VIRTUAL is defined
+    //!!! This is code to sepslate the EPS. The code will only be run if VIRTUAL is defined
     #ifdef VIRTUAL
     std::normal_distribution<float> currentDistribution(3,.5);
     std::normal_distribution<float> voltageDistribution(7,1);
@@ -83,7 +83,7 @@ namespace Components {
 
     this->checkStatus(this->i2cReadWrite_out(0, reg, writeBuffer, readBuffer));
 
-    this->gyroData_out(0, readBuffer);
+    this->epsData_out(0, readBuffer);
 
     this->deallocate_out(0, readBuffer);
     this->deallocate_out(0,writeBuffer);
@@ -91,30 +91,30 @@ namespace Components {
     return value;
   }
 
-  void imuInterface::checkStatus(Drv::I2cStatus i2cStatus) {
+  void EPSManager::checkStatus(Drv::I2cStatus i2cStatus) {
     switch (i2cStatus) {
       case Drv::I2cStatus::I2C_OK:
-        this->log_ACTIVITY_HI_imuSuccess();
+        this->log_ACTIVITY_HI_epsSuccess();
         break;
 
       case Drv::I2cStatus::I2C_ADDRESS_ERR:
-        this->log_WARNING_HI_imuAddressFailure();
+        this->log_WARNING_HI_epsAddressFailure();
         break;
 
       case Drv::I2cStatus::I2C_WRITE_ERR:
-        this->log_WARNING_HI_imuWriteError();
+        this->log_WARNING_HI_epsWriteError();
         break;
 
       case Drv::I2cStatus::I2C_READ_ERR:
-        this->log_WARNING_HI_imuReadError();
+        this->log_WARNING_HI_epsReadError();
         break;
 
       case Drv::I2cStatus::I2C_OPEN_ERR:
-        this->log_WARNING_HI_imuOpenError();
+        this->log_WARNING_HI_epsOpenError();
         break;
 
       case Drv::I2cStatus::I2C_OTHER_ERR:
-       this->log_WARNING_HI_imuOtherError();
+       this->log_WARNING_HI_epsOtherError();
        break;
       
       default:

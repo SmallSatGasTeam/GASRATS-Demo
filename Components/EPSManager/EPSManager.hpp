@@ -54,6 +54,11 @@ namespace Components {
           F32& current
       ) override;
 
+      //! checkStatus
+      //!
+      //! Calls an event based on the status returned from the read/write operation
+      void checkStatus(Drv::I2cStatus status);
+
     #ifdef VIRTUAL
     PRIVATE:
       std::default_random_engine generator;
