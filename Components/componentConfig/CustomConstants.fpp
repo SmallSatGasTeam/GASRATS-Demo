@@ -1,0 +1,17 @@
+constant MAX_MIN_TILL_FAIL = 15
+
+constant STARTUP_MAX_ITER = MAX_MIN_TILL_FAIL * 60
+
+constant VOLTAGE_MIN = 3
+
+constant CURRENT_MIN = .5
+
+constant DEPLOY_WAIT_TIME = .25
+
+constant DEPLOY_WAIT_ITER = 60 * DEPLOY_WAIT_TIME
+
+constant MAX_BACKGROUND_MESSAGES = 15
+
+constant BEACON_MIN = .1
+
+constant BEACON_INTERVAL = 60 * BEACON_MIN
