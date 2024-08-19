@@ -37,6 +37,14 @@ namespace Components {
       // Handler implementations for user-defined typed input ports
       // ----------------------------------------------------------------------
 
+      //! Handler implementation for dataRequest
+      //!
+      //! collectorRequest: receives a ping from the data collector to send out data
+      U32 dataRequest_handler(
+          NATIVE_INT_TYPE portNum, //!< The port number
+          U32 value
+      ) override;
+
       //! Handler implementation for returnHealth
       //!
       //! epsHealth: passes the EPS voltage and current to the flight logic
@@ -45,6 +53,11 @@ namespace Components {
           F32& voltage,
           F32& current
       ) override;
+
+      //! checkStatus
+      //!
+      //! Calls an event based on the status returned from the read/write operation
+      void checkStatus(Drv::I2cStatus status);
 
     #ifdef VIRTUAL
     PRIVATE:

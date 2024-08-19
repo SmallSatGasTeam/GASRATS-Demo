@@ -17,11 +17,14 @@ module Components {
         @ Recieving data from multiple channels
         sync input port aggregate: serial
 
-        @ Reciving buffer data
+        @ Reciving imu buffer data
         sync input port imuIncoming: Fw.BufferSend
 
+        @ Reciving eps buffer data
+        sync input port epsIncoming: Fw.BufferSend
+
         @ Port meant for pinging all connected ports for their data
-        output port ping: [2] FL.data
+        output port ping: [3] FL.data
 
         ###############################################################################
         # Events 
@@ -31,9 +34,13 @@ module Components {
             severity activity high \
             format "The data collector has recieved the data!"
 
-        event dataOut(x: I16, y: I16, z: I16) \
+        event dataOutImu(x: I16, y: I16, z: I16) \
             severity activity high \
             format "The imu gave us DATA! x: {} y: {} z: {}"
+
+        event dataOutEps(data1: U8, data2: U8) \
+            severity activity high \
+            format "The EPS gave us DATA! data1: {} data2: {}"
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
