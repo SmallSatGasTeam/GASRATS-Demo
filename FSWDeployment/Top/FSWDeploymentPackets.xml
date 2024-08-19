@@ -84,8 +84,9 @@
         <channel name="flightLogic.antennaState"/>
         <channel name="flightLogic.cameraState"/>
         <channel name="flightLogic.beaconState"/>
-        <channel name="flightLogic.lowPower"/>
+        <channel name="flightLogic.safe"/>
         <channel name="flightLogic.detumbled"/>
+        <channel name="flightLogic.bootTime"/>
     </packet>
 
     <packet name="AntennaDeploy" id="9" level="3">

@@ -94,6 +94,8 @@ module Components {
         @ Failed to open a file
         event fileFailed(file: string) severity warning high format "Failed to open {}."
 
+        event randoTest(help: U32,whoops:U32) severity activity high format "{}, {}"
+
 
         #-----------------------------------------------------------------------
         # Telemetry
@@ -108,11 +110,14 @@ module Components {
         @ beaconState: tells the state of the beacon
         telemetry beaconState: GASRATS.beacon 
 
-        @ lowPower: Shows whether or not we're in low power mode
-        telemetry lowPower: bool
+        @ safe: Shows whether or not we're in safe mode
+        telemetry safe: bool
 
         @ detumbled: Shows whether or not the OBC thinks we're detumbled
         telemetry detumbled: bool
+
+        @ bootTime: Sends the last bootTime
+        telemetry bootTime: U32 update on change
 
 
         ###############################################################################

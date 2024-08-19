@@ -165,8 +165,13 @@ void setupTopology(const TopologyState& state) {
         comDriver.configure(state.hostname, state.port);
         comDriver.startSocketTask(name, true, COMM_PRIORITY, Default::STACK_SIZE);
     }
+
+    //Configure i2c Device
     const char* device = "/dev/i2c-1";
     i2cDriver.open(device);
+
+    //Get Boot Time
+    flightLogic.setTime();
 }
 
 // Variables used for cycle simulation
