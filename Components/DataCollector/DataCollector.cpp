@@ -66,14 +66,13 @@ namespace Components {
         Fw::Buffer& fwBuffer
     )
   {
-    U8 data1, data2;
+    U16 data;
     Fw::SerializeBufferBase& sb = fwBuffer.getSerializeRepr();
     sb.setBuffLen(fwBuffer.getSize());  // Set available data for deserialization to the whole memory region
 
-    sb.deserialize(data1);
-    sb.deserialize(data2);
+    sb.deserialize(data);
     
-    this->log_ACTIVITY_HI_dataOutEps(data1, data2);
+    this->log_ACTIVITY_HI_dataOutEps(data);
   }
 
   // ----------------------------------------------------------------------

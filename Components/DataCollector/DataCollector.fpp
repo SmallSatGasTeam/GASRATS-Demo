@@ -38,9 +38,9 @@ module Components {
             severity activity high \
             format "The imu gave us DATA! x: {} y: {} z: {}"
 
-        event dataOutEps(data1: U8, data2: U8) \
+        event dataOutEps(data: U16) \
             severity activity high \
-            format "The EPS gave us DATA! data1: {} data2: {}"
+            format "The EPS gave us DATA! data: {}"
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
