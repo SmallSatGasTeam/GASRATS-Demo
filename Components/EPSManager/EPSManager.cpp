@@ -68,7 +68,7 @@ namespace Components {
       this->log_WARNING_LO_MemoryAllocationFailed();
     }
 
-    U32 requestedData = (0x68 << 1 | 0) | (0x01) | (0x68 << 1 | 1);
+    U32 requestedData = 0x01;
     Fw::SerializeBufferBase & sb = writeBuffer.getSerializeRepr();
     sb.serialize(requestedData);
     Fw::SerializeBufferBase & sb1 = readBuffer.getSerializeRepr();      
@@ -86,7 +86,7 @@ namespace Components {
     this->epsData_out(0, readBuffer);
 
     this->deallocate_out(0, readBuffer);
-    this->deallocate_out(0,writeBuffer);
+    this->deallocate_out(0, writeBuffer);
 
     return value;
   }
