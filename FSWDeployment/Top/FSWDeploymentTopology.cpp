@@ -175,7 +175,7 @@ void setupTopology(const TopologyState& state) {
     flightLogic.setTime();
 
     //Configure GPIO ports
-    bool gpio_success = gpioDriver.open(HEARTBEAT_GPIO, Drv::LinuxGpioDriver::GpioDirection::GPIO_OUT);
+    bool gpio_success = gpioDriver.open(HEARTBEAT_GPIO+512, Drv::LinuxGpioDriver::GpioDirection::GPIO_OUT);
     if (!gpio_success) {
         Fw::Logger::logMsg("[ERROR] Failed to open GPIO pin\n");
     }

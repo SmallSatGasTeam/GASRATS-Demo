@@ -57,6 +57,7 @@ namespace Components {
   {
     this->ping_out(0, 123);
     this->ping_out(1, 123);
+    this->ping_out(2, 123);
   }
 
   void DataCollector ::
