@@ -34,6 +34,7 @@ module FSWDeployment {
     instance fileManager
     instance fileUplink
     instance framer
+    instance gpioDriver
     instance i2cDriver
     instance posixTime
     instance prmDb
@@ -54,6 +55,7 @@ module FSWDeployment {
     instance imuInterface
     instance flightLogic
     instance transmissionManager
+    instance watchDog
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -176,6 +178,8 @@ module FSWDeployment {
       epsManager.allocate -> bufferManager.bufferGetCallee
       epsManager.deallocate -> bufferManager.bufferSendIn
       epsManager.epsData -> dataCollector.epsIncoming
+      $health.WdogStroke -> watchDog.healthIn
+      watchDog.heartBeatOut -> gpioDriver.gpioWrite
     }
 
   }

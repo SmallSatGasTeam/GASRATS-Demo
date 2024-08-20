@@ -103,6 +103,10 @@
         <channel name="epsManager.current"/>
     </packet>
 
+    <packet name="WatchDog" id="12" level="3">
+        <channel name="watchDog.heartBeat"/>
+    </packet>
+
     <!-- Ignored packets -->
 
     <ignore>
