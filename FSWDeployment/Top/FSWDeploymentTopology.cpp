@@ -6,6 +6,7 @@
 // Provides access to autocoded functions
 #include <FSWDeployment/Top/FSWDeploymentTopologyAc.hpp>
 #include <FSWDeployment/Top/FSWDeploymentPacketsAc.hpp>
+#include <Components/componentConfig/Constants.hpp>
 
 // Necessary project-specified types
 #include <Fw/Types/MallocAllocator.hpp>
@@ -172,6 +173,12 @@ void setupTopology(const TopologyState& state) {
 
     //Get Boot Time
     flightLogic.setTime();
+
+    //Configure GPIO ports
+    bool gpio_success = gpioDriver.open(HEARTBEAT_GPIO, Drv::LinuxGpioDriver::GpioDirection::GPIO_OUT);
+    if (!gpio_success) {
+        Fw::Logger::logMsg("[ERROR] Failed to open GPIO pin\n");
+    }
 }
 
 // Variables used for cycle simulation

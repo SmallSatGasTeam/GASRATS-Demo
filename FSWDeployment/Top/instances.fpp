@@ -158,4 +158,8 @@ module FSWDeployment {
 
   instance i2cDriver: Drv.LinuxI2cDriver base id 0x4E00
 
+  instance gpioDriver: Drv.LinuxGpioDriver base id 0x4F00
+
+  instance watchDog: Components.WatchDog base id 0x5000
+
 }
