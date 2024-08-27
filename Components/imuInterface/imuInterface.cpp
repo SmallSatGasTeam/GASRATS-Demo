@@ -48,27 +48,20 @@ namespace Components {
         this->deallocate_out(0, imuConfig);
         this->log_WARNING_LO_MemoryAllocationFailed();
       }
+      U32 turnAllOn = 0x0F; // should start the gyro in normal state, with all axis enabled
 
-      Fw::SerializeBufferBase & sb = imuConfig.getSerializeRepr();
-      Fw::SerializeBufferBase & sb1 = imuData.getSerializeRepr();      
+      Fw::SerializeBufferBase & config = imuConfig.getSerializeRepr();
+      config.resetDeser();
+      config.resetSer();
+      config.serialize(this->CTRL1);
+      config.serialize(turnAllOn);
 
-      U8 reg = this->X_L | 0x80;
-      //this->log_ACTIVITY_LO_print(reg);
-
-      sb.resetSer();
-      sb.serialize(reg);
-      sb1.resetDeser();
-      sb1.resetSer();
+      Fw::SerializeBufferBase & data = imuData.getSerializeRepr();      
+      data.resetDeser();
+      data.resetSer();
 
       this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfig));
-      this->checkStatus(this->requestI2CData_out(0,this->ADDRESS,imuData));
-
-      // sb1.setBuffLen(imuData.getSize());
-
-      // U8 val;
-
-      // sb1.deserialize(val);
-      // this->log_ACTIVITY_LO_print(val);
+      this->checkStatus(this->requestI2CData_out(0,this->ADDRESS, imuData));
 
       this->gyroData_out(0, imuData);
 
