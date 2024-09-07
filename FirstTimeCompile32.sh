@@ -30,7 +30,7 @@ sudo mkdir -p /opt/toolchains
 sudo chown $USER /opt/toolchains
 
 # only use this if you haven't before
-curl -Ls https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz | tar -JC /opt/toolchains --strip-components=1 -x
+sudo curl -Ls https://developer.arm.com/-/media/Files/downloads/gnu-a/10.2-2020.11/binrel/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf.tar.xz | tar -JC /opt/toolchains --strip-components=1 -x
 
 # as long as this outputs anything other than a command or file not found error it's good
 /opt/toolchains/bin/arm-none-linux-gnueabihf-gcc -v
