@@ -5,6 +5,7 @@
 // ======================================================================
 
 #include "Components/imuInterface/imuInterface.hpp"
+#include "Components/componentConfig/Constants.hpp"
 #include "FpConfig.hpp"
 #include "fprime/Drv/LinuxI2cDriver/LinuxI2cDriver.hpp"
 #include <iostream>
@@ -19,7 +20,7 @@ namespace Components {
     imuInterface(const char* const compName) :
       imuInterfaceComponentBase(compName)
   {
-
+    this->calls = 0;
   }
 
   imuInterface ::
@@ -92,33 +93,36 @@ namespace Components {
   // ----------------------------------------------------------------------
 
   void imuInterface::checkStatus(Drv::I2cStatus i2cStatus) {
-    switch (i2cStatus) {
-      case Drv::I2cStatus::I2C_OK:
-        this->log_ACTIVITY_HI_imuSuccess();
-        break;
+    if(this->calls < MAX_BACKGROUND_MESSAGES) {
+      this->calls++;
+      switch (i2cStatus) {
+        case Drv::I2cStatus::I2C_OK:
+          this->log_ACTIVITY_HI_imuSuccess();
+          break;
 
-      case Drv::I2cStatus::I2C_ADDRESS_ERR:
-        this->log_WARNING_HI_imuAddressFailure();
-        break;
+        case Drv::I2cStatus::I2C_ADDRESS_ERR:
+          this->log_WARNING_HI_imuAddressFailure();
+          break;
 
-      case Drv::I2cStatus::I2C_WRITE_ERR:
-        this->log_WARNING_HI_imuWriteError();
-        break;
+        case Drv::I2cStatus::I2C_WRITE_ERR:
+          this->log_WARNING_HI_imuWriteError();
+          break;
 
-      case Drv::I2cStatus::I2C_READ_ERR:
-        this->log_WARNING_HI_imuReadError();
-        break;
+        case Drv::I2cStatus::I2C_READ_ERR:
+          this->log_WARNING_HI_imuReadError();
+          break;
 
-      case Drv::I2cStatus::I2C_OPEN_ERR:
-        this->log_WARNING_HI_imuOpenError();
-        break;
+        case Drv::I2cStatus::I2C_OPEN_ERR:
+          this->log_WARNING_HI_imuOpenError();
+          break;
 
-      case Drv::I2cStatus::I2C_OTHER_ERR:
-       this->log_WARNING_HI_imuOtherError();
-       break;
-      
-      default:
+        case Drv::I2cStatus::I2C_OTHER_ERR:
+        this->log_WARNING_HI_imuOtherError();
         break;
+        
+        default:
+          break;
+      }
     }
   }
 

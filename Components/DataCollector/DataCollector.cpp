@@ -46,7 +46,10 @@ namespace Components {
     sb.deserialize(y);
     sb.deserialize(z);
 
-    this->log_ACTIVITY_HI_dataOutImu(x, y, z);
+    if(iter < MAX_BACKGROUND_MESSAGES) {
+      iter++;
+      this->log_ACTIVITY_HI_dataOutImu(x, y, z);
+    }
   }
 
   void DataCollector ::
@@ -72,7 +75,9 @@ namespace Components {
 
     sb.deserialize(data);
     
+    if(iter < MAX_BACKGROUND_MESSAGES){
     this->log_ACTIVITY_HI_dataOutEps(data);
+    }
   }
 
   // ----------------------------------------------------------------------

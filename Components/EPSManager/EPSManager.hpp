@@ -59,10 +59,10 @@ namespace Components {
       //! Calls an event based on the status returned from the read/write operation
       void checkStatus(Drv::I2cStatus status);
 
-    #ifdef VIRTUAL
+    //#ifdef VIRTUAL
     PRIVATE:
       std::default_random_engine generator;
-    #endif
+    //#endif
 
   };
 

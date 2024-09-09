@@ -84,6 +84,8 @@ namespace Components {
       const I8 Z_L = 0x2C;
       const I8 Z_H = 0x2D;
 
+      int calls;
+
   };
 
 }
