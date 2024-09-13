@@ -60,7 +60,7 @@ namespace Components {
   {
     this->ping_out(0, 123);
     this->ping_out(1, 123);
-    this->ping_out(2, 123);
+    // this->ping_out(2, 123);
   }
 
   void DataCollector ::
@@ -69,15 +69,15 @@ namespace Components {
         Fw::Buffer& fwBuffer
     )
   {
-    U16 data;
-    Fw::SerializeBufferBase& sb = fwBuffer.getSerializeRepr();
-    sb.setBuffLen(fwBuffer.getSize());  // Set available data for deserialization to the whole memory region
+    // U16 data;
+    // Fw::SerializeBufferBase& sb = fwBuffer.getSerializeRepr();
+    // sb.setBuffLen(fwBuffer.getSize());  // Set available data for deserialization to the whole memory region
 
-    sb.deserialize(data);
+    // sb.deserialize(data);
     
-    if(iter < MAX_BACKGROUND_MESSAGES){
-    this->log_ACTIVITY_HI_dataOutEps(data);
-    }
+    // if(iter < MAX_BACKGROUND_MESSAGES){
+    // this->log_ACTIVITY_HI_dataOutEps(data);
+    // }
   }
 
   // ----------------------------------------------------------------------
