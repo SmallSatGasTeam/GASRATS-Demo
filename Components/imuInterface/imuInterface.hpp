@@ -44,6 +44,14 @@ namespace Components {
           U32 value
       ) override;
 
+      //! Handler implementation for startup
+      //!
+      //! startup: runs the startup code
+      void startup_handler(
+          NATIVE_INT_TYPE portNum,  //!< The port number
+          NATIVE_UINT_TYPE context  //!< The call order
+      ) override;
+
     PRIVATE:
 
       // ----------------------------------------------------------------------
@@ -69,6 +77,12 @@ namespace Components {
       //! Calls an event based on the status returned from the read/write operation
       void checkStatus(Drv::I2cStatus status);
 
+      //! Private variable storing boot time
+      //!
+      //! time_point, set on construction of the Flight Logic component
+      //! holds the time the system was last booted.
+      Fw::Time bootTime;
+
     PRIVATE:
 
       // ----------------------------------------------------------------------
@@ -86,6 +100,8 @@ namespace Components {
 
       int calls;
 
+  public:
+    void setTime();
   };
 
 }

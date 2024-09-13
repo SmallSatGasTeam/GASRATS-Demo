@@ -14,6 +14,9 @@ module Components {
         @ collectorRequest: receives a ping from the data collector to send out data
         sync input port dataRequest: FL.data
 
+        @ startup: runs the startup code
+        sync input port startup : Svc.Sched
+
         @ output data for the data collector
         output port collector: FL.serialData
 

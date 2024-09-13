@@ -116,7 +116,7 @@ module FSWDeployment {
       rateGroup1.RateGroupMemberOut[2] -> systemResources.run
       rateGroup1.RateGroupMemberOut[3] -> flightLogic.startup
       rateGroup1.RateGroupMemberOut[4] -> dataCollector.run
-      # rateGroup1.RateGroupMemberOut[4] -> transmissionManager.beacon
+      rateGroup1.RateGroupMemberOut[5] -> imuInterface.startup
 
       # Rate group 2
       rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup2] -> rateGroup2.CycleIn

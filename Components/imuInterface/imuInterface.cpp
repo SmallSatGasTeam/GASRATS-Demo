@@ -21,6 +21,7 @@ namespace Components {
       imuInterfaceComponentBase(compName)
   {
     this->calls = 0;
+    this->bootTime = this->getTime();
   }
 
   imuInterface ::
@@ -33,6 +34,21 @@ namespace Components {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
+  void imuInterface ::startup_handler(NATIVE_INT_TYPE portNum, NATIVE_UINT_TYPE context) {
+    const U32 needed_size = 1024;
+    Fw::Buffer imuConfig = this->allocate_out(0, needed_size);  
+    
+    U32 turnAllOn = 0x0F; // should start the gyro in normal state, with all axis enabled
+
+    Fw::SerializeBufferBase & config = imuConfig.getSerializeRepr();
+    config.resetDeser();
+    config.resetSer();
+    config.serialize(turnAllOn);
+
+    this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfig));
+  }
+
+
   U32 imuInterface ::
     dataRequest_handler(
         NATIVE_INT_TYPE portNum,
@@ -41,7 +57,7 @@ namespace Components {
   {
     #ifndef VIRTUAL
       const U32 needed_size = 1024;
-      Fw::Buffer imuConfig = this->allocate_out(0, needed_size);      
+      Fw::Buffer imuConfig = this->allocate_out(0, needed_size);  
       Fw::Buffer imuData = this->allocate_out(0, needed_size);
 
       if (imuData.getSize() < needed_size || imuConfig.getSize() < needed_size) {
@@ -49,19 +65,11 @@ namespace Components {
         this->deallocate_out(0, imuConfig);
         this->log_WARNING_LO_MemoryAllocationFailed();
       }
-      U32 turnAllOn = 0x0F; // should start the gyro in normal state, with all axis enabled
-
-      Fw::SerializeBufferBase & config = imuConfig.getSerializeRepr();
-      config.resetDeser();
-      config.resetSer();
-      config.serialize(this->CTRL1);
-      config.serialize(turnAllOn);
 
       Fw::SerializeBufferBase & data = imuData.getSerializeRepr();      
       data.resetDeser();
       data.resetSer();
 
-      this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfig));
       this->checkStatus(this->requestI2CData_out(0,this->ADDRESS, imuData));
 
       this->gyroData_out(0, imuData);
@@ -126,4 +134,7 @@ namespace Components {
     }
   }
 
+  void imuInterface::setTime() {
+    this->bootTime = this->getTime();
+  }
 }
