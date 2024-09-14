@@ -29,6 +29,8 @@ module Components {
         @ Writes I2CData: Drv.I2c
         output port i2cWrite: Drv.I2c
 
+        output port i2cWriteRead: Drv.I2cWriteRead
+
         ###############################################################################
         # Events 
         ###############################################################################

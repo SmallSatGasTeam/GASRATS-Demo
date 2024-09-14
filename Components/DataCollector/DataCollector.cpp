@@ -46,10 +46,14 @@ namespace Components {
     sb.deserialize(y);
     sb.deserialize(z);
 
-    if(iter < MAX_BACKGROUND_MESSAGES) {
+    this->tlmWrite_imuX(x);
+    this->tlmWrite_imuY(y);
+    this->tlmWrite_imuZ(z);
+
+    // if(iter < MAX_BACKGROUND_MESSAGES) {
       iter++;
       this->log_ACTIVITY_HI_dataOutImu(x, y, z);
-    }
+    // }
   }
 
   void DataCollector ::

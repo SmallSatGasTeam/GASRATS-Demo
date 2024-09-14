@@ -46,6 +46,7 @@ namespace Components {
     config.serialize(turnAllOn);
 
     this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfig));
+    this->deallocate_out(0,imuConfig);
   }
 
 

@@ -107,6 +107,12 @@
         <channel name="watchDog.heartBeat"/>
     </packet>
 
+    <packet name="DataCollector" id="13" level="3">
+        <channel name="dataCollector.imuX"/>
+        <channel name="dataCollector.imuY"/>
+        <channel name="dataCollector.imuZ"/>
+    </packet>
+
     <!-- Ignored packets -->
 
     <ignore>

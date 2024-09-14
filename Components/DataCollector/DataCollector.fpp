@@ -43,6 +43,16 @@ module Components {
             format "The EPS gave us DATA! data: {}"
 
         ###############################################################################
+        # Telemetry 
+        ###############################################################################
+
+        telemetry imuX: U16
+
+        telemetry imuY: U16
+
+        telemetry imuZ: U16
+
+        ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
         ###############################################################################
         @ Port for requesting the current time
