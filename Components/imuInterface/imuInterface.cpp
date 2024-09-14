@@ -35,18 +35,31 @@ namespace Components {
   // ----------------------------------------------------------------------
 
   void imuInterface::startup_handler(NATIVE_INT_TYPE portNum, NATIVE_UINT_TYPE context) {
-    const U32 needed_size = 1;
+    const U32 needed_size = 1024;
     Fw::Buffer imuConfig = this->allocate_out(0, needed_size);  
+    Fw::Buffer imuTwo = this->allocate_out(0,16);
     
-    U32 turnAllOn = 0x0F; // should start the gyro in normal state, with all axis enabled
+    U32 turnAllOn = 27; // should start the gyro in normal state, with all axis enabled
 
     Fw::SerializeBufferBase & config = imuConfig.getSerializeRepr();
     config.resetDeser();
     config.resetSer();
     config.serialize(turnAllOn);
+    U32 x;
+    config.setBuffLen(imuConfig.getSize());
+    std::cout << "THIS IS WHAT WE'RE LOOKING AT: " << config.deserialize(x) << std::endl;
+    config.serialize(turnAllOn);
+
+    config = imuTwo.getSerializeRepr();
+    config.resetDeser();
+    config.resetSer();
+    U32 num [2] = {0x23,0x20};
+    config.serialize(num);
 
     this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfig));
+    this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuTwo));
     this->deallocate_out(0,imuConfig);
+    this->deallocate_out(0,imuTwo);
   }
 
 
@@ -60,8 +73,8 @@ namespace Components {
       U32 turnAllOn = 0xD4; // should start the gyro in normal state, with all axis enabled
       U32 startAddress = 0x28 | 0x80; // ORing with 0x80 to read multiple bytes
 
-      const U32 writeSize = 1;
-      const U32 readSize = 6;
+      const U32 writeSize = 8;
+      const U32 readSize = 48;
       Fw::Buffer imuConfigSTAddress = this->allocate_out(0, writeSize);
       Fw::Buffer imuData = this->allocate_out(0, readSize);
       
