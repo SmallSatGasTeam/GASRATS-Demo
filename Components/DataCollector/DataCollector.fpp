@@ -46,11 +46,11 @@ module Components {
         # Telemetry 
         ###############################################################################
 
-        telemetry imuX: U16
+        telemetry imuX: U16 format {x}
 
-        telemetry imuY: U16
+        telemetry imuY: U16 format {x}
 
-        telemetry imuZ: U16
+        telemetry imuZ: U16 format {x}
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #

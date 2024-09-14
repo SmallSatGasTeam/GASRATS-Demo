@@ -76,9 +76,11 @@ namespace Components {
       data.resetSer();
       data.serialize(startAddress);
 
-      this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfigSTAddress));
+      // this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfigSTAddress));
 
-      this->checkStatus(this->requestI2CData_out(0, this->ADDRESS, imuData));
+      // this->checkStatus(this->requestI2CData_out(0, this->ADDRESS, imuData));
+
+      this->checkStatus(this->i2cWriteRead_out(0, this->ADDRESS, imuConfigSTAddress, imuData));
 
       this->gyroData_out(0, imuData);
 
