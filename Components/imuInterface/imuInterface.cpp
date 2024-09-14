@@ -34,8 +34,8 @@ namespace Components {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
-  void imuInterface ::startup_handler(NATIVE_INT_TYPE portNum, NATIVE_UINT_TYPE context) {
-    const U32 needed_size = 1024;
+  void imuInterface::startup_handler(NATIVE_INT_TYPE portNum, NATIVE_UINT_TYPE context) {
+    const U32 needed_size = 1;
     Fw::Buffer imuConfig = this->allocate_out(0, needed_size);  
     
     U32 turnAllOn = 0x0F; // should start the gyro in normal state, with all axis enabled
@@ -56,26 +56,33 @@ namespace Components {
     )
   {
     #ifndef VIRTUAL
-      const U32 needed_size = 1024;
-      Fw::Buffer imuConfig = this->allocate_out(0, needed_size);  
-      Fw::Buffer imuData = this->allocate_out(0, needed_size);
+      U32 turnAllOn = 0xD4; // should start the gyro in normal state, with all axis enabled
+      U32 startAddress = 0x28 | 0x80; // ORing with 0x80 to read multiple bytes
 
-      if (imuData.getSize() < needed_size || imuConfig.getSize() < needed_size) {
+      const U32 writeSize = 1;
+      const U32 readSize = 6;
+      Fw::Buffer imuConfigSTAddress = this->allocate_out(0, writeSize);
+      Fw::Buffer imuData = this->allocate_out(0, readSize);
+      
+      if (imuData.getSize() < readSize || imuConfigSTAddress.getSize() < writeSize) {
         this->deallocate_out(0, imuData);
-        this->deallocate_out(0, imuConfig);
+        this->deallocate_out(0, imuConfigSTAddress);
         this->log_WARNING_LO_MemoryAllocationFailed();
-      }
-
-      Fw::SerializeBufferBase & data = imuData.getSerializeRepr();      
+      } 
+      
+      Fw::SerializeBufferBase & data = imuConfigSTAddress.getSerializeRepr();      
       data.resetDeser();
       data.resetSer();
+      data.serialize(startAddress);
 
-      this->checkStatus(this->requestI2CData_out(0,this->ADDRESS, imuData));
+      this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfigSTAddress));
+
+      this->checkStatus(this->requestI2CData_out(0, this->ADDRESS, imuData));
 
       this->gyroData_out(0, imuData);
 
       this->deallocate_out(0, imuData);
-      this->deallocate_out(0,imuConfig);
+      this->deallocate_out(0, imuConfigSTAddress);
     #endif
 
 
