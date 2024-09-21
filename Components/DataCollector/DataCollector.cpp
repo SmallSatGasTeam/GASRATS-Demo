@@ -38,11 +38,12 @@ namespace Components {
         Fw::Buffer& fwBuffer
     )
   {
-    I16 x,y,z;
-    U8 x_h, x_l, y_h, y_l, z_h, z_l;
-    Fw::SerializeBufferBase& sb = fwBuffer.getSerializeRepr();
+    I16 x,y,z; //The data from the IMU comes in as signed 16 bit integers
+    U8 x_h, x_l, y_h, y_l, z_h, z_l; //It's sent in 1 byte increments
+    Fw::SerializeBufferBase& sb = fwBuffer.getSerializeRepr(); //Essentially this just translates the buffer into something readable
     sb.setBuffLen(fwBuffer.getSize());  // Set available data for deserialization to the whole memory region
 
+    //Deserialize the buffer with the lsb coming first
     sb.deserialize(x_l);
     sb.deserialize(x_h);
     sb.deserialize(y_l);
@@ -50,18 +51,21 @@ namespace Components {
     sb.deserialize(z_l);
     sb.deserialize(z_h);
 
+    //Shift the msb right 8 to create space to insert the lsb
     x = (x_h << 8) | x_l;
     y = (y_h << 8) | y_l;
     z = (z_h << 8) | z_l;
 
+    //Write the new values as telemetry
     this->tlmWrite_imuX(x);
     this->tlmWrite_imuY(y);
     this->tlmWrite_imuZ(z);
 
-    // if(iter < MAX_BACKGROUND_MESSAGES) {
+    //Write out the event
+    if(iter < MAX_BACKGROUND_MESSAGES) {
       iter++;
       this->log_ACTIVITY_HI_dataOutImu(x, y, z);
-    // }
+    }
   }
 
   void DataCollector ::
@@ -71,8 +75,6 @@ namespace Components {
     )
   {
     this->ping_out(0, 123);
-    this->ping_out(1, 123);
-    // this->ping_out(2, 123);
   }
 
   void DataCollector ::
@@ -90,22 +92,6 @@ namespace Components {
     // if(iter < MAX_BACKGROUND_MESSAGES){
     // this->log_ACTIVITY_HI_dataOutEps(data);
     // }
-  }
-
-  // ----------------------------------------------------------------------
-  // Handler implementations for user-defined serial input ports
-  // ----------------------------------------------------------------------
-
-  void DataCollector ::
-    aggregate_handler(
-        NATIVE_INT_TYPE portNum,
-        Fw::SerializeBufferBase& buffer
-    )
-  {
-    if(iter < MAX_BACKGROUND_MESSAGES) {
-      this->log_ACTIVITY_HI_dataSuccess();
-      this->iter++;
-    }
   }
 
   // ----------------------------------------------------------------------

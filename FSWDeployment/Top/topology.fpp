@@ -116,7 +116,6 @@ module FSWDeployment {
       rateGroup1.RateGroupMemberOut[2] -> systemResources.run
       rateGroup1.RateGroupMemberOut[3] -> flightLogic.startup
       rateGroup1.RateGroupMemberOut[4] -> dataCollector.run
-      rateGroup1.RateGroupMemberOut[5] -> imuInterface.startup
 
       # Rate group 2
       rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup2] -> rateGroup2.CycleIn
@@ -160,18 +159,13 @@ module FSWDeployment {
       flightLogic.deployAntenna -> antennaDeploy.deploy
       flightLogic.deployCamera -> cameraManager.deploy
       flightLogic.takePic -> cameraManager.takePic
-      flightLogic.fakeData -> dataCollector.aggregate
       flightLogic.epsHealth -> epsManager.returnHealth
       transmissionManager.beaconState -> flightLogic.beaconState
       transmissionManager.sendData -> dummyTranceiverDriver.sendTransToGround
       dummyTranceiverDriver.recvTransFromGround -> transmissionManager.recvData
-      imuInterface.collector -> dataCollector.aggregate
       imuInterface.requestI2CData -> i2cDriver.read
       imuInterface.i2cWrite -> i2cDriver.write
-      imuInterface.i2cWriteRead -> i2cDriver.writeRead
-      dataCollector.ping[0] -> flightLogic.dataRequest
-      dataCollector.ping[1] -> imuInterface.dataRequest
-      dataCollector.ping[2] -> epsManager.dataRequest
+      dataCollector.ping[0] -> imuInterface.dataRequest
       imuInterface.gyroData -> dataCollector.imuIncoming
       imuInterface.allocate -> bufferManager.bufferGetCallee
       imuInterface.deallocate -> bufferManager.bufferSendIn

@@ -35,7 +35,7 @@
 //! MAX_BACKGROUND_MESSAGES
 //!
 //! The number of iterations any background events will run
-#define MAX_BACKGROUND_MESSAGES 15
+#define MAX_BACKGROUND_MESSAGES 1
 
 //! BEACON_MIN
 //!

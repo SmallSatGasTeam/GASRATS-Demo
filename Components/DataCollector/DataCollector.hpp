@@ -51,19 +51,6 @@ namespace Components {
           NATIVE_UINT_TYPE context //!< The call order
       ) override;
 
-    PRIVATE:
-
-      // ----------------------------------------------------------------------
-      // Handler implementations for user-defined serial input ports
-      // ----------------------------------------------------------------------
-
-      //! Handler implementation for aggregate
-      //!
-      //! Recieving data from multiple channels
-      void aggregate_handler(
-          NATIVE_INT_TYPE portNum, //!< The port number
-          Fw::SerializeBufferBase& buffer //!< The serialization buffer
-      ) override;
 
     PRIVATE:
 

@@ -18,6 +18,9 @@ graph LR
     TM[Transmission Manager] --beaconState--> FL
 ```
 
+### Class Diagrams
+![Flight Logic Block Diagram](Flight%20Logic%20diagram.png)
+
 ### Typical Usage
 This component is specifically designed as the application manager and state handler for the GASRATS cubesat and cannot be easily adapted for other purposes.
 
@@ -25,15 +28,14 @@ This component is specifically designed as the application manager and state han
 ## Port Descriptions
 | Name | Type | Description |
 |---|---|---|
+| beaconState | Sync Input | If prompted, sets the beacon to a specific state, always returns current beaconState. |
 |deployAntenna|Output| Prompts Antenna Deploy to deploy the antenna. Antenna Deploy then returns a boolean based on the success of the deployment. |
 | deployCamera | Output | Prompts Camera Manager to deploy the camera. Camera Manager then returns a boolean based on the success of the deployment. |
 | epsHealth | Output | Gets the voltage and current of the EPS. |
 | fakeData | Output | Used only for testing. Sends fake data to the data collector |
+| pingIn | Async Input | Receives pings from the health component. |
 | pingOut | Output | Returns health ping from the health component |
 | takePic | Output | Prompts the Camera Manager to take a picture |
-| beaconState | Sync Input | If prompted, sets the beacon to a specific state, always returns current beaconState. |
-| dataRequest | Sync Input | Allows the data collector to ask for data from the Flight Logic. This is most likely only for testing and will be removed in later versions. |
-| pingIn | Async Input | Receives pings from the health component. |
 | Startup | sync Input | Runs on the 1hz rate group, handles startup operations as well as routine health checks. |
 
 ## Component States
@@ -118,3 +120,4 @@ Add requirements in the chart below
 | Date | Description |
 |---|---|
 |7/8/24| Initial Draft |
+|9/21/24| Removed connection to data collector|

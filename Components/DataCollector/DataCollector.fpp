@@ -14,9 +14,6 @@ module Components {
         @ Receiving calls from the rate group
         sync input port run: Svc.Sched
 
-        @ Recieving data from multiple channels
-        sync input port aggregate: serial
-
         @ Reciving imu buffer data
         sync input port imuIncoming: Fw.BufferSend
 
@@ -24,7 +21,7 @@ module Components {
         sync input port epsIncoming: Fw.BufferSend
 
         @ Port meant for pinging all connected ports for their data
-        output port ping: [3] FL.data
+        output port ping: [1] FL.data
 
         ###############################################################################
         # Events 

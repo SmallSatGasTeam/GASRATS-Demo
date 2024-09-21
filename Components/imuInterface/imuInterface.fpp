@@ -1,24 +1,13 @@
 module Components {
     @ This will be the component that draws information from the IMU we have
-    active component imuInterface {
-
-        # One async command/port is required for active components
-        # This should be overridden by the developers with a useful command/port
-        @ TODO
-        async command TODO opcode 0
+    passive component imuInterface {
 
         ###############################################################################
         # Ports
         ###############################################################################
 
         @ collectorRequest: receives a ping from the data collector to send out data
-        sync input port dataRequest: FL.data
-
-        @ startup: runs the startup code
-        sync input port startup : Svc.Sched
-
-        @ output data for the data collector
-        output port collector: FL.serialData
+        sync input port dataRequest: FL.data #!!!Does this need to be FL.data? we don't seem to have any need to return a value
 
         @ other way to output data for the data collector
         output port gyroData: Fw.BufferSend
@@ -29,12 +18,11 @@ module Components {
         @ Writes I2CData: Drv.I2c
         output port i2cWrite: Drv.I2c
 
-        output port i2cWriteRead: Drv.I2cWriteRead
-
         ###############################################################################
         # Events 
         ###############################################################################
 
+        @The next 6 events are used to check for read and write errors when interfacing with an i2c device
         event imuSuccess \
             severity activity high \
             format "The IMU sent the data"
@@ -62,23 +50,11 @@ module Components {
         @ Allocation failed event
         event MemoryAllocationFailed() severity warning low format "Failed to allocate memory"
 
-        @ For debugging, prints an integer
-        event print(val:U64) severity activity low format "Printing {x}"
-
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
         ###############################################################################
         @ Port for requesting the current time
         time get port timeCaller
-
-        @ Port for sending command registrations
-        command reg port cmdRegOut
-
-        @ Port for receiving commands
-        command recv port cmdIn
-
-        @ Port for sending command responses
-        command resp port cmdResponseOut
 
         @ Port for sending textual representation of events
         text event port logTextOut

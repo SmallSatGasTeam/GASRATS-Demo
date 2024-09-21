@@ -1,52 +1,38 @@
 # Components::imuInterface
 
-This will be the component that draws information from the IMU we have
+This component provides all needed i2c signals in order to run the i2c driver.
 
 ## Usage Examples
-Add usage examples here
+Used to interface with an L3GD20H gyroscope.
 
 ### Diagrams
 Add diagrams here
 
 ### Typical Usage
-And the typical usage of the component here
+Must be connected to the data collector and to fprime i2cDriver
 
 ## Class Diagram
-Add a class diagram here
+![IMU Diagram](./IMU%20diagram.png)
 
 ## Port Descriptions
 | Name | Description |
 |---|---|
-|---|---|
-
-## Component States
-Add component states in the chart below
-| Name | Description |
-|---|---|
-|---|---|
-
-## Sequence Diagrams
-Add sequence diagrams here
-
-## Parameters
-| Name | Description |
-|---|---|
-|---|---|
-
-## Commands
-| Name | Description |
-|---|---|
-|---|---|
+|allocate| Calls the buffer manager to allocate and return a buffer with a specific length.|
+|deallocate| Sends an existing buffer to the buffer manager to deallocate it.| 
+|gyroData| Sends the data pulled from the IMU to the data collector|
+|i2cWrite|Calls the i2cDriver's write function.|
+|requestI2cData|Calls the i2cDriver's read function.|
 
 ## Events
 | Name | Description |
 |---|---|
-|---|---|
-
-## Telemetry
-| Name | Description |
-|---|---|
-|---|---|
+|imuSuccess|Notifies that the IMU successfully sent data.|
+|imuAddressFailure| Warns of and invalid i2c address.|
+|imuWriteError| Warns i2c write failed.|
+|imuReadError| Warns i2c read failed.|
+|imuOpenError| Warns i2c open failure.|
+|imuOtherError| Warns something else went wrong with i2c.|
+|MemoryAllocationFailed| Warns a buffer failed to be properly allocated|
 
 ## Unit Tests
 Add unit test descriptions in the chart below
@@ -63,4 +49,4 @@ Add requirements in the chart below
 ## Change Log
 | Date | Description |
 |---|---|
-|---| Initial Draft |
+|9/21/24| Initial Draft |

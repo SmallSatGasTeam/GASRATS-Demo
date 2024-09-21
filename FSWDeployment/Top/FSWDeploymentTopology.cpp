@@ -173,7 +173,7 @@ void setupTopology(const TopologyState& state) {
 
     //Get Boot Time
     flightLogic.setTime();
-    imuInterface.setTime();
+    imuInterface.startup();
 
     //Configure GPIO ports
     bool gpio_success = gpioDriver.open(HEARTBEAT_GPIO+512, Drv::LinuxGpioDriver::GpioDirection::GPIO_OUT);

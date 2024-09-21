@@ -105,9 +105,6 @@ module FSWDeployment {
   instance dataCollector: Components.DataCollector base id 0x1100 \
     queue size Default.QUEUE_SIZE
 
-  instance imuInterface: Components.imuInterface base id 0x1200 \
-    queue size Default.QUEUE_SIZE
-
   instance dummyTranceiverDriver: Components.DummyTranceiverDriver base id 0x1400 \
     queue size Default.QUEUE_SIZE \
     stack size Default.STACK_SIZE \
@@ -161,5 +158,7 @@ module FSWDeployment {
   instance gpioDriver: Drv.LinuxGpioDriver base id 0x4F00
 
   instance watchDog: Components.WatchDog base id 0x5000
+  
+  instance imuInterface: Components.imuInterface base id 0x5100
 
 }

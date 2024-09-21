@@ -8,7 +8,6 @@
 #include "Components/componentConfig/Constants.hpp"
 #include "FpConfig.hpp"
 #include "fprime/Drv/LinuxI2cDriver/LinuxI2cDriver.hpp"
-#include <iostream>
 
 namespace Components {
 
@@ -21,7 +20,6 @@ namespace Components {
       imuInterfaceComponentBase(compName)
   {
     this->calls = 0;
-    this->bootTime = this->getTime();
   }
 
   imuInterface ::
@@ -34,25 +32,42 @@ namespace Components {
   // Handler implementations for user-defined typed input ports
   // ----------------------------------------------------------------------
 
-  void imuInterface::startup_handler(NATIVE_INT_TYPE portNum, NATIVE_UINT_TYPE context) {
-    Fw::Buffer imuConfig = this->allocate_out(0, 2);  
-    Fw::Buffer imuTwo = this->allocate_out(0, 2);
+  void imuInterface ::startup() {
+    //Allocate 2 buffers each of size 2 bytes
+    const U32 bufferSize = 2;
+    Fw::Buffer imuConfig = this->allocate_out(0, bufferSize);  
+    Fw::Buffer imuTwo = this->allocate_out(0, bufferSize);
+
+    //Check that the buffers were properly allocated
+    if (imuConfig.getSize() < bufferSize || imuTwo.getSize() < bufferSize) {
+        this->deallocate_out(0, imuConfig);
+        this->deallocate_out(0, imuTwo);
+        this->log_WARNING_LO_MemoryAllocationFailed();
+        return;
+      } 
   
+    //Prepare imuConfig to be loaded with values
     Fw::SerializeBufferBase & config = imuConfig.getSerializeRepr();
     U8 sampleRate = 0x20;
-    // config.resetDeser();
+    config.resetDeser();
     config.resetSer();
+    //Put the address for register CTRL1 and the value ALL_ON in the buffer (each is 1 byte)
     config.serialize(this->CTRL1);
     config.serialize(this->ALL_ON);
 
+    //Prepare imuTwo to be loaded with values
     config = imuTwo.getSerializeRepr();
     config.resetDeser();
     config.resetSer();
+    //Put the address for register CTRL4 and the value to set the sample reate on the buffer (each is 1 byte)
     config.serialize(this->CTRL4);
     config.serialize(sampleRate);
 
+    //Write the values to the imu and check if it was written successfully
     this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfig));
     this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuTwo));
+
+    //Deallocate the buffers to avoid a memory leak
     this->deallocate_out(0,imuConfig);
     this->deallocate_out(0,imuTwo);
   }
@@ -67,49 +82,42 @@ namespace Components {
     #ifndef VIRTUAL
       U8 startAddress = this->X_L | 0x80; // ORing with 0x80 to read multiple bytes
 
+      //Set sizes of buffers
       const U32 writeSize = 1;
       const U32 readSize = 6;
+
+      //Allocate buffers
       Fw::Buffer imuConfigSTAddress = this->allocate_out(0, writeSize);
       Fw::Buffer imuData = this->allocate_out(0, readSize);
       
+      //Check buffers were allocated properly
       if (imuData.getSize() < readSize || imuConfigSTAddress.getSize() < writeSize) {
         this->deallocate_out(0, imuData);
         this->deallocate_out(0, imuConfigSTAddress);
         this->log_WARNING_LO_MemoryAllocationFailed();
+        return value;
       } 
       
+      //Prepare imuConfigSTAddress to have data
       Fw::SerializeBufferBase & data = imuConfigSTAddress.getSerializeRepr();      
       data.resetDeser();
       data.resetSer();
-      data.serialize(startAddress);
+      data.serialize(startAddress); //Add the start address to the buffer
 
+      //Write the startAddress and then read the next 6 bytes from the imu
       this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfigSTAddress));
       this->checkStatus(this->requestI2CData_out(0, this->ADDRESS, imuData));
 
-      //this->checkStatus(this->i2cWriteRead_out(0, this->ADDRESS, imuConfigSTAddress, imuData));
-
+      //Output the imuData
       this->gyroData_out(0, imuData);
 
+      //Deallocate the buffers
       this->deallocate_out(0, imuData);
       this->deallocate_out(0, imuConfigSTAddress);
     #endif
 
 
     return value;
-  }
-
-  // ----------------------------------------------------------------------
-  // Handler implementations for commands
-  // ----------------------------------------------------------------------
-
-  void imuInterface ::
-    TODO_cmdHandler(
-        FwOpcodeType opCode,
-        U32 cmdSeq
-    )
-  {
-    // TODO
-    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 
   // ----------------------------------------------------------------------
@@ -148,9 +156,5 @@ namespace Components {
           break;
       }
     }
-  }
-
-  void imuInterface::setTime() {
-    this->bootTime = this->getTime();
   }
 }
