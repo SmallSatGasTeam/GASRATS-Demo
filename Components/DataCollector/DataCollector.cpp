@@ -38,13 +38,21 @@ namespace Components {
         Fw::Buffer& fwBuffer
     )
   {
-    U16 x,y,z;
+    I16 x,y,z;
+    U8 x_h, x_l, y_h, y_l, z_h, z_l;
     Fw::SerializeBufferBase& sb = fwBuffer.getSerializeRepr();
     sb.setBuffLen(fwBuffer.getSize());  // Set available data for deserialization to the whole memory region
 
-    sb.deserialize(x);
-    sb.deserialize(y);
-    sb.deserialize(z);
+    sb.deserialize(x_l);
+    sb.deserialize(x_h);
+    sb.deserialize(y_l);
+    sb.deserialize(y_h);
+    sb.deserialize(z_l);
+    sb.deserialize(z_h);
+
+    x = (x_h << 8) | x_l;
+    y = (y_h << 8) | y_l;
+    z = (z_h << 8) | z_l;
 
     this->tlmWrite_imuX(x);
     this->tlmWrite_imuY(y);
