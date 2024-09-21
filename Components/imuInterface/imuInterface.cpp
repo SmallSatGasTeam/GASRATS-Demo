@@ -35,26 +35,21 @@ namespace Components {
   // ----------------------------------------------------------------------
 
   void imuInterface::startup_handler(NATIVE_INT_TYPE portNum, NATIVE_UINT_TYPE context) {
-    Fw::Buffer imuConfig = this->allocate_out(0, 1);  
+    Fw::Buffer imuConfig = this->allocate_out(0, 2);  
     Fw::Buffer imuTwo = this->allocate_out(0, 2);
-    
-    U8 turnAllOn = 0x0F; // should start the gyro in normal state, with all axis enabled
-
+  
     Fw::SerializeBufferBase & config = imuConfig.getSerializeRepr();
+    U8 sampleRate = 0x20;
     // config.resetDeser();
     config.resetSer();
-    config.serialize(turnAllOn);
-    U8 x;
-    // config.setBuffLen(imuConfig.getSize());
-    config.deserialize(x);
-    std::cout << "THIS IS WHAT WE'RE WRITING: " << x << std::endl;
-    config.serialize(turnAllOn);
+    config.serialize(this->CTRL1);
+    config.serialize(this->ALL_ON);
 
     config = imuTwo.getSerializeRepr();
     config.resetDeser();
     config.resetSer();
-    U8 num [2] = {0x23,0x20};
-    config.serialize(num);
+    config.serialize(this->CTRL4);
+    config.serialize(sampleRate);
 
     this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfig));
     this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuTwo));
@@ -70,11 +65,10 @@ namespace Components {
     )
   {
     #ifndef VIRTUAL
-      U32 turnAllOn = 0xD4; // should start the gyro in normal state, with all axis enabled
-      U32 startAddress = 0x28 | 0x80; // ORing with 0x80 to read multiple bytes
+      U8 startAddress = this->X_L | 0x80; // ORing with 0x80 to read multiple bytes
 
-      const U32 writeSize = 8;
-      const U32 readSize = 48;
+      const U32 writeSize = 1;
+      const U32 readSize = 6;
       Fw::Buffer imuConfigSTAddress = this->allocate_out(0, writeSize);
       Fw::Buffer imuData = this->allocate_out(0, readSize);
       
@@ -89,11 +83,10 @@ namespace Components {
       data.resetSer();
       data.serialize(startAddress);
 
-      // this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfigSTAddress));
+      this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfigSTAddress));
+      this->checkStatus(this->requestI2CData_out(0, this->ADDRESS, imuData));
 
-      // this->checkStatus(this->requestI2CData_out(0, this->ADDRESS, imuData));
-
-      this->checkStatus(this->i2cWriteRead_out(0, this->ADDRESS, imuConfigSTAddress, imuData));
+      //this->checkStatus(this->i2cWriteRead_out(0, this->ADDRESS, imuConfigSTAddress, imuData));
 
       this->gyroData_out(0, imuData);
 

@@ -88,15 +88,16 @@ namespace Components {
       // ----------------------------------------------------------------------
       // Helper Variables
       // ----------------------------------------------------------------------
-      const I8 ADDRESS = 0x6B;
-      const I8 CTRL1 = 0x20;
-      const I8 CTRL4 = 0x23;
-      const I8 X_L = 0x28;
-      const I8 X_H = 0x29;
-      const I8 Y_L = 0x2A;
-      const I8 Y_H = 0x2B;
-      const I8 Z_L = 0x2C;
-      const I8 Z_H = 0x2D;
+      const U32 ADDRESS = 0x6B;
+      const U8 CTRL1 = 0x20;
+      const U8 CTRL4 = 0x23;
+      const U8 X_L = 0x28;
+      const U8 X_H = 0x29;
+      const U8 Y_L = 0x2A;
+      const U8 Y_H = 0x2B;
+      const U8 Z_L = 0x2C;
+      const U8 Z_H = 0x2D;
+      const U8 ALL_ON = 0x0F;
 
       int calls;
 
