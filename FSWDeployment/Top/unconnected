@@ -5,13 +5,17 @@ Topology FSWDeployment.FSWDeployment:
   FSWDeployment.cmdSeq.seqDone
   FSWDeployment.cmdSeq.seqRunIn
   FSWDeployment.comQueue.run
-  FSWDeployment.dataCollector.run
   FSWDeployment.deframer.framedPoll
   FSWDeployment.deframer.schedIn
   FSWDeployment.fileDownlink.FileComplete
   FSWDeployment.fileDownlink.SendFile
+  FSWDeployment.flightLogic.productGetOut
+  FSWDeployment.flightLogic.productRecvIn
+  FSWDeployment.flightLogic.productRequestOut
+  FSWDeployment.flightLogic.productSendOut
+  FSWDeployment.gpioDriver.gpioRead
+  FSWDeployment.gpioDriver.gpioWrite
+  FSWDeployment.gpioDriver.intOut
   FSWDeployment.health.WdogStroke
-  FSWDeployment.i2cDriver.write
-  FSWDeployment.i2cDriver.writeRead
   FSWDeployment.tlmSend.TlmGet
 

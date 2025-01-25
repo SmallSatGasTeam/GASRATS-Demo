@@ -33,11 +33,6 @@ module FSWDeployment {
     stack size Default.STACK_SIZE \
     priority 118
 
-  instance rateGroup4: Svc.ActiveRateGroup base id 0x1500 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 117
-
   instance cmdDisp: Svc.CommandDispatcher base id 0x0500 \
     queue size 20 \
     stack size Default.STACK_SIZE \
@@ -107,10 +102,18 @@ module FSWDeployment {
     stack size Default.STACK_SIZE \
     priority 75
 
+  instance dataCollector: Components.DataCollector base id 0x1100 \
+    queue size Default.QUEUE_SIZE
+
   instance dummyTranceiverDriver: Components.DummyTranceiverDriver base id 0x1400 \
     queue size Default.QUEUE_SIZE \
     stack size Default.STACK_SIZE \
     priority 75
+
+  instance rateGroup4: Svc.ActiveRateGroup base id 0x1500 \
+    queue size Default.QUEUE_SIZE \
+    stack size Default.STACK_SIZE \
+    priority 117
 
   # ----------------------------------------------------------------------
   # Queued component instances
@@ -124,7 +127,7 @@ module FSWDeployment {
   # ----------------------------------------------------------------------
 
   @ Communications driver. May be swapped with other com drivers like UART or TCP
-  instance comDriver: Drv.TcpClient base id 0x4000
+  instance comDriver: Drv.TcpServer base id 0x4000
 
   instance framer: Svc.Framer base id 0x4100
 
@@ -149,5 +152,13 @@ module FSWDeployment {
   instance antennaDeploy: Components.AntennaDeploy base id 0x4C00
 
   instance epsManager: Components.EPSManager base id 0x4D00
+
+  instance i2cDriver: Drv.LinuxI2cDriver base id 0x4E00
+
+  instance gpioDriver: Drv.LinuxGpioDriver base id 0x4F00
+
+  instance watchDog: Components.WatchDog base id 0x5000
+  
+  instance imuInterface: Components.imuInterface base id 0x5100
 
 }

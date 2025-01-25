@@ -84,8 +84,9 @@
         <channel name="flightLogic.antennaState"/>
         <channel name="flightLogic.cameraState"/>
         <channel name="flightLogic.beaconState"/>
-        <channel name="flightLogic.lowPower"/>
+        <channel name="flightLogic.safe"/>
         <channel name="flightLogic.detumbled"/>
+        <channel name="flightLogic.bootTime"/>
     </packet>
 
     <packet name="AntennaDeploy" id="9" level="3">
@@ -100,6 +101,16 @@
     <packet name="EPSManager" id="11" level="3">
         <channel name="epsManager.voltage"/>
         <channel name="epsManager.current"/>
+    </packet>
+
+    <packet name="WatchDog" id="12" level="3">
+        <channel name="watchDog.heartBeat"/>
+    </packet>
+
+    <packet name="DataCollector" id="13" level="3">
+        <channel name="dataCollector.imuX"/>
+        <channel name="dataCollector.imuY"/>
+        <channel name="dataCollector.imuZ"/>
     </packet>
 
     <!-- Ignored packets -->

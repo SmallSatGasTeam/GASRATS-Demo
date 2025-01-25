@@ -8,8 +8,6 @@ module FL {
     port getClock () -> U32
     @ Pings another component and returns a bool
     port deploy () -> bool
-    @ Pings another component and returns a bool
-    port getHealth () -> GASRATS.Health
     @ Gets state of the beacon
     port beaconState (value: GASRATS.beacon) -> GASRATS.beacon
     @ Just to transmit dummy data

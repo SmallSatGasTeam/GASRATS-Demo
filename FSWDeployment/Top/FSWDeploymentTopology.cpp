@@ -6,6 +6,7 @@
 // Provides access to autocoded functions
 #include <FSWDeployment/Top/FSWDeploymentTopologyAc.hpp>
 #include <FSWDeployment/Top/FSWDeploymentPacketsAc.hpp>
+#include <Components/componentConfig/Constants.hpp>
 
 // Necessary project-specified types
 #include <Fw/Types/MallocAllocator.hpp>
@@ -164,6 +165,20 @@ void setupTopology(const TopologyState& state) {
         // Uplink is configured for receive so a socket task is started
         comDriver.configure(state.hostname, state.port);
         comDriver.startSocketTask(name, true, COMM_PRIORITY, Default::STACK_SIZE);
+    }
+
+    //Configure i2c Device
+    const char* device = "/dev/i2c-1";
+    i2cDriver.open(device);
+
+    //Get Boot Time
+    flightLogic.setTime();
+    imuInterface.startup();
+
+    //Configure GPIO ports
+    bool gpio_success = gpioDriver.open(HEARTBEAT_GPIO+512, Drv::LinuxGpioDriver::GpioDirection::GPIO_OUT);
+    if (!gpio_success) {
+        Fw::Logger::logMsg("[ERROR] Failed to open GPIO pin\n");
     }
 }
 
