@@ -1,0 +1,87 @@
+// ======================================================================
+// \title  imuInterface.hpp
+// \author devin
+// \brief  hpp file for imuInterface component implementation class
+// ======================================================================
+
+#ifndef Components_imuInterface_HPP
+#define Components_imuInterface_HPP
+
+#include "Components/imuInterface/imuInterfaceComponentAc.hpp"
+#include "Components/componentConfig/Constants.hpp"
+
+namespace Components {
+
+  class imuInterface :
+    public imuInterfaceComponentBase
+  {
+
+    public:
+
+      // ----------------------------------------------------------------------
+      // Component construction and destruction
+      // ----------------------------------------------------------------------
+
+      //! Construct imuInterface object
+      imuInterface(
+          const char* const compName //!< The component name
+      );
+
+      //! Destroy imuInterface object
+      ~imuInterface();
+
+      //! Startup
+      //!
+      //! Sets the IMU to measure at 2000dps and sets x, y, and z axis to on
+      void startup();
+
+    PRIVATE:
+
+      // ----------------------------------------------------------------------
+      // Handler implementations for user-defined typed input ports
+      // ----------------------------------------------------------------------
+
+      //! Handler implementation for dataRequest
+      //!
+      //! dataRequest: receives a ping from the data collector to send out data
+      U32 dataRequest_handler(
+          NATIVE_INT_TYPE portNum, //!< The port number
+          U32 value
+      ) override;
+
+    PRIVATE:
+
+      // ----------------------------------------------------------------------
+      // Helper Functions
+      // ----------------------------------------------------------------------
+
+      //! checkStatus
+      //!
+      //! Calls an event based on the status returned from the read/write operation
+      void checkStatus(Drv::I2cStatus status);
+
+    PRIVATE:
+
+      // ----------------------------------------------------------------------
+      // Helper Variables
+      // ----------------------------------------------------------------------
+      const U32 ADDRESS = 0x6B;
+      const U8 CTRL1 = 0x20;
+      const U8 CTRL4 = 0x23;
+      const U8 X_L = 0x28;
+      const U8 X_H = 0x29;
+      const U8 Y_L = 0x2A;
+      const U8 Y_H = 0x2B;
+      const U8 Z_L = 0x2C;
+      const U8 Z_H = 0x2D;
+      const U8 ALL_ON = 0x0F;
+
+      int calls;
+
+  public:
+    void setTime();
+  };
+
+}
+
+#endif
