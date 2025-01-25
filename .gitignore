@@ -16,3 +16,4 @@ visualize*
 *.gcov
 .*/
 files/*
+build/
