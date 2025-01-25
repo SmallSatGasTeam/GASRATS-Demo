@@ -36,6 +36,14 @@ module Components {
         sync input port beaconState : FL.beaconState
 
         #-----------------------------------------------------------------------
+        # FlightLogic InInternal Ports 
+        #-----------------------------------------------------------------------
+
+        @ Saves flags to a file
+        internal port saveFlags()
+
+
+        #-----------------------------------------------------------------------
         # Commands
         #-----------------------------------------------------------------------
 
@@ -64,6 +72,11 @@ module Components {
         @ rebooting: Notifies that the OBC is rebooting the satellite
         event rebooting severity fatal format "Rebooting!"
 
+        @ Failed to open a file
+        event fileFailed(file: string) severity warning high format "Failed to open {}."
+
+        event randoTest(help: U32,whoops:U32) severity activity high format "{}, {}"
+
 
         #-----------------------------------------------------------------------
         # Telemetry
@@ -78,11 +91,14 @@ module Components {
         @ beaconState: tells the state of the beacon
         telemetry beaconState: GASRATS.beacon 
 
-        @ lowPower: Shows whether or not we're in low power mode
-        telemetry lowPower: bool
+        @ safe: Shows whether or not we're in safe mode
+        telemetry safe: bool
 
         @ detumbled: Shows whether or not the OBC thinks we're detumbled
         telemetry detumbled: bool
+
+        @ bootTime: Sends the last bootTime
+        telemetry bootTime: U32 update on change
 
 
         ###############################################################################
@@ -109,11 +125,25 @@ module Components {
         @ Port for sending telemetry channels to downlink
         telemetry port tlmOut
 
-        @ Port to return the value of a parameter
-        param get port prmGetOut
+        @ A port for getting a data product container
+        product get port productGetOut
 
-        @Port to set the value of a parameter
-        param set port prmSetOut
+        @ A port for requesting a data product container
+        product request port productRequestOut
+
+        @ An async port for receiving a requested data product container
+        async product recv port productRecvIn priority 10 assert
+
+        @ A port for sending a filled data product container
+        product send port productSendOut
+
+        # @ Port to return the value of a parameter
+        # param get port prmGetOut
+
+        # @Port to set the value of a parameter
+        # param set port prmSetOut
+
+        
 
     }
 }

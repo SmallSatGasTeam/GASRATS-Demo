@@ -25,7 +25,7 @@
 //!
 //! The number of minutes to wait from system power on until deployment
 //!!! WARNING !!! This MUST be 30 or more for actual mission deployment, can be set to lower number for testing purposes
-#define DEPLOY_WAIT_TIME .25
+#define DEPLOY_WAIT_TIME 1
 
 //! DEPLOY_WAIT_ITER
 //!
@@ -35,15 +35,19 @@
 //! MAX_BACKGROUND_MESSAGES
 //!
 //! The number of iterations any background events will run
-#define MAX_BACKGROUND_MESSAGES 15
+#define MAX_BACKGROUND_MESSAGES 1
 
 //! BEACON_MIN
 //!
 //! The number of minutes between each beacon
 #define BEACON_MIN .1
 
+//! BEACON_INTERVAL
+//!
+//! The number of seconds between each beacon, used to set rategroup 4
 #define BEACON_INTERVAL 60*BEACON_MIN
 
-#define VIRTUAL
+#define HEARTBEAT_GPIO 25
+
 
 #endif

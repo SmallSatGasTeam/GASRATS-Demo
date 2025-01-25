@@ -31,7 +31,7 @@ graph LR
 |---|---|---|
 |sendData|Output|Collects data from ground, prepares it to be sent, then sends it to the tranceiver driver to be sent to ground. |
 |recvData| Async Input | Receives data originating from the ground station from the tranceiver driver, translates the packet into readable commands, and then sends out those commands.
-|beaconState|Output|Sends either INITIAL, STANDARD, ERROR, OFF, or RETURN_STATE to Flight Logic then receives the current beacon state. If RETURN_STATE is sent, Flight Logic will only return the current beacon state. Otherwise, Flight Logic will update the beacon state to the provided argument and then return that value. |
+|beaconState|Output|Sends either INITIAL, STANDARD, or RETURN_STATE to Flight Logic then receives the current beacon state. If INITIAL or STANDARD are sent, Flight Logic will set the beacon to that state. Otherwise, Flight Logic makes no change to the state and just returns the current value.|
 |beacon| Sync Input | Connects to a rate group running at 1/60hz that will call sendData to send out a beacon every 1 minute.|
 
 ## Component States
