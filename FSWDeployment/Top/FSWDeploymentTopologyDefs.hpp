@@ -47,49 +47,49 @@ struct TopologyState {
  * ```
  */
 namespace PingEntries {
-namespace blockDrv {
+namespace FSWDeployment_blockDrv {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace tlmSend {
+namespace FSWDeployment_tlmSend {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace cmdDisp {
+namespace FSWDeployment_cmdDisp {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace cmdSeq {
+namespace FSWDeployment_cmdSeq {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace eventLogger {
+namespace FSWDeployment_eventLogger {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace fileDownlink {
+namespace FSWDeployment_fileDownlink {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace fileManager {
+namespace FSWDeployment_fileManager {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace fileUplink {
+namespace FSWDeployment_fileUplink {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace prmDb {
+namespace FSWDeployment_prmDb {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace rateGroup1 {
+namespace FSWDeployment_rateGroup1 {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace rateGroup2 {
+namespace FSWDeployment_rateGroup2 {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace rateGroup3 {
+namespace FSWDeployment_rateGroup3 {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace rateGroup4 {
+namespace FSWDeployment_rateGroup4 {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace flightLogic {
+namespace FSWDeployment_flightLogic {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace cameraManager {
+namespace FSWDeployment_cameraManager {
 enum { WARN = 3, FATAL = 5 };
 } 
 }  // namespace PingEntries

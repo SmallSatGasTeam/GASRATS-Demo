@@ -134,10 +134,12 @@ class FlightLogic : public FlightLogicComponentBase {
     bool safe;
 
 #ifdef VIRTUAL
-    char filePath[22] = "../../files/flags.txt";
+    char fileString[22] = "../../files/flags.txt";
 #else
-    char filePath[34] = "/home/gas/FSWDeployment/flags.txt";
+    char fileString[34] = "/home/gas/FSWDeployment/flags.txt";
 #endif
+
+  Fw::String filePath;
 
   public:
     void setTime();

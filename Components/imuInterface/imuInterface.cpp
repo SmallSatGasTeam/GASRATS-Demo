@@ -56,12 +56,12 @@ namespace Components {
     config.serialize(this->ALL_ON);
 
     //Prepare imuTwo to be loaded with values
-    config = imuTwo.getSerializeRepr();
-    config.resetDeser();
-    config.resetSer();
+    Fw::SerializeBufferBase & config2 = imuTwo.getSerializeRepr();
+    config2.resetDeser();
+    config2.resetSer();
     //Put the address for register CTRL4 and the value to set the sample reate on the buffer (each is 1 byte)
-    config.serialize(this->CTRL4);
-    config.serialize(sampleRate);
+    config2.serialize(this->CTRL4);
+    config2.serialize(sampleRate);
 
     //Write the values to the imu and check if it was written successfully
     this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfig));

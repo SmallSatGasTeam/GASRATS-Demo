@@ -7,7 +7,6 @@
         <channel name="rateGroup1.RgMaxTime"/>
         <channel name="rateGroup2.RgMaxTime"/>
         <channel name="rateGroup3.RgMaxTime"/>
-        <channel name="rateGroup4.RgMaxTime"/>
         <channel name="cmdSeq.CS_LoadCommands"/>
         <channel name="cmdSeq.CS_CancelCommands"/>
         <channel name="cmdSeq.CS_CommandsExecuted"/>
@@ -28,7 +27,6 @@
         <channel name="rateGroup1.RgCycleSlips"/>
         <channel name="rateGroup2.RgCycleSlips"/>
         <channel name="rateGroup3.RgCycleSlips"/>
-        <channel name="rateGroup4.RgCycleSlips"/>
         <channel name="cmdSeq.CS_Errors"/>
         <channel name="fileUplink.Warnings"/>
         <channel name="fileDownlink.Warnings"/>
@@ -55,12 +53,7 @@
         <channel name="systemResources.NON_VOLATILE_FREE"/>
     </packet>
 
-    <packet name="SystemRes2" id="6" level="2">
-        <channel name="systemResources.FRAMEWORK_VERSION"/>
-        <channel name="systemResources.PROJECT_VERSION"/>
-    </packet>
-
-    <packet name="SystemRes3" id="7" level="2">
+    <packet name="SystemRes2" id="7" level="2">
         <channel name="systemResources.CPU"/>
         <channel name="systemResources.CPU_00"/>
         <channel name="systemResources.CPU_01"/>

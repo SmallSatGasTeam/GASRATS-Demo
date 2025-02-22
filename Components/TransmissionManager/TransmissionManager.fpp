@@ -36,7 +36,7 @@ module Components {
             format "Sending {x}"
 
         @ Announces beacon has been set to a specific state
-        event beaconSet(state: GASRATS.beacon) \
+        event beaconSet($state: GASRATS.beacon) \
             severity activity high \
             format "Beacon has been set to {}"
 
@@ -53,7 +53,7 @@ module Components {
         sync command confirmConnection
 
         @ Command used to set the beacon to a specific state. Only use to set to INITIAL or STANDARD
-        async command setBeacon (state: GASRATS.beacon)
+        async command setBeacon ($state: GASRATS.beacon)
 
         @ Sends data from the satellite to ground
         async command sendTransToGround (data: U32)

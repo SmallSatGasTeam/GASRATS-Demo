@@ -13,9 +13,10 @@ namespace Components {
 // ----------------------------------------------------------------------
 
 FlightLogic ::FlightLogic(const char* const compName) : FlightLogicComponentBase(compName) {
+    filePath = fileString;
     // Try to open the file
     std::ifstream file;
-    file.open(filePath, std::ios::in);
+    file.open(filePath.toChar(), std::ios::in);
     if (file.is_open()) {
         U64 temp;
 
@@ -157,7 +158,8 @@ void FlightLogic ::startup_handler(NATIVE_INT_TYPE portNum, NATIVE_UINT_TYPE con
                     }
                     // If failed twice, throw an error
                     else {
-                        this->log_WARNING_HI_deployFailure("Antenna");
+                        Fw::String antenna("Antenna");
+                        this->log_WARNING_HI_deployFailure(antenna);
                     }
                 }
 
@@ -179,7 +181,8 @@ void FlightLogic ::startup_handler(NATIVE_INT_TYPE portNum, NATIVE_UINT_TYPE con
                     }
                     // else throw failure
                     else {
-                        this->log_WARNING_HI_deployFailure("Camera");
+                        Fw::String camera("Camera");
+                        this->log_WARNING_HI_deployFailure(camera);
                     }
                 }
 
@@ -287,7 +290,7 @@ void FlightLogic ::resetFlags_cmdHandler(FwOpcodeType opCode, U32 cmdSeq) {
 void FlightLogic ::saveFlags_internalInterfaceHandler() {
     // Open the file
     std::ofstream file;
-    file.open(this->filePath, std::ios::out | std::ios::trunc);
+    file.open(this->filePath.toChar(), std::ios::out | std::ios::trunc);
     if (!file.is_open()) {
         this->log_WARNING_HI_fileFailed(this->filePath);
         return;

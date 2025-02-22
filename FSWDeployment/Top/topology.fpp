@@ -4,12 +4,12 @@ module FSWDeployment {
   # Symbolic constants for port numbers
   # ----------------------------------------------------------------------
 
-    enum Ports_RateGroups {
-      rateGroup1
-      rateGroup2
-      rateGroup3
-      rateGroup4
-    }
+  enum Ports_RateGroups {
+    rateGroup1
+    rateGroup2
+    rateGroup3
+    rateGroup4
+  }
 
   topology FSWDeployment {
 
@@ -19,7 +19,6 @@ module FSWDeployment {
 
     instance $health
     instance blockDrv
-    instance bufferManager
     instance tlmSend
     instance cmdDisp
     instance cmdSeq
@@ -33,10 +32,9 @@ module FSWDeployment {
     instance fileDownlink
     instance fileManager
     instance fileUplink
+    instance bufferManager
     instance framer
-    instance gpioDriver
-    instance i2cDriver
-    instance posixTime
+    instance chronoTime
     instance prmDb
     instance rateGroup1
     instance rateGroup2
@@ -46,6 +44,8 @@ module FSWDeployment {
     instance textLogger
     instance systemResources
 
+    instance gpioDriver
+    instance i2cDriver
 
     instance antennaDeploy
     instance cameraManager
@@ -71,7 +71,7 @@ module FSWDeployment {
 
     text event connections instance textLogger
 
-    time connections instance posixTime
+    time connections instance chronoTime
 
     health connections instance $health
 
@@ -114,8 +114,6 @@ module FSWDeployment {
       rateGroup1.RateGroupMemberOut[0] -> tlmSend.Run
       rateGroup1.RateGroupMemberOut[1] -> fileDownlink.Run
       rateGroup1.RateGroupMemberOut[2] -> systemResources.run
-      rateGroup1.RateGroupMemberOut[3] -> flightLogic.startup
-      rateGroup1.RateGroupMemberOut[4] -> dataCollector.run
 
       # Rate group 2
       rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup2] -> rateGroup2.CycleIn
