@@ -55,7 +55,10 @@ namespace Components {
   {
     // this is where the actual timer code will be placed
     // figure out why the struct cannot be defined.
+
+    // struct itimerspec its = {};
     struct itimerspec its = {};
+
     its.it_value.tv_sec = 1; // timer starts after 1 second
     its.it_value.tv_nsec = 0;
     its.it_interval.tv_sec = 1; // repeats every second

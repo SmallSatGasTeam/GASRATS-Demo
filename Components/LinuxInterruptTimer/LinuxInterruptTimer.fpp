@@ -15,8 +15,10 @@ module Components {
         event TimerTick severity activity high format "Timer tick"
         event Error severity warning high format "An error has occured"
 
+
         ###### Output ports
-        # output port TimerTickOut: someOtherComponent.CycleIn
+        ## This port shall send timer ticks, not sure if it is over I2c though.
+        output port CycleIn: Svc.Cycle
 
         ##############################################################################
         #### Uncomment the following examples to start customizing your component ####

@@ -59,9 +59,12 @@ namespace Components {
           void *uc
         );
 
-      timer_t timerId;
       struct sigevent sev;
       struct sigaction sa;
+
+      time_t timerId;
+      
+
       
       
   };
