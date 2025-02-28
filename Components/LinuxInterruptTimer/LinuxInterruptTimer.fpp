@@ -1,9 +1,6 @@
 module Components {
-    @ component to connect timer cycle to rate groups.
+    @ Creates a timer that causes an interrupt. Urate groups.
     active component LinuxInterruptTimer {
-
-        # One async command/port is required for active components
-        # This should be overridden by the developers with a useful command/port
 
         ###### Commands
 
@@ -15,29 +12,9 @@ module Components {
         event TimerTick severity activity high format "Timer tick"
         event Error severity warning high format "An error has occured"
 
-
         ###### Output ports
         ## This port shall send timer ticks, not sure if it is over I2c though.
         output port CycleIn: Svc.Cycle
-
-        ##############################################################################
-        #### Uncomment the following examples to start customizing your component ####
-        ##############################################################################
-
-        # @ Example async command
-        # async command COMMAND_NAME(param_name: U32)
-
-        # @ Example telemetry counter
-        # telemetry ExampleCounter: U64
-
-        # @ Example event
-        # event ExampleStateEvent(example_state: Fw.On) severity activity high id 0 format "State set to {}"
-
-        # @ Example port: receiving calls from the rate group
-        # sync input port run: Svc.Sched
-
-        # @ Example parameter
-        # param PARAMETER_NAME: U32
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
@@ -62,12 +39,6 @@ module Components {
 
         @ Port for sending telemetry channels to downlink
         telemetry port tlmOut
-
-        @ Port to return the value of a parameter
-        param get port prmGetOut
-
-        @Port to set the value of a parameter
-        param set port prmSetOut
 
     }
 }

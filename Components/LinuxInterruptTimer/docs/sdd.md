@@ -1,6 +1,6 @@
 # Components::LinuxInterruptTimer
 
-component to connect timer cycle to rate groups.
+Creates a timer that causes an interrupt. Urate groups.
 
 ## Usage Examples
 Add usage examples here

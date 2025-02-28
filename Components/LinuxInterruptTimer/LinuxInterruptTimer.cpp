@@ -1,58 +1,29 @@
 // ======================================================================
 // \title  LinuxInterruptTimer.cpp
-// \author xtilloo
+// \author jjhessing
 // \brief  cpp file for LinuxInterruptTimer component implementation class
 // ======================================================================
 
 #include "Components/LinuxInterruptTimer/LinuxInterruptTimer.hpp"
 #include "FpConfig.hpp"
-
-// these are the modules from the research code, found in pseudo code tab
-#include <errno.h> // error reporting
-#include <string.h> //error handling
-#include <unistd.h> // gives access to POSIX calles like getpid()
-
+#include "LinuxInterruptTimer.hpp"
 
 namespace Components {
 
-  // ----------------------------------------------------------------------
-  // Component construction and destruction
-  // ----------------------------------------------------------------------
+// ----------------------------------------------------------------------
+// Component construction and destruction
+// ----------------------------------------------------------------------
 
-  LinuxInterruptTimer ::
-    LinuxInterruptTimer(const char* const compName) :
-      LinuxInterruptTimerComponentBase(compName)
-  {
+LinuxInterruptTimer ::LinuxInterruptTimer(const char* const compName) : LinuxInterruptTimerComponentBase(compName) {}
 
-  }
+LinuxInterruptTimer ::~LinuxInterruptTimer() {}
 
-  LinuxInterruptTimer ::
-    ~LinuxInterruptTimer()
-  {
+// ----------------------------------------------------------------------
+// Handler implementations for commands
+// ----------------------------------------------------------------------
 
-  }
-
-
-  // ----------------------------------------------------------------------
-  // Handler implementations for commands
-  // ----------------------------------------------------------------------
-
-
-  // This initializes the component message queue, inherited from LinuxInterruptTimerComponentBase.
-  // queueDepth is how many messages can be queued before processing,
-  // instance differentiates between multiple instances of the component
-  // not sure if this is necessary
-  void LinuxInterruptTimer::init(NATIVE_INT_TYPE queueDepth, NATIVE_INT_TYPE instance) 
-  {
-    LinuxInterruptTimerComponentBase::init(queueDepth, instance);
-  } 
-
-  void LinuxInterruptTimer ::
-    StartTimer_cmdHandler(
-        FwOpcodeType opCode,
-        U32 cmdSeq
-    )
-  {
+void LinuxInterruptTimer ::StartTimer_cmdHandler(FwOpcodeType opCode, U32 cmdSeq) {
+    // TODO
     // this is where the actual timer code will be placed
     // figure out why the struct cannot be defined.
 
@@ -69,39 +40,36 @@ namespace Components {
     sev.sigev_value.sival_ptr = &timerId;
 
     if (timer_create(CLOCK_REALTIME, &sev, &timerId) != 0) {
-        this->log_WARNING_HI_Error(errno, strerror(errno));
+        //this->log_WARNING_HI_Error(errno, strerror(errno));
         return;
     }
     sa.sa_flags = SA_SIGINFO;
-    sa.sa_sigaction = TimerComponent::signalHandler;
+    sa.sa_sigaction = this->signalHandler;
     sigemptyset(&sa.sa_mask);
 
     if (sigaction(SIGRTMIN, &sa, NULL) == -1) {
-      this->log_WARNING_HI_Error(errno, strerror(errno));
+      //this->log_WARNING_HI_Error(errno, strerror(errno));
       return;
     }
 
     if (timer_settime(timerId, 0, &its, NULL) != 0) {
-      this->log_WARNING_HI_Error(errno, strerror(errno));
+      //this->log_WARNING_HI_Error(errno, strerror(errno));
       return;
     }
 
     this->log_ACTIVITY_HI_TimerCreated();
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
-  }
-
-  void LinuxInterruptTimer ::
-    StopTimer_cmdHandler(
-        FwOpcodeType opCode,
-        U32 cmdSeq
-    )
-  {
-
-    ///////////////
-    // TODO HERE //
-    ///////////////
-
-    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
-  }
-
 }
+
+void LinuxInterruptTimer ::StopTimer_cmdHandler(FwOpcodeType opCode, U32 cmdSeq) {
+    // TODO
+    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
+}
+
+void LinuxInterruptTimer::signalHandler(int sig, siginfo_t *si, void *uc) {
+    //UNUSED(sig);
+    //UNUSED(uc);
+    struct t_eventData *data = (struct t_eventData *) si->_sifields._rt.si_sigval.sival_ptr;
+}
+
+}  // namespace Components

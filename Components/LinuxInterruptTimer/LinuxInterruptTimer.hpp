@@ -1,6 +1,6 @@
 // ======================================================================
 // \title  LinuxInterruptTimer.hpp
-// \author xtilloo
+// \author jjhessing
 // \brief  hpp file for LinuxInterruptTimer component implementation class
 // ======================================================================
 
@@ -8,67 +8,60 @@
 #define Components_LinuxInterruptTimer_HPP
 
 #include "Components/LinuxInterruptTimer/LinuxInterruptTimerComponentAc.hpp"
-#include <Os/Task.hpp>
-#include <signal.h>
+#include <unistd.h>
 #include <time.h>
+#include <signal.h>
+#include <errno.h>
 
 namespace Components {
 
-  class LinuxInterruptTimer :
-    public LinuxInterruptTimerComponentBase
-  {
+class LinuxInterruptTimer : public LinuxInterruptTimerComponentBase {
+  public:
+    // ----------------------------------------------------------------------
+    // Component construction and destruction
+    // ----------------------------------------------------------------------
 
-    public:
+    //! Construct LinuxInterruptTimer object
+    LinuxInterruptTimer(const char* const compName  //!< The component name
+    );
 
-      // ----------------------------------------------------------------------
-      // Component construction and destruction
-      // ----------------------------------------------------------------------
+    //! Destroy LinuxInterruptTimer object
+    ~LinuxInterruptTimer();
 
-      //! Construct LinuxInterruptTimer object
-      LinuxInterruptTimer(
-          const char* const compName //!< The component name
-      );
-      void init(NATIVE_INT_TYPE queueDepth, NATIVE_INT_TYPE instance);
-      void startTimer();
-      void stopTimer();
+    // -----
+    // Seperate functions for other things
+    // -----
 
-      //! Destroy LinuxInterruptTimer object
-      ~LinuxInterruptTimer();
+    void startTimer();
+    void stopTimer();
 
-    PRIVATE:
+  PRIVATE:
+    // ----------------------------------------------------------------------
+    // Handler implementations for commands
+    // ----------------------------------------------------------------------
 
-      // ----------------------------------------------------------------------
-      // Handler implementations for commands
-      // ----------------------------------------------------------------------
+    //! Handler implementation for command StartTimer
+    void StartTimer_cmdHandler(FwOpcodeType opCode,  //!< The opcode
+                               U32 cmdSeq            //!< The command sequence number
+                               ) override;
 
-      //! Handler implementation for command StartTimer
-      void StartTimer_cmdHandler(
-          FwOpcodeType opCode, //!< The opcode
-          U32 cmdSeq //!< The command sequence number
-      ); // removed overrides
+    //! Handler implementation for command StopTimer
+    void StopTimer_cmdHandler(FwOpcodeType opCode,  //!< The opcode
+                              U32 cmdSeq            //!< The command sequence number
+                              ) override;
 
-      //! Handler implementation for command StopTimer
-      void StopTimer_cmdHandler(
-          FwOpcodeType opCode, //!< The opcode
-          U32 cmdSeq //!< The command sequence number
-      ); // removed overrides
+    static void signalHandler(
+      int sig,
+      siginfo_t *si, 
+      void *uc
+    );
 
-      static void signalHandler(
-          int sig,
-          siginfo_t *si, 
-          void *uc
-        );
+    struct sigevent sev;
+    struct sigaction sa;
 
-      struct sigevent sev;
-      struct sigaction sa;
+    timer_t timerId;
+};
 
-      time_t timerId;
-      
-
-      
-      
-  };
-
-}
+}  // namespace Components
 
 #endif
