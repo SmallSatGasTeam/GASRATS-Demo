@@ -16,6 +16,10 @@ module Components {
         ## This port shall send timer ticks, not sure if it is over I2c though.
         output port CycleIn: Svc.Cycle
 
+        ###### Telemetry
+
+        telemetry ticks: U64 update on change
+
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
         ###############################################################################

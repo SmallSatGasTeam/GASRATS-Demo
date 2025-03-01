@@ -35,7 +35,9 @@ class LinuxInterruptTimer : public LinuxInterruptTimerComponentBase {
     void startTimer();
     void stopTimer();
 
-  PRIVATE:
+    void doCycle();
+
+  private:
     // ----------------------------------------------------------------------
     // Handler implementations for commands
     // ----------------------------------------------------------------------
@@ -56,10 +58,13 @@ class LinuxInterruptTimer : public LinuxInterruptTimerComponentBase {
       void *uc
     );
 
+
     struct sigevent sev;
     struct sigaction sa;
 
-    timer_t timerId;
+    timer_t timerId = 0;
+
+    uint64_t ticks;
 };
 
 }  // namespace Components
