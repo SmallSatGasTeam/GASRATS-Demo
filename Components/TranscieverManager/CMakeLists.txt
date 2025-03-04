@@ -11,8 +11,8 @@
 ####
 
 set(SOURCE_FILES
-  "${CMAKE_CURRENT_LIST_DIR}/Transciever.fpp"
-  "${CMAKE_CURRENT_LIST_DIR}/Transciever.cpp"
+  "${CMAKE_CURRENT_LIST_DIR}/TranscieverManager.fpp"
+  "${CMAKE_CURRENT_LIST_DIR}/TranscieverManager.cpp"
 )
 
 # Uncomment and add any modules that this component depends on, else
@@ -32,9 +32,9 @@ register_fprime_module()
 
 ### Unit Tests ###
 # set(UT_SOURCE_FILES
-#   "${CMAKE_CURRENT_LIST_DIR}/Transciever.fpp"
-#   "${CMAKE_CURRENT_LIST_DIR}/test/ut/TranscieverTestMain.cpp"
-#   "${CMAKE_CURRENT_LIST_DIR}/test/ut/TranscieverTester.cpp"
+#   "${CMAKE_CURRENT_LIST_DIR}/TranscieverManager.fpp"
+#   "${CMAKE_CURRENT_LIST_DIR}/test/ut/TranscieverManagerTestMain.cpp"
+#   "${CMAKE_CURRENT_LIST_DIR}/test/ut/TranscieverManagerTester.cpp"
 # )
 # set(UT_MOD_DEPS
 #   STest

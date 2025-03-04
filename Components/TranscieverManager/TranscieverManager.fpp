@@ -1,11 +1,18 @@
 module Components {
-    @ Component for communicating and setting up the transciever
-    active component Transciever {
+    # Three different states for the transciever: off, startup, running
+    
+    @ Will take in commands and act as the state machine for the transciever
+    active component TranscieverManager {
 
         # One async command/port is required for active components
-        # This should be overridden by the developers with a useful command/port
-        @ TODO
-        async command TODO opcode 0
+        @ Startup the transciever
+        async command STARTUP()
+
+        @ read i2c data
+        output port i2cRead: Drv.I2c
+
+        @ write i2c data
+        output port i2cWrite: Drv.I2c
 
         ##############################################################################
         #### Uncomment the following examples to start customizing your component ####

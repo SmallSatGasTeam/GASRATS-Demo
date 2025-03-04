@@ -1,6 +1,6 @@
-# Components::Transciever
+# Components::TranscieverManager
 
-Component for communicating and setting up the transciever
+Will take in commands and act as the state machine for the transciever
 
 ## Usage Examples
 Add usage examples here
