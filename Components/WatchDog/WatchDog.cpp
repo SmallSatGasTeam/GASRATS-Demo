@@ -18,6 +18,7 @@
 namespace Components {
 
 bool healthy = true;
+GaspacsAssertHook gaspacsAssertHook;
 
 int pings = 0;
 
@@ -27,6 +28,7 @@ int pings = 0;
 
 WatchDog ::WatchDog(const char* const compName) : WatchDogComponentBase(compName) {
     this->stroke = true;
+    gaspacsAssertHook.registerHook();
 }
 
 WatchDog ::~WatchDog() {}
@@ -36,10 +38,7 @@ WatchDog ::~WatchDog() {}
 // ----------------------------------------------------------------------
 
 void WatchDog ::healthIn_handler(NATIVE_INT_TYPE portNum, U32 code) {
-    // for testing
-    FW_ASSERT(numPings < 5);
-
-    if (code == 0x123)
+    if (code == 0x123 && healthy)
     {
         stroke = !stroke;
         if(stroke) {
