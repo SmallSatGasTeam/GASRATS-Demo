@@ -1,6 +1,6 @@
-# Components::AntennaDeploy
+# Components::Transciever
 
-Component designed to deploy antenna
+Component for communicating and setting up the transciever
 
 ## Usage Examples
 Add usage examples here

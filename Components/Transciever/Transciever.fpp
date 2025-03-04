@@ -1,30 +1,30 @@
 module Components {
-    @ Component to take watchdog heartbeat from health component and convert it into GPIO high or low.
-    passive component WatchDog {
+    @ Component for communicating and setting up the transciever
+    active component Transciever {
+
+        # One async command/port is required for active components
+        # This should be overridden by the developers with a useful command/port
+        @ TODO
+        async command TODO opcode 0
 
         ##############################################################################
-        #### Events
+        #### Uncomment the following examples to start customizing your component ####
         ##############################################################################
 
-        @ Event for printing watchdog code received from health
-        event print(code: U32) severity activity high format "Code from health component: {}"
+        # @ Example async command
+        # async command COMMAND_NAME(param_name: U32)
 
-        ##############################################################################
-        #### ports
-        ##############################################################################
+        # @ Example telemetry counter
+        # telemetry ExampleCounter: U64
 
-        @ Accepts the code coming in from the health component
-        sync input port healthIn: Svc.WatchDog
+        # @ Example event
+        # event ExampleStateEvent(example_state: Fw.On) severity activity high id 0 format "State set to {}"
 
-        @ Sends the heartbeat out to the actual watchdog
-        output port heartBeatOut: Drv.GpioWrite
+        # @ Example port: receiving calls from the rate group
+        # sync input port run: Svc.Sched
 
-        ##############################################################################
-        #### Telemetry
-        ##############################################################################
-
-        @ Tells if heartbeat is High or low
-        telemetry heartBeat:Fw.Logic
+        # @ Example parameter
+        # param PARAMETER_NAME: U32
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
@@ -49,6 +49,12 @@ module Components {
 
         @ Port for sending telemetry channels to downlink
         telemetry port tlmOut
+
+        @ Port to return the value of a parameter
+        param get port prmGetOut
+
+        @Port to set the value of a parameter
+        param set port prmSetOut
 
     }
 }
