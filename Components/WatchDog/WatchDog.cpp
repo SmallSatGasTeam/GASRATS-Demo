@@ -38,7 +38,13 @@ WatchDog ::~WatchDog() {}
 // ----------------------------------------------------------------------
 
 void WatchDog ::healthIn_handler(NATIVE_INT_TYPE portNum, U32 code) {
-    if (code == 0x123 && healthy)
+    if (!healthy)
+    {
+        this->log_FATAL_assertFailed();
+        return;
+    }
+
+    if (code == 0x123)
     {
         stroke = !stroke;
         if(stroke) {
