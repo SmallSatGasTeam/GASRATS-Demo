@@ -9,6 +9,9 @@ module Components {
         @ Event for printing watchdog code received from health
         event print(code: U32) severity activity high format "Code from health component: {}"
 
+        @ Event for notifying when an assert fails and the system restarts
+        event assertFailed severity fatal format "Assert failed, restarting system"
+
         ##############################################################################
         #### ports
         ##############################################################################
