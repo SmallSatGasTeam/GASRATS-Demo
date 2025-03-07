@@ -38,6 +38,8 @@ WatchDog ::~WatchDog() {}
 // ----------------------------------------------------------------------
 
 void WatchDog ::healthIn_handler(NATIVE_INT_TYPE portNum, U32 code) {
+    FW_ASSERT(numPings < 5);
+    
     if (!healthy)
     {
         this->log_FATAL_assertFailed();
