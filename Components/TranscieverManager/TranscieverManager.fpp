@@ -14,6 +14,34 @@ module Components {
         @ write i2c data
         output port i2cWrite: Drv.I2c
 
+        @The next 6 events are used to check for read and write errors when interfacing with an i2c device
+        event imuSuccess \
+            severity activity high \
+            format "The IMU sent the data"
+        
+        event imuAddressFailure \
+            severity warning high \
+            format "Invalid Address"
+
+        event imuWriteError \
+            severity warning high \
+            format "Write Failed"
+
+        event imuReadError \
+            severity warning high \
+            format "Read Failed"
+
+        event imuOpenError \
+            severity warning high \
+            format "Failed to open device"
+        
+        event imuOtherError \
+            severity warning high \
+            format "Other"
+
+        @ Allocation failed event
+        event MemoryAllocationFailed() severity warning low format "Failed to allocate memory"
+
         ##############################################################################
         #### Uncomment the following examples to start customizing your component ####
         ##############################################################################

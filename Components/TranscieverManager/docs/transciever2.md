@@ -1,0 +1,14 @@
+- We control it over I2C and we send/recieve data over UART (page 16)
+- We can update the firmware on the fly, using their bootloader, but I'm not sure that's something we really want or need (page 24)
+- Radio Packet Structure
+    - uplink/downlink (the full packet starts with the first bullet point and ends with the last) (9.1)
+        - Preamble (5 bytes)
+            - Hard-coded value: 0xAAAAAAAAAA
+        - Sync Word (1 byte)
+            - Value: 0x7E
+        - Data Field 1 (1 byte)
+            - Size of data field 2 in bytes
+        - Data Field 2 (0-128 bytes)
+            - Payload
+        - CRC (2 bytes)
+            - I think this is some sort of cryptogrophy thing, but I'm not sure

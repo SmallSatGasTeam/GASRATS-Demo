@@ -43,6 +43,11 @@ namespace Components {
           U32 cmdSeq //!< The command sequence number
       ) override;
 
+      //! Sends an event based on the returned status from an i2c read or write operation
+      void checkStatus(Drv::I2cStatus status);
+
+      int calls;
+
   };
 
 }
