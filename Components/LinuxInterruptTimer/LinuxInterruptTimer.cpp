@@ -54,7 +54,7 @@ void LinuxInterruptTimer::doCycle() {
 
 void LinuxInterruptTimer::signalHandler(int sig, siginfo_t *si, void *uc) {
     //UNUSED(sig);
-    LinuxInterruptTimer *timer = (LinuxInterruptTimer *) si->_sifields._rt.si_sigval.sival_ptr;
+    static LinuxInterruptTimer *timer = (LinuxInterruptTimer *) si->_sifields._rt.si_sigval.sival_ptr;
     timer->doCycle();
     
 }
@@ -64,7 +64,7 @@ void LinuxInterruptTimer::startTimer() {
 
     its.it_value.tv_sec = 1; // timer starts after 1 second
     its.it_value.tv_nsec = 0;
-    its.it_interval.tv_sec = 1; // repeats every second
+    its.it_interval.tv_sec = 1; // repeats every 1 seconds
     its.it_interval.tv_nsec = 0;
 
     sev.sigev_notify = SIGEV_SIGNAL;
