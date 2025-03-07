@@ -1,3 +1,4 @@
+[Link](https://usu.sharepoint.com/sites/GA/Shared%20Documents/Projects/GASRATS/EnduroSat%20Spec%20Sheets/UHF%20Transceiver%20II%20User%20Manual.pdf?CT=1741310232865&OR=ItemsView) to the manual
 - We control it over I2C and we send/recieve data over UART (page 16)
 - We can update the firmware on the fly, using their bootloader, but I'm not sure that's something we really want or need (page 24)
 - Radio Packet Structure
