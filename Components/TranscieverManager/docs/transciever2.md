@@ -11,5 +11,20 @@
             - Size of data field 2 in bytes
         - Data Field 2 (0-128 bytes)
             - Payload
-        - CRC (2 bytes)
+        - CRC16 (2 bytes)
             - I think this is some sort of cryptogrophy thing, but I'm not sure
+            - It actually stands for cyclic redundancy check, which is an error-detecting code to check for errors in the data
+            - It's applied to datafield 1 and 2
+            - Its inital value is all 1's
+                - 0xFFFF
+                - 1111 1111 1111 1111
+            - The most significant bit of each byte is processed first
+            - How it works
+                - uses the polynomial: $x^{16}+x^{12}+x^5+1$ which is `0x11021` or `10001000000100001`
+                - then you divide the data by the polynomial which gives you the CRC16
+                - I actually don't think we need to know this, just need to find someone who wrote the algoritim and apply it to Data-1 and Data-2
+                    - the algorithm is called CRC-16/CCITT-FALSE
+            - There's a CRC calculator within the `xHF and OBC Configurator` app, under Tools.
+- How I think it'll all work
+    - We should just have to specify the telemetry packetizer to work with our packets specifically, then send the packets to the transciever over I2C using fprime.  
+    - Most info I've found out about the TlmPacketizer is [here](https://github.com/nasa/fprime/discussions/2560)
