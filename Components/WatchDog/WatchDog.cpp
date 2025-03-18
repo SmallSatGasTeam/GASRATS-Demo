@@ -69,7 +69,7 @@ void WatchDog ::healthIn_handler(NATIVE_INT_TYPE portNum, U32 code) {
 void GaspacsAssertHook ::reportAssert(FILE_NAME_ARG file, NATIVE_UINT_TYPE lineNo, NATIVE_UINT_TYPE numArgs, FwAssertArgType arg1,
                                       FwAssertArgType arg2, FwAssertArgType arg3, FwAssertArgType arg4, FwAssertArgType arg5,
                                       FwAssertArgType arg6) {
-    CHAR destBuffer[FW_ASSERT_DFL_MSG_LEN];
+    CHAR destBuffer[Fw::StringBase::BUFFER_SIZE(FW_ASSERT_TEXT_SIZE)] = {0};
     this->defaultReportAssert(file, lineNo, numArgs, arg1, arg2, arg3, arg4, arg5, arg6, destBuffer, sizeof(destBuffer));
     this->printAssert(destBuffer);
     this->doAssert();
