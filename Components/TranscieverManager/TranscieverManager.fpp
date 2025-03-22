@@ -13,15 +13,6 @@ module Components {
         @ write i2c data
         output port i2cWrite: Drv.I2c
 
-        # @ Command registration port
-        # command reg port cmdRegOut
-
-        # @ Command received port
-        # command recv port cmdIn
-
-        # @ Command response port
-        # command resp port cmdResponseOut
-
         @The next 6 events are used to check for read and write errors when interfacing with an i2c device
         event imuSuccess \
             severity activity high \
@@ -50,24 +41,18 @@ module Components {
         @ Allocation failed event
         event MemoryAllocationFailed() severity warning low format "Failed to allocate memory"
 
-        ##############################################################################
-        #### Uncomment the following examples to start customizing your component ####
-        ##############################################################################
+        ###############################################################################
+        # Stuff for the Communication Adapter interface
+        ###############################################################################
 
-        # @ Example async command
-        # async command COMMAND_NAME(param_name: U32)
+        @ Port for recieving Fw:Buffer objects for outgoing transmission
+        sync input port comDataIn: Drv.ByteStreamSend # i have no idea if this should be sync or async
 
-        # @ Example telemetry counter
-        # telemetry ExampleCounter: U64
+        @ Port producing incoming Fw::Buffer objects
+        output port comDataOut: Drv.ByteStreamRecv
 
-        # @ Example event
-        # event ExampleStateEvent(example_state: Fw.On) severity activity high id 0 format "State set to {}"
-
-        # @ Example port: receiving calls from the rate group
-        # sync input port run: Svc.Sched
-
-        # @ Example parameter
-        # param PARAMETER_NAME: U32
+        @ Port indicating status of outgoing transmission
+        output port comStatus: Fw.SuccessCondition
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #

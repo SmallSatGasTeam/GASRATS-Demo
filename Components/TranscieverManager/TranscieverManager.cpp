@@ -28,6 +28,19 @@ namespace Components {
   }
 
   // ----------------------------------------------------------------------
+  // Handler implementations for user-defined typed input ports
+  // ----------------------------------------------------------------------
+
+  Drv::SendStatus TranscieverManager ::
+    comDataIn_handler(
+        FwIndexType portNum,
+        Fw::Buffer& sendBuffer
+    )
+  {
+    // TODO return
+  }
+
+  // ----------------------------------------------------------------------
   // Handler implementations for commands
   // ----------------------------------------------------------------------
 

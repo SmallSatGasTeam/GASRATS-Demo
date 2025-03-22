@@ -32,6 +32,20 @@ namespace Components {
     PRIVATE:
 
       // ----------------------------------------------------------------------
+      // Handler implementations for user-defined typed input ports
+      // ----------------------------------------------------------------------
+
+      //! Handler implementation for comDataIn
+      //!
+      //! Port for recieving Fw:Buffer objects for outgoing transmission
+      Drv::SendStatus comDataIn_handler(
+          FwIndexType portNum, //!< The port number
+          Fw::Buffer& sendBuffer //!< Data to send
+      ) override;
+
+    PRIVATE:
+
+      // ----------------------------------------------------------------------
       // Handler implementations for commands
       // ----------------------------------------------------------------------
 
