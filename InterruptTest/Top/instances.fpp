@@ -13,6 +13,11 @@ module InterruptTest {
   # Active component instances
   # ----------------------------------------------------------------------
 
+  instance blockDrv: Drv.BlockDriver base id 0x0100 \
+    queue size Default.QUEUE_SIZE \
+    stack size Default.STACK_SIZE \
+    priority 140
+
   instance rateGroup1: Svc.ActiveRateGroup base id 0x0200 \
     queue size Default.QUEUE_SIZE \
     stack size Default.STACK_SIZE \
@@ -82,11 +87,6 @@ module InterruptTest {
     stack size Default.STACK_SIZE \
     priority 96
 
-  instance interruptTimer: Components.LinuxInterruptTimer base id 0x0E00 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 150
-
   # ----------------------------------------------------------------------
   # Queued component instances
   # ----------------------------------------------------------------------
@@ -99,7 +99,7 @@ module InterruptTest {
   # ----------------------------------------------------------------------
 
   @ Communications driver. May be swapped with other com drivers like UART or TCP
-  instance comDriver: Drv.TcpServer base id 0x4000
+  instance comDriver: Drv.TcpClient base id 0x4000
 
   instance framer: Svc.Framer base id 0x4100
 
@@ -109,7 +109,7 @@ module InterruptTest {
 
   instance bufferManager: Svc.BufferManager base id 0x4400
 
-  instance posixTime: Svc.PosixTime base id 0x4500
+  instance chronoTime: Svc.ChronoTime base id 0x4500
 
   instance rateGroupDriver: Svc.RateGroupDriver base id 0x4600
 
@@ -120,5 +120,7 @@ module InterruptTest {
   instance systemResources: Svc.SystemResources base id 0x4A00
 
   instance comStub: Svc.ComStub base id 0x4B00
+
+  instance linuxInterruptTimer: Components.LinuxInterruptTimer base id 0x4C00
 
 }

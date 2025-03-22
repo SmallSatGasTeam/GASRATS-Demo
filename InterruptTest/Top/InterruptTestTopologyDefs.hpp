@@ -47,37 +47,40 @@ struct TopologyState {
  * ```
  */
 namespace PingEntries {
-namespace tlmSend {
+namespace InterruptTest_blockDrv {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace cmdDisp {
+namespace InterruptTest_tlmSend {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace cmdSeq {
+namespace InterruptTest_cmdDisp {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace eventLogger {
+namespace InterruptTest_cmdSeq {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace fileDownlink {
+namespace InterruptTest_eventLogger {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace fileManager {
+namespace InterruptTest_fileDownlink {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace fileUplink {
+namespace InterruptTest_fileManager {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace prmDb {
+namespace InterruptTest_fileUplink {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace rateGroup1 {
+namespace InterruptTest_prmDb {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace rateGroup2 {
+namespace InterruptTest_rateGroup1 {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace rateGroup3 {
+namespace InterruptTest_rateGroup2 {
+enum { WARN = 3, FATAL = 5 };
+}
+namespace InterruptTest_rateGroup3 {
 enum { WARN = 3, FATAL = 5 };
 }
 }  // namespace PingEntries

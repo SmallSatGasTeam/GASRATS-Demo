@@ -5,11 +5,11 @@
 // ======================================================================
 // Provides access to autocoded functions
 #include <InterruptTest/Top/InterruptTestTopologyAc.hpp>
-#include <InterruptTest/Top/InterruptTestPacketsAc.hpp>
+// Note: Uncomment when using Svc:TlmPacketizer
+//#include <InterruptTest/Top/InterruptTestPacketsAc.hpp>
 
 // Necessary project-specified types
 #include <Fw/Types/MallocAllocator.hpp>
-#include <Os/Log.hpp>
 #include <Svc/FramingProtocol/FprimeProtocol.hpp>
 
 // Used for 1Hz synthetic cycling
@@ -17,9 +17,6 @@
 
 // Allows easy reference to objects in FPP/autocoder required namespaces
 using namespace InterruptTest;
-
-// Instantiate a system logger that will handle Fw::Logger::logMsg calls
-Os::Log logger;
 
 // The reference topology uses a malloc-based allocator for components that need to allocate memory during the
 // initialization phase.
@@ -62,17 +59,18 @@ enum TopologyConstants {
 
 // Ping entries are autocoded, however; this code is not properly exported. Thus, it is copied here.
 Svc::Health::PingEntry pingEntries[] = {
-    {PingEntries::tlmSend::WARN, PingEntries::tlmSend::FATAL, "chanTlm"},
-    {PingEntries::cmdDisp::WARN, PingEntries::cmdDisp::FATAL, "cmdDisp"},
-    {PingEntries::cmdSeq::WARN, PingEntries::cmdSeq::FATAL, "cmdSeq"},
-    {PingEntries::eventLogger::WARN, PingEntries::eventLogger::FATAL, "eventLogger"},
-    {PingEntries::fileDownlink::WARN, PingEntries::fileDownlink::FATAL, "fileDownlink"},
-    {PingEntries::fileManager::WARN, PingEntries::fileManager::FATAL, "fileManager"},
-    {PingEntries::fileUplink::WARN, PingEntries::fileUplink::FATAL, "fileUplink"},
-    {PingEntries::prmDb::WARN, PingEntries::prmDb::FATAL, "prmDb"},
-    {PingEntries::rateGroup1::WARN, PingEntries::rateGroup1::FATAL, "rateGroup1"},
-    {PingEntries::rateGroup2::WARN, PingEntries::rateGroup2::FATAL, "rateGroup2"},
-    {PingEntries::rateGroup3::WARN, PingEntries::rateGroup3::FATAL, "rateGroup3"},
+    {PingEntries::InterruptTest_blockDrv::WARN, PingEntries::InterruptTest_blockDrv::FATAL, "blockDrv"},
+    {PingEntries::InterruptTest_tlmSend::WARN, PingEntries::InterruptTest_tlmSend::FATAL, "chanTlm"},
+    {PingEntries::InterruptTest_cmdDisp::WARN, PingEntries::InterruptTest_cmdDisp::FATAL, "cmdDisp"},
+    {PingEntries::InterruptTest_cmdSeq::WARN, PingEntries::InterruptTest_cmdSeq::FATAL, "cmdSeq"},
+    {PingEntries::InterruptTest_eventLogger::WARN, PingEntries::InterruptTest_eventLogger::FATAL, "eventLogger"},
+    {PingEntries::InterruptTest_fileDownlink::WARN, PingEntries::InterruptTest_fileDownlink::FATAL, "fileDownlink"},
+    {PingEntries::InterruptTest_fileManager::WARN, PingEntries::InterruptTest_fileManager::FATAL, "fileManager"},
+    {PingEntries::InterruptTest_fileUplink::WARN, PingEntries::InterruptTest_fileUplink::FATAL, "fileUplink"},
+    {PingEntries::InterruptTest_prmDb::WARN, PingEntries::InterruptTest_prmDb::FATAL, "prmDb"},
+    {PingEntries::InterruptTest_rateGroup1::WARN, PingEntries::InterruptTest_rateGroup1::FATAL, "rateGroup1"},
+    {PingEntries::InterruptTest_rateGroup2::WARN, PingEntries::InterruptTest_rateGroup2::FATAL, "rateGroup2"},
+    {PingEntries::InterruptTest_rateGroup3::WARN, PingEntries::InterruptTest_rateGroup3::FATAL, "rateGroup3"},
 };
 
 /**
@@ -82,7 +80,22 @@ Svc::Health::PingEntry pingEntries[] = {
  * allocating resources, passing-in arguments, etc. This function may be inlined into the topology setup function if
  * desired, but is extracted here for clarity.
  */
-void configureTopology() {
+void configureTopology(const TopologyState& state) {
+    // Buffer managers need a configured set of buckets and an allocator used to allocate memory for those buckets.
+    Svc::BufferManager::BufferBins upBuffMgrBins;
+    memset(&upBuffMgrBins, 0, sizeof(upBuffMgrBins));
+    upBuffMgrBins.bins[0].bufferSize = FRAMER_BUFFER_SIZE;
+    upBuffMgrBins.bins[0].numBuffers = FRAMER_BUFFER_COUNT;
+    upBuffMgrBins.bins[1].bufferSize = DEFRAMER_BUFFER_SIZE;
+    upBuffMgrBins.bins[1].numBuffers = DEFRAMER_BUFFER_COUNT;
+    upBuffMgrBins.bins[2].bufferSize = COM_DRIVER_BUFFER_SIZE;
+    upBuffMgrBins.bins[2].numBuffers = COM_DRIVER_BUFFER_COUNT;
+    bufferManager.setup(BUFFER_MANAGER_ID, 0, mallocator, upBuffMgrBins);
+
+    // Framer and Deframer components need to be passed a protocol handler
+    framer.setup(framing);
+    deframer.setup(deframing);
+
     // Command sequencer needs to allocate memory to hold contents of command sequences
     cmdSeq.allocateBuffer(0, mallocator, CMD_SEQ_BUFFER_SIZE);
 
@@ -105,21 +118,6 @@ void configureTopology() {
     // Health is supplied a set of ping entires.
     health.setPingEntries(pingEntries, FW_NUM_ARRAY_ELEMENTS(pingEntries), HEALTH_WATCHDOG_CODE);
 
-    // Buffer managers need a configured set of buckets and an allocator used to allocate memory for those buckets.
-    Svc::BufferManager::BufferBins upBuffMgrBins;
-    memset(&upBuffMgrBins, 0, sizeof(upBuffMgrBins));
-    upBuffMgrBins.bins[0].bufferSize = FRAMER_BUFFER_SIZE;
-    upBuffMgrBins.bins[0].numBuffers = FRAMER_BUFFER_COUNT;
-    upBuffMgrBins.bins[1].bufferSize = DEFRAMER_BUFFER_SIZE;
-    upBuffMgrBins.bins[1].numBuffers = DEFRAMER_BUFFER_COUNT;
-    upBuffMgrBins.bins[2].bufferSize = COM_DRIVER_BUFFER_SIZE;
-    upBuffMgrBins.bins[2].numBuffers = COM_DRIVER_BUFFER_COUNT;
-    bufferManager.setup(BUFFER_MANAGER_ID, 0, mallocator, upBuffMgrBins);
-
-    // Framer and Deframer components need to be passed a protocol handler
-    framer.setup(framing);
-    deframer.setup(deframing);
-
     // Note: Uncomment when using Svc:TlmPacketizer
     // tlmSend.setPacketList(InterruptTestPacketsPkts, InterruptTestPacketsIgnore, 1);
 
@@ -131,6 +129,9 @@ void configureTopology() {
     configurationTable.entries[2] = {.depth = 100, .priority = 1};
     // Allocation identifier is 0 as the MallocAllocator discards it
     comQueue.configure(configurationTable, 0, mallocator);
+    if (state.hostname != nullptr && state.port != 0) {
+        comDriver.configure(state.hostname, state.port);
+    }
 }
 
 // Public functions for use in main program are namespaced with deployment name InterruptTest
@@ -142,20 +143,21 @@ void setupTopology(const TopologyState& state) {
     setBaseIds();
     // Autocoded connection wiring. Function provided by autocoder.
     connectComponents();
+    // Autocoded configuration. Function provided by autocoder.
+    configComponents(state);
+    // Deployment-specific component configuration. Function provided above. May be inlined, if desired.
+    configureTopology(state);
     // Autocoded command registration. Function provided by autocoder.
     regCommands();
-    // Project-specific component configuration. Function provided above. May be inlined, if desired.
-    configureTopology();
     // Autocoded parameter loading. Function provided by autocoder.
-    // loadParameters();
+    loadParameters();
     // Autocoded task kick-off (active components). Function provided by autocoder.
     startTasks(state);
     // Initialize socket communication if and only if there is a valid specification
     if (state.hostname != nullptr && state.port != 0) {
         Os::TaskString name("ReceiveTask");
         // Uplink is configured for receive so a socket task is started
-        comDriver.configure(state.hostname, state.port);
-        comDriver.startSocketTask(name, true, COMM_PRIORITY, Default::STACK_SIZE);
+        comDriver.start(name, COMM_PRIORITY, Default::STACK_SIZE);
     }
 }
 
@@ -163,17 +165,17 @@ void setupTopology(const TopologyState& state) {
 Os::Mutex cycleLock;
 volatile bool cycleFlag = true;
 
-void startSimulatedCycle(U32 milliseconds) {
+void startSimulatedCycle(Fw::TimeInterval interval) {
     cycleLock.lock();
     bool cycling = cycleFlag;
     cycleLock.unLock();
 
-    InterruptTest::interruptTimer.startTimer();
+    InterruptTest::linuxInterruptTimer.startTimer();
 
     // Main loop
     while (cycling) {
-        // InterruptTest::blockDrv.callIsr();
-        Os::Task::delay(milliseconds);
+        //InterruptTest::blockDrv.callIsr();
+        Os::Task::delay(interval);
 
         cycleLock.lock();
         cycling = cycleFlag;
@@ -193,8 +195,8 @@ void teardownTopology(const TopologyState& state) {
     freeThreads(state);
 
     // Other task clean-up.
-    comDriver.stopSocketTask();
-    (void)comDriver.joinSocketTask(nullptr);
+    comDriver.stop();
+    (void)comDriver.join();
 
     // Resource deallocation
     cmdSeq.deallocateBuffer(mallocator);

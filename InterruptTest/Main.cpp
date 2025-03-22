@@ -5,6 +5,8 @@
 // ======================================================================
 // Used to access topology functions
 #include <InterruptTest/Top/InterruptTestTopology.hpp>
+// OSAL initialization
+#include <Os/Os.hpp>
 // Used for signal handling shutdown
 #include <signal.h>
 // Used for command line argument processing
@@ -49,6 +51,7 @@ int main(int argc, char* argv[]) {
     I32 option = 0;
     CHAR* hostname = nullptr;
     U16 port_number = 0;
+    Os::init();
 
     // Loop while reading the getopt supplied options
     while ((option = getopt(argc, argv, "hp:a:")) != -1) {
@@ -83,7 +86,7 @@ int main(int argc, char* argv[]) {
 
     // Setup, cycle, and teardown topology
     InterruptTest::setupTopology(inputs);
-    InterruptTest::startSimulatedCycle(1000);  // Program loop cycling rate groups at 1Hz
+    InterruptTest::startSimulatedCycle(Fw::TimeInterval(1,0));  // Program loop cycling rate groups at 1Hz
     InterruptTest::teardownTopology(inputs);
     (void)printf("Exiting...\n");
     return 0;

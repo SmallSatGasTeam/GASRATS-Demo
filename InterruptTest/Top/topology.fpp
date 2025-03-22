@@ -4,11 +4,11 @@ module InterruptTest {
   # Symbolic constants for port numbers
   # ----------------------------------------------------------------------
 
-    enum Ports_RateGroups {
-      rateGroup1
-      rateGroup2
-      rateGroup3
-    }
+  enum Ports_RateGroups {
+    rateGroup1
+    rateGroup2
+    rateGroup3
+  }
 
   topology InterruptTest {
 
@@ -32,7 +32,7 @@ module InterruptTest {
     instance fileUplink
     instance bufferManager
     instance framer
-    instance posixTime
+    instance chronoTime
     instance prmDb
     instance rateGroup1
     instance rateGroup2
@@ -41,7 +41,7 @@ module InterruptTest {
     instance textLogger
     instance systemResources
 
-    instance interruptTimer
+    instance linuxInterruptTimer
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -57,7 +57,7 @@ module InterruptTest {
 
     text event connections instance textLogger
 
-    time connections instance posixTime
+    time connections instance chronoTime
 
     health connections instance $health
 
@@ -93,7 +93,7 @@ module InterruptTest {
 
     connections RateGroups {
       # Block driver
-      interruptTimer.CycleIn -> rateGroupDriver.CycleIn
+      linuxInterruptTimer.CycleIn -> rateGroupDriver.CycleIn
 
       # Rate group 1
       rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup1] -> rateGroup1.CycleIn

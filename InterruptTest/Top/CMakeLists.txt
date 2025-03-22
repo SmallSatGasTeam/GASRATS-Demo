@@ -7,13 +7,13 @@
 
 set(SOURCE_FILES
   "${CMAKE_CURRENT_LIST_DIR}/instances.fpp"
-  "${CMAKE_CURRENT_LIST_DIR}/InterruptTestPackets.xml"
+  # Note: Uncomment when using Svc:TlmPacketizer
+  #"${CMAKE_CURRENT_LIST_DIR}/InterruptTestPackets.xml"
   "${CMAKE_CURRENT_LIST_DIR}/topology.fpp"
   "${CMAKE_CURRENT_LIST_DIR}/InterruptTestTopology.cpp"
 )
 set(MOD_DEPS
   Fw/Logger
-  Svc/PosixTime
   # Communication Implementations
   Drv/Udp
   Drv/TcpClient

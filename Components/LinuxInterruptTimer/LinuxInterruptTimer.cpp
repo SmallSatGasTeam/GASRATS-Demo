@@ -38,10 +38,8 @@ void LinuxInterruptTimer ::StopTimer_cmdHandler(FwOpcodeType opCode, U32 cmdSeq)
 }
 
 void LinuxInterruptTimer::doCycle() {
-    Svc::TimerVal cycleStart;
-    cycleStart.take();
-
-    Svc::TimerVal & cycles = cycleStart;
+    Os::RawTime cycles;
+    cycles.now();
 
     CycleIn_out(0, cycles);
     

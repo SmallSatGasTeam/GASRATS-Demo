@@ -1,11 +1,11 @@
 module Components {
     @ Creates a timer that causes an interrupt. Urate groups.
-    active component LinuxInterruptTimer {
+    passive component LinuxInterruptTimer {
 
         ###### Commands
 
-        async command StartTimer()
-        async command StopTimer()
+        sync command StartTimer()
+        sync command StopTimer()
 
         ###### Events
         event TimerCreated severity activity high format "The timer was created"
