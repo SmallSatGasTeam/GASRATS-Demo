@@ -1,6 +1,5 @@
 module Components {
     # Three different states for the transciever: off, startup, running
-    
     @ Will take in commands and act as the state machine for the transciever
     active component TranscieverManager {
 
@@ -13,6 +12,15 @@ module Components {
 
         @ write i2c data
         output port i2cWrite: Drv.I2c
+
+        # @ Command registration port
+        # command reg port cmdRegOut
+
+        # @ Command received port
+        # command recv port cmdIn
+
+        # @ Command response port
+        # command resp port cmdResponseOut
 
         @The next 6 events are used to check for read and write errors when interfacing with an i2c device
         event imuSuccess \
@@ -90,6 +98,12 @@ module Components {
 
         @Port to set the value of a parameter
         param set port prmSetOut
+
+        @ Allocation port for a buffer
+        output port allocate: Fw.BufferGet
+
+        @ Deallocation port for buffers
+        output port deallocate: Fw.BufferSend
 
     }
 }

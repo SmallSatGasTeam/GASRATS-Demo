@@ -18,7 +18,7 @@ namespace Components {
     TranscieverManager(const char* const compName) :
       TranscieverManagerComponentBase(compName)
   {
-
+    this->calls = 0;
   }
 
   TranscieverManager ::
@@ -63,37 +63,35 @@ namespace Components {
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 
-  void imuInterface::checkStatus(Drv::I2cStatus i2cStatus) {
-    if(this->calls < MAX_BACKGROUND_MESSAGES) {
-      this->calls++;
-      switch (i2cStatus) {
-        case Drv::I2cStatus::I2C_OK:
-          this->log_ACTIVITY_HI_imuSuccess();
-          break;
-
-        case Drv::I2cStatus::I2C_ADDRESS_ERR:
-          this->log_WARNING_HI_imuAddressFailure();
-          break;
-
-        case Drv::I2cStatus::I2C_WRITE_ERR:
-          this->log_WARNING_HI_imuWriteError();
-          break;
-
-        case Drv::I2cStatus::I2C_READ_ERR:
-          this->log_WARNING_HI_imuReadError();
-          break;
-
-        case Drv::I2cStatus::I2C_OPEN_ERR:
-          this->log_WARNING_HI_imuOpenError();
-          break;
-
-        case Drv::I2cStatus::I2C_OTHER_ERR:
-        this->log_WARNING_HI_imuOtherError();
+  void TranscieverManager::checkStatus(Drv::I2cStatus i2cStatus) {
+    this->calls++;
+    switch (i2cStatus) {
+      case Drv::I2cStatus::I2C_OK:
+        this->log_ACTIVITY_HI_imuSuccess();
         break;
-        
-        default:
-          break;
-      }
+
+      case Drv::I2cStatus::I2C_ADDRESS_ERR:
+        this->log_WARNING_HI_imuAddressFailure();
+        break;
+
+      case Drv::I2cStatus::I2C_WRITE_ERR:
+        this->log_WARNING_HI_imuWriteError();
+        break;
+
+      case Drv::I2cStatus::I2C_READ_ERR:
+        this->log_WARNING_HI_imuReadError();
+        break;
+
+      case Drv::I2cStatus::I2C_OPEN_ERR:
+        this->log_WARNING_HI_imuOpenError();
+        break;
+
+      case Drv::I2cStatus::I2C_OTHER_ERR:
+      this->log_WARNING_HI_imuOtherError();
+      break;
+      
+      default:
+        break;
     }
   }
 

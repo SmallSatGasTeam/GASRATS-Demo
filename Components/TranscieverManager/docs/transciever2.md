@@ -28,3 +28,5 @@
 - How I think it'll all work
     - We should just have to specify the telemetry packetizer to work with our packets specifically, then send the packets to the transciever over I2C using fprime.  
     - Most info I've found out about the TlmPacketizer is [here](https://github.com/nasa/fprime/discussions/2560)
+- The component we need is the [Communication adapter Interface](https://fprime.jpl.nasa.gov/latest/docs/reference/communication-adapter-interface)
+    - This is in the fprime repo under fprime/Fw/Interfaces/CommandInterface.fppi
