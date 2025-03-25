@@ -30,3 +30,17 @@
     - Most info I've found out about the TlmPacketizer is [here](https://github.com/nasa/fprime/discussions/2560)
 - The component we need is the [Communication adapter Interface](https://fprime.jpl.nasa.gov/latest/docs/reference/communication-adapter-interface)
     - This is in the fprime repo under fprime/Fw/Interfaces/CommandInterface.fppi
+- What I'm learning today (3/24/2025)
+    - So basically, the ports that the interafce has us use are using the ByteStreamDriver, which takes in bytes in real time (hence why it's a streamer) and puts it in a buffer (im pretty sure idk if that's right)
+    - Then, after we get or send the bytes, we then use the Framer, which is the thing that formats the data that we're sending/reciving.
+        - To implement our own framer & deframer for the transciever, look in [this document](../../../fprime/Svc/FramingProtocol/docs/sdd.md)
+    - I think after we have these things properly done, we just need to send the data to the transciever over UART, and since it's supposedly formatted correctly by the framer (after we make our own implementation of it) it should just send over and be out of our hands
+    - Communication Queue component
+        - This is a priority queue that uses round-robin for tasks with equal priority
+        - It's a priority queue of buffers - each buffer is also called a 'message' in their documentation
+        - You have to configure each queue with a depth (size, in terms of amount of buffers) and then you have to give a priority for each buffer put in the queue
+        - This needs to be used with the communication adapter to queue all data to be transmitted
+ - Implementation
+    - Communication adapter - The purpose of this is to interact with the Framer and the Communication Queue components
+        - This is responsible for any re-transmission of failed data
+        - All this is doing, is using the Byte Stream Driver to take in the buffers from all the internal components, using the Framer to format the data for the transciever, and then the communication status component to say if things worked or didn't

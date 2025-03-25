@@ -42,19 +42,6 @@ module Components {
         event MemoryAllocationFailed() severity warning low format "Failed to allocate memory"
 
         ###############################################################################
-        # Stuff for the Communication Adapter interface
-        ###############################################################################
-
-        @ Port for recieving Fw:Buffer objects for outgoing transmission
-        sync input port comDataIn: Drv.ByteStreamSend # i have no idea if this should be sync or async
-
-        @ Port producing incoming Fw::Buffer objects
-        output port comDataOut: Drv.ByteStreamRecv
-
-        @ Port indicating status of outgoing transmission
-        output port comStatus: Fw.SuccessCondition
-
-        ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
         ###############################################################################
         @ Port for requesting the current time
