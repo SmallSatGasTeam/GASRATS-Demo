@@ -171,6 +171,7 @@ void startSimulatedCycle(Fw::TimeInterval interval) {
     cycleLock.unLock();
 
     InterruptTest::linuxInterruptTimer.startTimer();
+    //InterruptTest::linuxTimer.startTimer(1000);
 
     // Main loop
     while (cycling) {

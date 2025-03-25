@@ -13,10 +13,10 @@ module InterruptTest {
   # Active component instances
   # ----------------------------------------------------------------------
 
-  instance blockDrv: Drv.BlockDriver base id 0x0100 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 140
+  # instance blockDrv: Drv.BlockDriver base id 0x0100 \
+  #   queue size Default.QUEUE_SIZE \
+  #   stack size Default.STACK_SIZE \
+  #   priority 140
 
   instance rateGroup1: Svc.ActiveRateGroup base id 0x0200 \
     queue size Default.QUEUE_SIZE \
@@ -87,6 +87,11 @@ module InterruptTest {
     stack size Default.STACK_SIZE \
     priority 96
 
+  instance linuxInterruptTimer: Components.LinuxInterruptTimer base id 0x4C00 \
+    queue size Default.QUEUE_SIZE \
+    stack size Default.STACK_SIZE \
+    priority 150
+
   # ----------------------------------------------------------------------
   # Queued component instances
   # ----------------------------------------------------------------------
@@ -121,6 +126,6 @@ module InterruptTest {
 
   instance comStub: Svc.ComStub base id 0x4B00
 
-  instance linuxInterruptTimer: Components.LinuxInterruptTimer base id 0x4C00
+  instance linuxTimer: Svc.LinuxTimer base id 0x4D00
 
 }

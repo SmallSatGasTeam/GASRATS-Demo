@@ -43,7 +43,7 @@ void LinuxInterruptTimer::doCycle() {
 
     CycleIn_out(0, cycles);
     
-    //this->log_ACTIVITY_HI_TimerTick(); // For debugging
+    this->log_ACTIVITY_HI_TimerTick(); // For debugging
 
     //Increment ticks
     this->ticks++;

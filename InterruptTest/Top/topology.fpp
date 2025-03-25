@@ -40,6 +40,8 @@ module InterruptTest {
     instance rateGroupDriver
     instance textLogger
     instance systemResources
+    # instance blockDrv
+    instance linuxTimer
 
     instance linuxInterruptTimer
 
@@ -94,6 +96,7 @@ module InterruptTest {
     connections RateGroups {
       # Block driver
       linuxInterruptTimer.CycleIn -> rateGroupDriver.CycleIn
+      # linuxTimer.CycleOut -> rateGroupDriver.CycleIn
 
       # Rate group 1
       rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup1] -> rateGroup1.CycleIn
