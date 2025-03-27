@@ -8,7 +8,6 @@ module FSWDeployment {
     rateGroup1
     rateGroup2
     rateGroup3
-    rateGroup4
   }
 
   topology FSWDeployment {
@@ -39,23 +38,9 @@ module FSWDeployment {
     instance rateGroup1
     instance rateGroup2
     instance rateGroup3
-    instance rateGroup4
     instance rateGroupDriver
     instance textLogger
     instance systemResources
-
-    instance gpioDriver
-    instance i2cDriver
-
-    instance antennaDeploy
-    instance cameraManager
-    instance dataCollector
-    instance dummyTranceiverDriver
-    instance epsManager
-    instance imuInterface
-    instance flightLogic
-    instance transmissionManager
-    instance watchDog
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -124,10 +109,6 @@ module FSWDeployment {
       rateGroup3.RateGroupMemberOut[0] -> $health.Run
       rateGroup3.RateGroupMemberOut[1] -> blockDrv.Sched
       rateGroup3.RateGroupMemberOut[2] -> bufferManager.schedIn
-
-      # Rate group 4
-      rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup4] -> rateGroup4.CycleIn
-      rateGroup4.RateGroupMemberOut[0] -> transmissionManager.beacon
     }
 
     connections Sequencer {
@@ -154,25 +135,6 @@ module FSWDeployment {
 
     connections FSWDeployment {
       # Add here connections to user-defined components
-      flightLogic.deployAntenna -> antennaDeploy.deploy
-      flightLogic.deployCamera -> cameraManager.deploy
-      flightLogic.takePic -> cameraManager.takePic
-      flightLogic.epsHealth -> epsManager.returnHealth
-      transmissionManager.beaconState -> flightLogic.beaconState
-      transmissionManager.sendData -> dummyTranceiverDriver.sendTransToGround
-      dummyTranceiverDriver.recvTransFromGround -> transmissionManager.recvData
-      imuInterface.requestI2CData -> i2cDriver.read
-      imuInterface.i2cWrite -> i2cDriver.write
-      dataCollector.ping[0] -> imuInterface.dataRequest
-      imuInterface.gyroData -> dataCollector.imuIncoming
-      imuInterface.allocate -> bufferManager.bufferGetCallee
-      imuInterface.deallocate -> bufferManager.bufferSendIn
-      epsManager.i2cReadWrite -> i2cDriver.writeRead
-      epsManager.allocate -> bufferManager.bufferGetCallee
-      epsManager.deallocate -> bufferManager.bufferSendIn
-      epsManager.epsData -> dataCollector.epsIncoming
-      $health.WdogStroke -> watchDog.healthIn
-      watchDog.heartBeatOut -> gpioDriver.gpioWrite
     }
 
   }

@@ -47,9 +47,6 @@ struct TopologyState {
  * ```
  */
 namespace PingEntries {
-namespace InterruptTest_blockDrv {
-enum { WARN = 3, FATAL = 5 };
-}
 namespace InterruptTest_tlmSend {
 enum { WARN = 3, FATAL = 5 };
 }

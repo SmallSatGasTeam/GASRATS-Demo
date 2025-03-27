@@ -33,11 +33,6 @@ module FSWDeployment {
     stack size Default.STACK_SIZE \
     priority 118
 
-  instance rateGroup4: Svc.ActiveRateGroup base id 0x5000 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 118
-
   instance cmdDisp: Svc.CommandDispatcher base id 0x0500 \
     queue size 20 \
     stack size Default.STACK_SIZE \
@@ -92,29 +87,6 @@ module FSWDeployment {
     stack size Default.STACK_SIZE \
     priority 96
 
-  instance flightLogic: Components.FlightLogic base id 0x0E00 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 100
-
-  instance cameraManager: Components.CameraManager base id 0x0F00\
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 99
-
-  instance transmissionManager: Components.TransmissionManager base id 0x1000 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 75
-
-  instance dataCollector: Components.DataCollector base id 0x1100 \
-    queue size Default.QUEUE_SIZE
-
-  instance dummyTranceiverDriver: Components.DummyTranceiverDriver base id 0x1400 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 75
-
   # ----------------------------------------------------------------------
   # Queued component instances
   # ----------------------------------------------------------------------
@@ -148,17 +120,5 @@ module FSWDeployment {
   instance systemResources: Svc.SystemResources base id 0x4A00
 
   instance comStub: Svc.ComStub base id 0x4B00
-
-  instance antennaDeploy: Components.AntennaDeploy base id 0x4C00
-
-  instance epsManager: Components.EPSManager base id 0x4D00
-
-  instance i2cDriver: Drv.LinuxI2cDriver base id 0x4E00
-
-  instance gpioDriver: Drv.LinuxGpioDriver base id 0x4F00
-
-  instance watchDog: Components.WatchDog base id 0x5200
-  
-  instance imuInterface: Components.imuInterface base id 0x5100
 
 }

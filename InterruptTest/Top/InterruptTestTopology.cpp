@@ -59,7 +59,6 @@ enum TopologyConstants {
 
 // Ping entries are autocoded, however; this code is not properly exported. Thus, it is copied here.
 Svc::Health::PingEntry pingEntries[] = {
-    {PingEntries::InterruptTest_blockDrv::WARN, PingEntries::InterruptTest_blockDrv::FATAL, "blockDrv"},
     {PingEntries::InterruptTest_tlmSend::WARN, PingEntries::InterruptTest_tlmSend::FATAL, "chanTlm"},
     {PingEntries::InterruptTest_cmdDisp::WARN, PingEntries::InterruptTest_cmdDisp::FATAL, "cmdDisp"},
     {PingEntries::InterruptTest_cmdSeq::WARN, PingEntries::InterruptTest_cmdSeq::FATAL, "cmdSeq"},
@@ -171,11 +170,9 @@ void startSimulatedCycle(Fw::TimeInterval interval) {
     cycleLock.unLock();
 
     InterruptTest::linuxInterruptTimer.startTimer();
-    //InterruptTest::linuxTimer.startTimer(1000);
 
     // Main loop
     while (cycling) {
-        //InterruptTest::blockDrv.callIsr();
         Os::Task::delay(interval);
 
         cycleLock.lock();
