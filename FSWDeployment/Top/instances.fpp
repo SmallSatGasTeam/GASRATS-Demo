@@ -13,11 +13,6 @@ module FSWDeployment {
   # Active component instances
   # ----------------------------------------------------------------------
 
-  instance blockDrv: Drv.BlockDriver base id 0x0100 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 140
-
   instance rateGroup1: Svc.ActiveRateGroup base id 0x0200 \
     queue size Default.QUEUE_SIZE \
     stack size Default.STACK_SIZE \
@@ -88,6 +83,14 @@ module FSWDeployment {
     priority 96
 
   # ----------------------------------------------------------------------
+  # FSW Active Component Instances
+  # ----------------------------------------------------------------------
+  instance interruptTimer: Components.LinuxInterruptTimer base id 0x0100 \
+    queue size Default.QUEUE_SIZE \
+    stack size Default.STACK_SIZE \
+    priority 140
+
+  # ----------------------------------------------------------------------
   # Queued component instances
   # ----------------------------------------------------------------------
 
@@ -120,5 +123,13 @@ module FSWDeployment {
   instance systemResources: Svc.SystemResources base id 0x4A00
 
   instance comStub: Svc.ComStub base id 0x4B00
+
+  # ----------------------------------------------------------------------
+  # FSW Passive component instances
+  # ----------------------------------------------------------------------
+
+  instance watchDog: Components.WatchDog base id 0x4C00
+
+  instance heartBeatOut: Drv.LinuxGpioDriver base id 0x4D00
 
 }

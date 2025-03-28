@@ -33,7 +33,6 @@ class LinuxInterruptTimer : public LinuxInterruptTimerComponentBase {
     // -----
 
     void startTimer();
-    void stopTimer();
 
     void doCycle();
 
@@ -42,21 +41,18 @@ class LinuxInterruptTimer : public LinuxInterruptTimerComponentBase {
     // Handler implementations for commands
     // ----------------------------------------------------------------------
 
-    //! Handler implementation for command StartTimer
-    void StartTimer_cmdHandler(FwOpcodeType opCode,  //!< The opcode
-                               U32 cmdSeq            //!< The command sequence number
-                               ) override;
-
-    //! Handler implementation for command StopTimer
-    void StopTimer_cmdHandler(FwOpcodeType opCode,  //!< The opcode
-                              U32 cmdSeq            //!< The command sequence number
-                              ) override;
-
     static void signalHandler(
       int sig,
       siginfo_t *si, 
       void *uc
     );
+
+    //! Handler implementation for pingIn
+    //!
+    //! pingIn : receives health pings
+    void pingIn_handler(FwIndexType portNum, //!< The port number
+      U32 key              //!< Value to return to pinger
+      ) override;
 
 
     struct sigevent sev;
@@ -64,7 +60,7 @@ class LinuxInterruptTimer : public LinuxInterruptTimerComponentBase {
 
     timer_t timerId = 0;
 
-    uint64_t ticks;
+    long ticks;
 };
 
 }  // namespace Components

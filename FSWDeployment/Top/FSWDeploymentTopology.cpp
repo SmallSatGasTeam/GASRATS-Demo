@@ -11,6 +11,8 @@
 // Necessary project-specified types
 #include <Fw/Types/MallocAllocator.hpp>
 #include <Svc/FramingProtocol/FprimeProtocol.hpp>
+#include <Fw/Logger/Logger.hpp>
+#include "Components/componentConfig/Constants.hpp"
 
 // Used for 1Hz synthetic cycling
 #include <Os/Mutex.hpp>
@@ -59,7 +61,6 @@ enum TopologyConstants {
 
 // Ping entries are autocoded, however; this code is not properly exported. Thus, it is copied here.
 Svc::Health::PingEntry pingEntries[] = {
-    {PingEntries::FSWDeployment_blockDrv::WARN, PingEntries::FSWDeployment_blockDrv::FATAL, "blockDrv"},
     {PingEntries::FSWDeployment_tlmSend::WARN, PingEntries::FSWDeployment_tlmSend::FATAL, "chanTlm"},
     {PingEntries::FSWDeployment_cmdDisp::WARN, PingEntries::FSWDeployment_cmdDisp::FATAL, "cmdDisp"},
     {PingEntries::FSWDeployment_cmdSeq::WARN, PingEntries::FSWDeployment_cmdSeq::FATAL, "cmdSeq"},
@@ -67,6 +68,7 @@ Svc::Health::PingEntry pingEntries[] = {
     {PingEntries::FSWDeployment_fileDownlink::WARN, PingEntries::FSWDeployment_fileDownlink::FATAL, "fileDownlink"},
     {PingEntries::FSWDeployment_fileManager::WARN, PingEntries::FSWDeployment_fileManager::FATAL, "fileManager"},
     {PingEntries::FSWDeployment_fileUplink::WARN, PingEntries::FSWDeployment_fileUplink::FATAL, "fileUplink"},
+    {PingEntries::FSWDeployment_interruptTimer::WARN, PingEntries::FSWDeployment_interruptTimer::FATAL, "interruptTimer"},
     {PingEntries::FSWDeployment_prmDb::WARN, PingEntries::FSWDeployment_prmDb::FATAL, "prmDb"},
     {PingEntries::FSWDeployment_rateGroup1::WARN, PingEntries::FSWDeployment_rateGroup1::FATAL, "rateGroup1"},
     {PingEntries::FSWDeployment_rateGroup2::WARN, PingEntries::FSWDeployment_rateGroup2::FATAL, "rateGroup2"},
@@ -159,6 +161,15 @@ void setupTopology(const TopologyState& state) {
         // Uplink is configured for receive so a socket task is started
         comDriver.start(name, COMM_PRIORITY, Default::STACK_SIZE);
     }
+
+    //FSW Stuff
+    //Configure GPIO ports
+    Os::File::Status status =
+        heartBeatOut.open("/dev/gpiochip0", HEARTBEAT_GPIO+512, Drv::LinuxGpioDriver::GpioConfiguration::GPIO_OUTPUT);
+    if (status != Os::File::Status::OP_OK) {
+        Fw::Logger::log("[ERROR] Failed to open GPIO pin\n");
+    }
+
 }
 
 // Variables used for cycle simulation
@@ -170,9 +181,10 @@ void startSimulatedCycle(Fw::TimeInterval interval) {
     bool cycling = cycleFlag;
     cycleLock.unLock();
 
+    FSWDeployment::interruptTimer.startTimer();
+
     // Main loop
     while (cycling) {
-        FSWDeployment::blockDrv.callIsr();
         Os::Task::delay(interval);
 
         cycleLock.lock();

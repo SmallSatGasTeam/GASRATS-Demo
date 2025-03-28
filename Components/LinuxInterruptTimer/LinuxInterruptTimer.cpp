@@ -8,6 +8,7 @@
 #include "FpConfig.hpp"
 #include "LinuxInterruptTimer.hpp"
 #include <csignal>
+#include <iostream>
 
 namespace Components {
 
@@ -22,20 +23,6 @@ LinuxInterruptTimer ::~LinuxInterruptTimer() {}
 // ----------------------------------------------------------------------
 // Handler implementations for commands
 // ----------------------------------------------------------------------
-
-void LinuxInterruptTimer ::StartTimer_cmdHandler(FwOpcodeType opCode, U32 cmdSeq) {
-    // this is where the actual timer code will be placed
-    // figure out why the struct cannot be defined.
-
-    this->startTimer();
-
-    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
-}
-
-void LinuxInterruptTimer ::StopTimer_cmdHandler(FwOpcodeType opCode, U32 cmdSeq) {
-    // TODO
-    this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
-}
 
 void LinuxInterruptTimer::doCycle() {
     Os::RawTime cycles;
@@ -89,5 +76,10 @@ void LinuxInterruptTimer::startTimer() {
 
     this->log_ACTIVITY_HI_TimerCreated();
 }
+
+void LinuxInterruptTimer ::pingIn_handler(FwIndexType portNum, U32 key) {
+    this->pingOut_out(0,key);
+}
+  
 
 }  // namespace Components

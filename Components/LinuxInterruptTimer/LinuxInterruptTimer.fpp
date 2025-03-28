@@ -4,9 +4,6 @@ module Components {
 
         ###### Commands
 
-        sync command StartTimer()
-        async command StopTimer()
-
         ###### Events
         event TimerCreated severity activity high format "The timer was created"
         event TimerTick severity activity high format "Timer tick"
@@ -43,6 +40,12 @@ module Components {
 
         @ Port for sending telemetry channels to downlink
         telemetry port tlmOut
+
+        @ pingIn : receives health pings
+        async input port pingIn: Svc.Ping
+
+        @ pingOut : Returns health ping
+        output port pingOut: Svc.Ping
 
     }
 }

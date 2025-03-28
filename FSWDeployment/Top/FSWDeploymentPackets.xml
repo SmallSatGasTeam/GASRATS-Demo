@@ -75,6 +75,10 @@
 
     <!-- Ignored packets -->
 
+    <packet name="FSW" id="8" level="2">
+        <channel name="gpio1.HIGH_LOW"/>
+    </packet>
+
     <ignore>
         <channel name="cmdDisp.CommandErrors"/>
     </ignore>

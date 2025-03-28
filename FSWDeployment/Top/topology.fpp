@@ -17,7 +17,6 @@ module FSWDeployment {
     # ----------------------------------------------------------------------
 
     instance $health
-    instance blockDrv
     instance tlmSend
     instance cmdDisp
     instance cmdSeq
@@ -41,6 +40,10 @@ module FSWDeployment {
     instance rateGroupDriver
     instance textLogger
     instance systemResources
+
+    instance heartBeatOut
+    instance interruptTimer
+    instance watchDog
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -91,8 +94,8 @@ module FSWDeployment {
     }
 
     connections RateGroups {
-      # Block driver
-      blockDrv.CycleOut -> rateGroupDriver.CycleIn
+      # Interrupt Timer
+      interruptTimer.CycleIn -> rateGroupDriver.CycleIn
 
       # Rate group 1
       rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup1] -> rateGroup1.CycleIn
@@ -107,8 +110,7 @@ module FSWDeployment {
       # Rate group 3
       rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup3] -> rateGroup3.CycleIn
       rateGroup3.RateGroupMemberOut[0] -> $health.Run
-      rateGroup3.RateGroupMemberOut[1] -> blockDrv.Sched
-      rateGroup3.RateGroupMemberOut[2] -> bufferManager.schedIn
+      rateGroup3.RateGroupMemberOut[1] -> bufferManager.schedIn
     }
 
     connections Sequencer {
@@ -134,7 +136,8 @@ module FSWDeployment {
     }
 
     connections FSWDeployment {
-      # Add here connections to user-defined components
+      $health.WdogStroke -> watchDog.healthIn
+      watchDog.heartBeatOut -> heartBeatOut.gpioWrite
     }
 
   }
