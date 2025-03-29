@@ -11,16 +11,19 @@ namespace Svc {
     namespace EndFrameHeader {
         // Put our different data that the transciever will need here
         
-        //! Token type for the preamble
-        typedef U32 TokenType;
+        //! Token type for the header which is the preamble and sync word
+        typedef U64 TokenType;
 
         enum {
             //! Header size for the preabmble in bytes
-            SIZE = 5
+            SIZE = 6
         };
 
-        //! The preamble for the framer
+        //! The preamble which is 5 bytes long
         const TokenType PREAMBLE = static_cast<TokenType>(0xAAAAAAAAAA);
+
+        //! The sync word which is one byte long
+        const U8 SYNC_WORD = 0x7E; // i think this is an okay way to declare this
     }
 
     //! \brief Implements the F Prime framing protocol
@@ -33,7 +36,7 @@ namespace Svc {
             //! Implementing the frame method
             void frame(
                 const U8* const data, //! The data
-                const U32 size, //! The data size in bytes
+                const U32 size, //! The data size in bytes | THIS SHOULD NOT EXCEDE 16 SINCE THAT'S ALL THE TRANSCIEVER CAN HANDLE
                 Fw::ComPacket::ComPacketType packet_type //! The packet type
             ) override;
     };
