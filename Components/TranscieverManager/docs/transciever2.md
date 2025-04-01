@@ -44,3 +44,7 @@
     - Communication adapter - The purpose of this is to interact with the Framer and the Communication Queue components
         - This is responsible for any re-transmission of failed data
         - All this is doing, is using the Byte Stream Driver to take in the buffers from all the internal components, using the Framer to format the data for the transciever, and then the communication status component to say if things worked or didn't
+    - Gemini's code review
+        - This code mostly looks good from what I can tell
+        - I had to change a few things, and haven't looked at the overall frame creation at the end
+        - Need to add the preamble, flag, postamble, the second flag, and the post amble for the AX.25 frame because it didn't do that for some reason
