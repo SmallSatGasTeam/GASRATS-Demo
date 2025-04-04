@@ -50,7 +50,7 @@ namespace Svc {
 
             //! This'll validate the buffer via the validation protocol specified by the transciever's datasheet
             bool validate(
-                Types:CircularBuffer& buffer, 
+                Types::CircularBuffer& buffer, 
                 U32 size //! The data size in bytes
             );
 

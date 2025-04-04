@@ -108,7 +108,64 @@ namespace Svc {
         // CRC16 for Radio Packet (Data Field 1 + Data Field 2)
         // im trusting Gemini on this one, i have no idea if it'll work (it probably won't)
         crc = calculate_crc16(radio_packet + 6, radio_packet_size - 6);  // CRC over Data Field 1 and 2
-        radio_packet[radio_packet_size++] = crc & 0xFF; // crc stuff that i don't understand
-        radio_packet[radio_packet_size++] = (crc >> 8) & 0xFF; // supposedly more crc things that im hoping just work
+        // this adds 6 to the radio_packet pointer, so it skips the preamble and sync word so it just points to data field 1 and 2
+        // we subtract the size by 6 since that'll just give us the size of data field 1 + data field 2
+
+        radio_packet[radio_packet_size++] = crc & 0xFF; // crc is a 16 bit number, so performing this AND operation will keep only the last 8 bits and set all other to 0
+        radio_packet[radio_packet_size++] = (crc >> 8) & 0xFF; // this shifts crc16 8 bits to the right, and then preserves those 8 bits that were the MSB's but are now on the left so they're preserved by the AND operation and then added onto the overall packet
+    }
+
+    bool EndurosatDeframing::validate(Types::CircularBuffer& ring, U32 size) {
+        // to validate the data, just perform the crc calculation on data field 1 and 2 and see if it matches the crc the packet holds
+        U8* data;
+        ring.peek(data, size); // this starts at the head by default, so this should be the buffer for all the data
+        
+        // calculate the crc16 value we expect it to have
+        U16 expected_crc = calculate_crc16(data, size);
+
+        U16 given_crc = 0xFFFF; // start with all 1's
+        given_crc = given_crc & (data[size - 2] << 8); // the first half of the given crc
+        given_crc = given_crc & data[size - 1]; // the second half of the given crc
+
+        if (given_crc != expected_crc) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    DeframingProtocol::DeframingStatus EndurosatDeframing::deframe(Types::CircularBuffer& ring, U32& needed) {
+        FW_ASSERT(m_interface != nullptr);
+
+        // just go through the ring and read all the data 
+        // need to keep checking the size of the ring to see if it's the size we're expecting as defined by data field 1
+
+        // first we need to check if it even has data field 1, which holds the size of data field 2 which is the only part of the packet that varies in size
+        if (ring.get_allocated_size() < 6) {
+            needed = 6;
+            return DeframingProtocol::DEFRAMING_MORE_NEEDED;
+        }
+
+        // then once we know the size after we get data field 1, we need to wait until the size = 7 + size of data field 2 + 2
+        U8 size_field_1; // size of data field 1 defined by data field 1
+        ring.peek(size_field_1, 6);
+
+        U8 total_packet_size = size_field_1 + 9; // add the size of the other fixed sized sections
+
+        if (ring.get_allocated_size() < total_packet_size) {
+            needed = total_packet_size;
+            return DeframingProtocol::DEFRAMING_INVALID_SIZE;
+        }
+
+        // check that it's bigger than we expected
+
+        if (total_packet_size > ring.get_capacity()) {
+            // size is too large so we don't give a 'needed' since it would overflow
+            return DeframingProtocol::DEFRAMING_INVALID_SIZE;
+        }
+
+        // once we know we have the amount of data we'd expect, we can check if it's valid and use the data
+
     }
 } // namespace Svc
