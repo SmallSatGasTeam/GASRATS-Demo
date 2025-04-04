@@ -106,7 +106,7 @@ namespace Svc {
         radio_packet_size += ax25_frame_size; // increase the overall packet size by the size of the ax25 frame
         
         // CRC16 for Radio Packet (Data Field 1 + Data Field 2)
-        // im trusting Gemini on this one, i have no idea if it'll work
+        // im trusting Gemini on this one, i have no idea if it'll work (it probably won't)
         crc = calculate_crc16(radio_packet + 6, radio_packet_size - 6);  // CRC over Data Field 1 and 2
         radio_packet[radio_packet_size++] = crc & 0xFF; // crc stuff that i don't understand
         radio_packet[radio_packet_size++] = (crc >> 8) & 0xFF; // supposedly more crc things that im hoping just work
