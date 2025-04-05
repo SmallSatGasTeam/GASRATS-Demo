@@ -118,7 +118,7 @@ namespace Svc {
     bool EndurosatDeframing::validate(Types::CircularBuffer& ring, U32 size) {
         // to validate the data, just perform the crc calculation on data field 1 and 2 and see if it matches the crc the packet holds
         U8* data;
-        ring.peek(data, size); // this starts at the head by default, so this should be the buffer for all the data
+        ring.peek(data, size, 6); // this starts at the head by default, so starting at 6 should start us at data field 1
         
         // calculate the crc16 value we expect it to have
         U16 expected_crc = calculate_crc16(data, size);
@@ -151,21 +151,39 @@ namespace Svc {
         U8 size_field_1; // size of data field 1 defined by data field 1
         ring.peek(size_field_1, 6);
 
-        U8 total_packet_size = size_field_1 + 9; // add the size of the other fixed sized sections
-
-        if (ring.get_allocated_size() < total_packet_size) {
-            needed = total_packet_size;
+        const U8 maxU8 = std::numeric_limits<U8>::max();
+        if (size_field_1 > maxU8) {
+            // too big, 'needed' would overflow
             return DeframingProtocol::DEFRAMING_INVALID_SIZE;
         }
+
+        // check the total fram size, both 'needed' and 'total_packet_size' are the same thing
+        needed = size_field_1 + 9;
+        U8 total_packet_size = size_field_1 + 9; // add the size of the other fixed sized sections
 
         // check that it's bigger than we expected
 
         if (total_packet_size > ring.get_capacity()) {
             // size is too large so we don't give a 'needed' since it would overflow
             return DeframingProtocol::DEFRAMING_INVALID_SIZE;
+        } else if (ring.get_allocated_size() < needed) { // check if the ring is big enough
+            return DeframingProtocol::DEFRAMING_MORE_NEEDED;
         }
 
         // once we know we have the amount of data we'd expect, we can check if it's valid and use the data
 
+        // check the checksum
+        if (not this->validate(ring, total_packet_size - 2)) { // doing -2 so we don't iterate over the crc16 in the packet
+            return DeframingProtocol::DEFRAMING_INVALID_CHECKSUM;
+        } 
+
+        Fw::Buffer buffer = m_interface->allocate(total_packet_size);
+        // ig sometimes this may return buffers larger than requested so we need to account for that
+        FW_ASSERT(buffer.getSize() >= total_packet_size);
+        buffer.setSize(total_packet_size);
+        Fw::SerializeStatus status = ring.peek(buffer.getData(), total_packet_size, EndFrameHeader::SIZE);
+        FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
+        m_interface->route(buffer); // really not sure what this is doing
+        return DeframingProtocol::DEFRAMING_STATUS_SUCCESS;
     }
 } // namespace Svc
