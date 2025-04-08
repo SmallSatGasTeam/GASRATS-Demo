@@ -8,6 +8,7 @@
 #define Components_CommunicationAdapter_HPP
 
 #include "Components/CommunicationAdapter/CommunicationAdapterComponentAc.hpp"
+#include "../../fprime/Drv/LinuxI2cDriver/LinuxI2cDriver.hpp" // need this so it knows what the I2cStatus type is
 
 namespace Components {
 
@@ -28,6 +29,12 @@ namespace Components {
 
       //! Destroy CommunicationAdapter object
       ~CommunicationAdapter();
+
+      //! We need to have the first buffer send a success message to kick of the ComQueue
+      bool isFirst = true;
+
+      //! Address to write to the transciever
+      const U8 ADDRESS = 0x22; // the range for the address is from 0x22 to 0x23 
 
     PRIVATE:
 
@@ -57,6 +64,16 @@ namespace Components {
           U32 cmdSeq //!< The command sequence number
       ) override;
 
+    PRIVATE:
+
+      // ----------------------------------------------------------------------
+      // Helper Functions
+      // ----------------------------------------------------------------------
+
+      //! checkStatus
+      //!
+      //! Calls an event based on the status returned from the read/write operation
+      Fw::Success checkStatus(Drv::I2cStatus i2cStatus);
   };
 
 }
