@@ -48,3 +48,5 @@
         - This code mostly looks good from what I can tell
         - I had to change a few things, and haven't looked at the overall frame creation at the end
         - Need to add the preamble, flag, postamble, the second flag, and the post amble for the AX.25 frame because it didn't do that for some reason
+- note for me when I come back on Thursday (4/10):
+    - BUILD A DEPLOYMENT AND HOOK UP EVERYTHING CORRECTLY
