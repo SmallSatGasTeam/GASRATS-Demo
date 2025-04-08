@@ -7,7 +7,7 @@
 #include "Components/imuInterface/imuInterface.hpp"
 #include "Components/componentConfig/Constants.hpp"
 #include "FpConfig.hpp"
-#include "fprime/Drv/LinuxI2cDriver/LinuxI2cDriver.hpp"
+// #include "fprime/Drv/LinuxI2cDriver/LinuxI2cDriver.hpp"
 
 namespace Components {
 

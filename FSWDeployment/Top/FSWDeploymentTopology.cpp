@@ -165,7 +165,7 @@ void setupTopology(const TopologyState& state) {
     //FSW Stuff
     //Configure GPIO ports
     Os::File::Status status =
-        heartBeatOut.open("/dev/gpiochip0", HEARTBEAT_GPIO+512, Drv::LinuxGpioDriver::GpioConfiguration::GPIO_OUTPUT);
+        heartBeatOut.open("/dev/gpiochip0", HEARTBEAT_GPIO, Drv::LinuxGpioDriver::GpioConfiguration::GPIO_OUTPUT);
     if (status != Os::File::Status::OP_OK) {
         Fw::Logger::log("[ERROR] Failed to open GPIO pin\n");
     }
