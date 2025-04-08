@@ -3,11 +3,11 @@
 # https://nasa.github.io/fprime/Tutorials/CrossCompilationSetup/CrossCompilationSetupTutorial.html#1-introduction
 
 #Options
-while getopts ":hp:" opt; do
+while getopts ":hp:d:" opt; do
     case $opt in
         #help
         h)
-            echo "Usage: $0 [-h help] [-pi pi #]"
+            echo "Usage: $0 [-h help] [-p pi #] [-d deployment]"
             exit 0
             ;;
         #pi number
