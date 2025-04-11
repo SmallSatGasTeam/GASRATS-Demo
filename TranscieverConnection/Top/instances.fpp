@@ -88,15 +88,6 @@ module TranscieverConnection {
     priority 96
 
   # ----------------------------------------------------------------------
-  # Custom components
-  # ----------------------------------------------------------------------
-
-  instance communicationAdapter: Components.CommunicationAdapter base id 0x0E00 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 97
-
-  # ----------------------------------------------------------------------
   # Queued component instances
   # ----------------------------------------------------------------------
 
@@ -128,6 +119,7 @@ module TranscieverConnection {
 
   instance systemResources: Svc.SystemResources base id 0x4A00
 
-  instance comStub: Svc.ComStub base id 0x4B00
+  # our custom communication adapter for the transciever!
+  instance communicationAdapter: Components.CommunicationAdapter base id 0x4B00
 
 }

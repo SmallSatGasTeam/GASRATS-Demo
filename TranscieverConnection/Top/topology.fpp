@@ -23,7 +23,6 @@ module TranscieverConnection {
     instance cmdSeq
     instance comDriver
     instance comQueue
-    instance comStub
     instance deframer
     instance eventLogger
     instance fatalAdapter
@@ -41,6 +40,7 @@ module TranscieverConnection {
     instance rateGroupDriver
     instance textLogger
     instance systemResources
+    instance communicationAdapter
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -74,13 +74,13 @@ module TranscieverConnection {
       comQueue.buffQueueSend -> framer.bufferIn
 
       framer.framedAllocate -> bufferManager.bufferGetCallee
-      framer.framedOut -> comStub.comDataIn
+      framer.framedOut -> communicationAdapter.comDataIn # using our custom communictation adapter
       framer.bufferDeallocate -> fileDownlink.bufferReturn
 
       comDriver.deallocate -> bufferManager.bufferSendIn
       comDriver.ready -> comStub.drvConnected
 
-      comStub.comStatus -> framer.comStatusIn
+      communicationAdapter.comStatus -> framer.comStatusIn # using our custom communictation adapter
       framer.comStatusOut -> comQueue.comStatusIn
       comStub.drvDataOut -> comDriver.$send
 
@@ -134,7 +134,7 @@ module TranscieverConnection {
     }
 
     connections TranscieverConnection {
-      # Add here connections to user-defined components
+      # user defined connections with user defined components
     }
 
   }

@@ -52,3 +52,5 @@
     - BUILD A DEPLOYMENT AND HOOK UP EVERYTHING CORRECTLY
     - also, the part where i have the first buffer send the initial success signal won't work, that needs to be sent by somewhere in flight logic
 - Okay so today I learned that you actually need to implement the FramingProtocolInterface to actually do stuff. However, the default framer component in F' already does this for us, and all you have to do is replace the default framing protocol in your deployment's `ConnectionTopology.cpp` file (it's a variable for both the framer and deframer at the top of the file) to be your custom framer and deframer
+    - When I get back I'll need to get rid of the default TCP server connection and the comStub since it's just a dummy implementation of the CommunicationAdapter, and need to have my CommunicationAdapter send that first Sucess message. 
+    - WE NEED TO IMPLEMENT IT WITH UART NOT I2C!!!!
