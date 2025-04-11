@@ -49,5 +49,9 @@
 
 #define HEARTBEAT_GPIO 4
 
+#define TICK_RATE_s 1
+
+#define TICK_RATE_n 0
+
 
 #endif

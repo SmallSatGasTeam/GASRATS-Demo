@@ -95,7 +95,7 @@ module FSWDeployment {
 
     connections RateGroups {
       # Interrupt Timer
-      interruptTimer.CycleIn -> rateGroupDriver.CycleIn
+      interruptTimer.CycleOut -> rateGroupDriver.CycleIn
 
       # Rate group 1
       rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup1] -> rateGroup1.CycleIn

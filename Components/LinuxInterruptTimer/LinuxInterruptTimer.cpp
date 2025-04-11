@@ -8,7 +8,7 @@
 #include "FpConfig.hpp"
 #include "LinuxInterruptTimer.hpp"
 #include <csignal>
-#include <iostream>
+#include "Components/componentConfig/Constants.hpp"
 
 namespace Components {
 
@@ -28,7 +28,7 @@ void LinuxInterruptTimer::doCycle() {
     Os::RawTime cycles;
     cycles.now();
 
-    CycleIn_out(0, cycles);
+    CycleOut_out(0, cycles);
     
     //this->log_ACTIVITY_HI_TimerTick(); // For debugging
 
@@ -49,8 +49,8 @@ void LinuxInterruptTimer::startTimer() {
 
     its.it_value.tv_sec = 1; // timer starts after 1 second
     its.it_value.tv_nsec = 0;
-    its.it_interval.tv_sec = 1; // repeats every 1 seconds
-    its.it_interval.tv_nsec = 0;
+    its.it_interval.tv_sec = TICK_RATE_s; // repeats every TICK_RATE_s seconds
+    its.it_interval.tv_nsec = TICK_RATE_n;
 
     sev.sigev_notify = SIGEV_SIGNAL;
     sev.sigev_signo = SIGRTMIN;
