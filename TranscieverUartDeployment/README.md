@@ -37,3 +37,7 @@ The application binary may then be run independently from the created 'bin' dire
 cd TranscieverUartDeployment/build-artifacts/<platform>/bin/
 ./TranscieverUartDeployment -a 127.0.0.1 -p 50000
 ```
+
+## How the custom framer is implemented
+- At the top of the file there's two variables called deframer and framer that you replace with your defined protocol
+- Also `comStub` is an example framer implementation that is intended to be replaced, so I replaced it with our protocol in the `instances.fpp` and `topology.fpp`
