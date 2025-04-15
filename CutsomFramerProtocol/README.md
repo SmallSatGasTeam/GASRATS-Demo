@@ -40,7 +40,7 @@ register_fprime_ut()
 - Once this is done, the framer has been added to FPrime.
 
 ## Add the framer to your FPrime project
-- Create a new deployment using UART, so run the following command in your root directory `fprime-util new --deployment`, and when the options are shown choose `UART`
+- You'll need to create a new deployment using UART. So, run the following command in your root directory `fprime-util new --deployment`, and when the options are shown choose `UART`
 - Once this is created, go to the deployment folder.
     - Once here, open the file that's named something like `BlahBlahDeploymentToplogy.cpp`
 - Once that `DeploymentTopology.cpp` file is open, edit the line `#include <Svc/FramingProtocol/FprimeProtocol.hpp>` to be `#include <Svc/FramingProtocol/EndurosatProtocol.hpp> // using our own protocol!!`.
@@ -66,13 +66,13 @@ Svc::EndurosatDeframing deframing; // using our own custom implementation!
 - Unfortunetly, I haven't been able to test this part before leaving for the summer, so idk if it actually works. 
 ### What I do know about using the deployment
 - When you run the gds via the deployment, you'll need to set a baud rate for the UART driver so it communicates at the rate the transicever expects it to.
-    - I do not know exactly how to set the baud rate, but I do know that it's just some flag that you supply to the `fprime-gds` command.
+    - I do not know exactly how to set the baud rate, but I think that it's just some flag that you supply to the `fprime-gds` command.
 
 ## Helpful resources
 - The Transciever's [datasheet](https://usu.sharepoint.com/sites/GA/Shared%20Documents/Projects/GASRATS/EnduroSat%20Spec%20Sheets/UHF%20Transceiver%20II%20User%20Manual.pdf?CT=1741310232865&OR=ItemsView)
     - This contains all the specific info you need in order to communicate with the transicever
 - The offical 'guide' on how to make the [custom framer](https://fprime.jpl.nasa.gov/latest/docs/reference/communication-adapter-interface)
     - This is esentially a tutorial of how to make the custom framer, this is what I followed to create the framer
-    - The only thing I actually did was implement the `FramingProtocol` class, because fprime hooks up everything else correctly as far as I can tell, as long as you [add the custom framer to fprime](#add-the-framer-to-the-fprime-repo) and then implement it in [your deployment](#add-the-framer-to-your-fprime-project)
-- The document under components called [WhatIveLearned.md](../Components/WhatIveLearned.md) is where I documented my journey making this custom framer.
-    - Idk if it'll be helpful, but it shows my thought process and may help if you're confused on why I did something a certain way.
+    - The only thing I actually did was implement the `FramingProtocol` class, because fprime hooks up everything else correctly as far as I can tell, as long as you have [added the custom framer to fprime](#add-the-framer-to-the-fprime-repo) and have also [implemented it in your deployment](#add-the-framer-to-your-fprime-project)
+- The document within the  `Components/` folder called [WhatIveLearned.md](../Components/WhatIveLearned.md) is where I documented my journey making this custom framer.
+    - Idk if it'll be helpful, but it shows my thought process from beginning to finish with making this framer.
