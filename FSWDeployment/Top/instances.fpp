@@ -13,11 +13,6 @@ module FSWDeployment {
   # Active component instances
   # ----------------------------------------------------------------------
 
-  instance blockDrv: Drv.BlockDriver base id 0x0100 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 140
-
   instance rateGroup1: Svc.ActiveRateGroup base id 0x0200 \
     queue size Default.QUEUE_SIZE \
     stack size Default.STACK_SIZE \
@@ -29,11 +24,6 @@ module FSWDeployment {
     priority 119
 
   instance rateGroup3: Svc.ActiveRateGroup base id 0x0400 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 118
-
-  instance rateGroup4: Svc.ActiveRateGroup base id 0x5000 \
     queue size Default.QUEUE_SIZE \
     stack size Default.STACK_SIZE \
     priority 118
@@ -92,28 +82,13 @@ module FSWDeployment {
     stack size Default.STACK_SIZE \
     priority 96
 
-  instance flightLogic: Components.FlightLogic base id 0x0E00 \
+  # ----------------------------------------------------------------------
+  # FSW Active Component Instances
+  # ----------------------------------------------------------------------
+  instance interruptTimer: Components.LinuxInterruptTimer base id 0x0100 \
     queue size Default.QUEUE_SIZE \
     stack size Default.STACK_SIZE \
-    priority 100
-
-  instance cameraManager: Components.CameraManager base id 0x0F00\
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 99
-
-  instance transmissionManager: Components.TransmissionManager base id 0x1000 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 75
-
-  instance dataCollector: Components.DataCollector base id 0x1100 \
-    queue size Default.QUEUE_SIZE
-
-  instance dummyTranceiverDriver: Components.DummyTranceiverDriver base id 0x1400 \
-    queue size Default.QUEUE_SIZE \
-    stack size Default.STACK_SIZE \
-    priority 75
+    priority 140
 
   # ----------------------------------------------------------------------
   # Queued component instances
@@ -127,7 +102,7 @@ module FSWDeployment {
   # ----------------------------------------------------------------------
 
   @ Communications driver. May be swapped with other com drivers like UART or TCP
-  instance comDriver: Drv.TcpClient base id 0x4000
+  instance comDriver: Drv.TcpServer base id 0x4000
 
   instance framer: Svc.Framer base id 0x4100
 
@@ -149,16 +124,12 @@ module FSWDeployment {
 
   instance comStub: Svc.ComStub base id 0x4B00
 
-  instance antennaDeploy: Components.AntennaDeploy base id 0x4C00
+  # ----------------------------------------------------------------------
+  # FSW Passive component instances
+  # ----------------------------------------------------------------------
 
-  instance epsManager: Components.EPSManager base id 0x4D00
+  instance watchDog: Components.WatchDog base id 0x4C00
 
-  instance i2cDriver: Drv.LinuxI2cDriver base id 0x4E00
-
-  instance gpioDriver: Drv.LinuxGpioDriver base id 0x4F00
-
-  instance watchDog: Components.WatchDog base id 0x5200
-  
-  instance imuInterface: Components.imuInterface base id 0x5100
+  instance heartBeatOut: Drv.LinuxGpioDriver base id 0x4D00
 
 }

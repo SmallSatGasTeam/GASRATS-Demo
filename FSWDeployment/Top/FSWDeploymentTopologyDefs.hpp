@@ -83,15 +83,9 @@ enum { WARN = 3, FATAL = 5 };
 namespace FSWDeployment_rateGroup3 {
 enum { WARN = 3, FATAL = 5 };
 }
-namespace FSWDeployment_rateGroup4 {
-enum { WARN = 3, FATAL = 5 };
+namespace FSWDeployment_interruptTimer {
+    enum { WARN = 3, FATAL = 5 };
 }
-namespace FSWDeployment_flightLogic {
-enum { WARN = 3, FATAL = 5 };
-}
-namespace FSWDeployment_cameraManager {
-enum { WARN = 3, FATAL = 5 };
-} 
 }  // namespace PingEntries
 }  // namespace FSWDeployment
 #endif

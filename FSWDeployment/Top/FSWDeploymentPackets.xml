@@ -38,7 +38,7 @@
     </packet>
 
     <packet name="DriveTlm" id="3" level="1">
-        <channel name="blockDrv.BD_Cycles"/>
+        <channel name="interruptTimer.ticks"/>
     </packet>
 
     <packet name="Comms" id="4" level="1">
@@ -73,40 +73,11 @@
         <channel name="systemResources.CPU_15"/>
     </packet>
 
-    <packet name="FlightLogic" id="8" level="3">
-        <channel name="flightLogic.antennaState"/>
-        <channel name="flightLogic.cameraState"/>
-        <channel name="flightLogic.beaconState"/>
-        <channel name="flightLogic.safe"/>
-        <channel name="flightLogic.detumbled"/>
-        <channel name="flightLogic.bootTime"/>
-    </packet>
-
-    <packet name="AntennaDeploy" id="9" level="3">
-        <channel name="antennaDeploy.antennaState"/>
-    </packet>
-
-    <packet name="CameraManager" id="10" level="3">
-        <channel name="cameraManager.cameraDeployed"/>
-        <channel name="cameraManager.picsTaken"/>
-    </packet>
-
-    <packet name="EPSManager" id="11" level="3">
-        <channel name="epsManager.voltage"/>
-        <channel name="epsManager.current"/>
-    </packet>
-
-    <packet name="WatchDog" id="12" level="3">
-        <channel name="watchDog.heartBeat"/>
-    </packet>
-
-    <packet name="DataCollector" id="13" level="3">
-        <channel name="dataCollector.imuX"/>
-        <channel name="dataCollector.imuY"/>
-        <channel name="dataCollector.imuZ"/>
-    </packet>
-
     <!-- Ignored packets -->
+
+    <packet name="FSW" id="8" level="2">
+        <channel name="gpio1.HIGH_LOW"/>
+    </packet>
 
     <ignore>
         <channel name="cmdDisp.CommandErrors"/>

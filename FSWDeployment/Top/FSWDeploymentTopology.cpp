@@ -11,11 +11,11 @@
 // Necessary project-specified types
 #include <Fw/Types/MallocAllocator.hpp>
 #include <Svc/FramingProtocol/FprimeProtocol.hpp>
+#include <Fw/Logger/Logger.hpp>
+#include "Components/componentConfig/Constants.hpp"
 
 // Used for 1Hz synthetic cycling
 #include <Os/Mutex.hpp>
-
-#include "Fw/Logger/Logger.hpp"
 
 // Allows easy reference to objects in FPP/autocoder required namespaces
 using namespace FSWDeployment;
@@ -39,7 +39,6 @@ Svc::RateGroupDriver::DividerSet rateGroupDivisorsSet{{{1, 0}, {2, 0}, {4, 0}}};
 NATIVE_INT_TYPE rateGroup1Context[Svc::ActiveRateGroup::CONNECTION_COUNT_MAX] = {};
 NATIVE_INT_TYPE rateGroup2Context[Svc::ActiveRateGroup::CONNECTION_COUNT_MAX] = {};
 NATIVE_INT_TYPE rateGroup3Context[Svc::ActiveRateGroup::CONNECTION_COUNT_MAX] = {};
-NATIVE_INT_TYPE rateGroup4Context[Svc::ActiveRateGroup::CONNECTION_COUNT_MAX] = {};
 
 // A number of constants are needed for construction of the topology. These are specified here.
 enum TopologyConstants {
@@ -62,8 +61,6 @@ enum TopologyConstants {
 
 // Ping entries are autocoded, however; this code is not properly exported. Thus, it is copied here.
 Svc::Health::PingEntry pingEntries[] = {
-    {PingEntries::FSWDeployment_blockDrv::WARN, PingEntries::FSWDeployment_blockDrv::FATAL, "blockDrv"},
-    {PingEntries::FSWDeployment_cameraManager::WARN, PingEntries::FSWDeployment_cameraManager::FATAL, "cameraManager"},
     {PingEntries::FSWDeployment_tlmSend::WARN, PingEntries::FSWDeployment_tlmSend::FATAL, "chanTlm"},
     {PingEntries::FSWDeployment_cmdDisp::WARN, PingEntries::FSWDeployment_cmdDisp::FATAL, "cmdDisp"},
     {PingEntries::FSWDeployment_cmdSeq::WARN, PingEntries::FSWDeployment_cmdSeq::FATAL, "cmdSeq"},
@@ -71,12 +68,11 @@ Svc::Health::PingEntry pingEntries[] = {
     {PingEntries::FSWDeployment_fileDownlink::WARN, PingEntries::FSWDeployment_fileDownlink::FATAL, "fileDownlink"},
     {PingEntries::FSWDeployment_fileManager::WARN, PingEntries::FSWDeployment_fileManager::FATAL, "fileManager"},
     {PingEntries::FSWDeployment_fileUplink::WARN, PingEntries::FSWDeployment_fileUplink::FATAL, "fileUplink"},
-    {PingEntries::FSWDeployment_flightLogic::WARN, PingEntries::FSWDeployment_flightLogic::FATAL, "flightLogic"},
+    {PingEntries::FSWDeployment_interruptTimer::WARN, PingEntries::FSWDeployment_interruptTimer::FATAL, "interruptTimer"},
     {PingEntries::FSWDeployment_prmDb::WARN, PingEntries::FSWDeployment_prmDb::FATAL, "prmDb"},
     {PingEntries::FSWDeployment_rateGroup1::WARN, PingEntries::FSWDeployment_rateGroup1::FATAL, "rateGroup1"},
     {PingEntries::FSWDeployment_rateGroup2::WARN, PingEntries::FSWDeployment_rateGroup2::FATAL, "rateGroup2"},
     {PingEntries::FSWDeployment_rateGroup3::WARN, PingEntries::FSWDeployment_rateGroup3::FATAL, "rateGroup3"},
-    {PingEntries::FSWDeployment_rateGroup4::WARN, PingEntries::FSWDeployment_rateGroup4::FATAL, "rateGroup4"},
 };
 
 /**
@@ -86,7 +82,7 @@ Svc::Health::PingEntry pingEntries[] = {
  * allocating resources, passing-in arguments, etc. This function may be inlined into the topology setup function if
  * desired, but is extracted here for clarity.
  */
-void configureTopology() {
+void configureTopology(const TopologyState& state) {
     // Buffer managers need a configured set of buckets and an allocator used to allocate memory for those buckets.
     Svc::BufferManager::BufferBins upBuffMgrBins;
     memset(&upBuffMgrBins, 0, sizeof(upBuffMgrBins));
@@ -112,7 +108,6 @@ void configureTopology() {
     rateGroup1.configure(rateGroup1Context, FW_NUM_ARRAY_ELEMENTS(rateGroup1Context));
     rateGroup2.configure(rateGroup2Context, FW_NUM_ARRAY_ELEMENTS(rateGroup2Context));
     rateGroup3.configure(rateGroup3Context, FW_NUM_ARRAY_ELEMENTS(rateGroup3Context));
-    rateGroup4.configure(rateGroup4Context, FW_NUM_ARRAY_ELEMENTS(rateGroup4Context));
 
     // File downlink requires some project-derived properties.
     fileDownlink.configure(FILE_DOWNLINK_TIMEOUT, FILE_DOWNLINK_COOLDOWN, FILE_DOWNLINK_CYCLE_TIME,
@@ -136,6 +131,9 @@ void configureTopology() {
     configurationTable.entries[2] = {.depth = 100, .priority = 1};
     // Allocation identifier is 0 as the MallocAllocator discards it
     comQueue.configure(configurationTable, 0, mallocator);
+    if (state.hostname != nullptr && state.port != 0) {
+        comDriver.configure(state.hostname, state.port);
+    }
 }
 
 // Public functions for use in main program are namespaced with deployment name FSWDeployment
@@ -150,7 +148,7 @@ void setupTopology(const TopologyState& state) {
     // Autocoded configuration. Function provided by autocoder.
     configComponents(state);
     // Deployment-specific component configuration. Function provided above. May be inlined, if desired.
-    configureTopology();
+    configureTopology(state);
     // Autocoded command registration. Function provided by autocoder.
     regCommands();
     // Autocoded parameter loading. Function provided by autocoder.
@@ -161,24 +159,17 @@ void setupTopology(const TopologyState& state) {
     if (state.hostname != nullptr && state.port != 0) {
         Os::TaskString name("ReceiveTask");
         // Uplink is configured for receive so a socket task is started
-        comDriver.configure(state.hostname, state.port);
-        comDriver.start(name, true, COMM_PRIORITY, Default::STACK_SIZE);
+        comDriver.start(name, COMM_PRIORITY, Default::STACK_SIZE);
     }
 
-    //Configure i2c Device
-    const char* device = "/dev/i2c-1";
-    i2cDriver.open(device);
-
-    //Get Boot Time
-    flightLogic.setTime();
-    imuInterface.startup();
-
+    //FSW Stuff
     //Configure GPIO ports
     Os::File::Status status =
-        gpioDriver.open("/dev/gpiochip0", HEARTBEAT_GPIO+512, Drv::LinuxGpioDriver::GpioConfiguration::GPIO_OUTPUT);
+        heartBeatOut.open("/dev/gpiochip0", HEARTBEAT_GPIO, Drv::LinuxGpioDriver::GpioConfiguration::GPIO_OUTPUT);
     if (status != Os::File::Status::OP_OK) {
         Fw::Logger::log("[ERROR] Failed to open GPIO pin\n");
     }
+
 }
 
 // Variables used for cycle simulation
@@ -190,9 +181,10 @@ void startSimulatedCycle(Fw::TimeInterval interval) {
     bool cycling = cycleFlag;
     cycleLock.unLock();
 
+    FSWDeployment::interruptTimer.startTimer();
+
     // Main loop
     while (cycling) {
-        FSWDeployment::blockDrv.callIsr();
         Os::Task::delay(interval);
 
         cycleLock.lock();
