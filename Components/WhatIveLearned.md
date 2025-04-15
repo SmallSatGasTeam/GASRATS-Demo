@@ -54,3 +54,9 @@
 - Okay so today I learned that you actually need to implement the FramingProtocolInterface to actually do stuff. However, the default framer component in F' already does this for us, and all you have to do is replace the default framing protocol in your deployment's `ConnectionTopology.cpp` file (it's a variable for both the framer and deframer at the top of the file) to be your custom framer and deframer
     - When I get back I'll need to get rid of the default TCP server connection and the comStub since it's just a dummy implementation of the CommunicationAdapter, and need to have my CommunicationAdapter send that first Sucess message. 
     - WE NEED TO IMPLEMENT IT WITH UART NOT I2C!!!!
+- Final stuff
+    - So I got it all hooked up now, because you can just make an F` deployment that uses UART, which actually connects everything.
+    - Since UART doesn't need a specific device address like I2C does, I don't have to even configure anything like that. 
+    - Everything builds, so this is as far as I can get without physical testing.
+    - The actual Framer that I built is under the CustomFramerProtocol file, and there's a script in there that you can run that copies the files into F`
+        - I have to do this because I can't version control the F` repo, so I have to make the files outside the repo, then copy them to the repo and add them to the CMake.     

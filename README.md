@@ -1,5 +1,7 @@
 # GASRATS-FSW
 
+## CRASH COURSE FOR THE CUSTOM FRAMER COMPONENT IS LOCATED [HERE](/CutsomFramerProtocol/README.md)
+
 This is the prototype for the GASRATS-FSW. Besides the Flight Logic component, all other components are shells used to show off Flight Logic functionality. At the moment, Flight Logic is configured with these capabilities: 
 
 - Check EPS data to verify health deploy conditions.
