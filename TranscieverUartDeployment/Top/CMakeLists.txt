@@ -8,7 +8,7 @@
 set(SOURCE_FILES
   "${CMAKE_CURRENT_LIST_DIR}/instances.fpp"
   # Note: Uncomment when using Svc:TlmPacketizer
-  #"${CMAKE_CURRENT_LIST_DIR}/TranscieverUartDeploymentPackets.xml"
+  # "${CMAKE_CURRENT_LIST_DIR}/TranscieverUartDeploymentPackets.xml"
   "${CMAKE_CURRENT_LIST_DIR}/topology.fpp"
   "${CMAKE_CURRENT_LIST_DIR}/TranscieverUartDeploymentTopology.cpp"
 )
@@ -17,6 +17,7 @@ set(MOD_DEPS
   # Communication Implementations
   Drv/Udp
   Drv/LinuxUartDriver
+  Drv/TcpClient
 )
 
 register_fprime_module()

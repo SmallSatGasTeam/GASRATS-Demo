@@ -54,7 +54,7 @@ Svc::FprimeDeframing deframing;
 Svc::EndurosatFraming framing; // using our own custom implementation!
 Svc::EndurosatDeframing deframing; // using our own custom implementation!
 ```
-- And you're done! To run the deployment just go into the deployment folder in your terminal and run `fprime-util gds`
+- And you're done! To run the deployment just go into the deployment folder in your terminal and run `fprime-gds`
 
 ## GDS
 - So the GDS is the thing that actually has the ground station/computer communicate with the Raspberry pi that's running the FPrime deployment (aka the code).
