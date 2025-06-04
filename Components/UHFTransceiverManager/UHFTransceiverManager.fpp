@@ -2,7 +2,10 @@ module Components {
     @ component contains functions that configure the UHF transceiver's settings, and allows for data to be sent / received. "
     active component UHFTransceiverManager {
 
-        async command configureFrequency opcode 0x01
+        async command configureFrequency(
+            $frequency: F32
+        ) opcode 0x01
+
 
         ##############################################################################
         #### Uncomment the following examples to start customizing your component ####
@@ -28,6 +31,55 @@ module Components {
 
         # @ Example parameter
         # param PARAMETER_NAME: U32
+
+        ###############################################################################
+        # Events
+        ###############################################################################
+
+        event UHFSuccess \
+            severity activity high \
+            format "The UHF sent the data"
+        
+        event UHFAddressFailure \
+            severity warning high \
+            format "UHF Invalid Address"
+
+        event UHFWriteError \
+            severity warning high \
+            format "UHF Write Failed"
+
+        event UHFReadError \
+            severity warning high \
+            format "UHF Read Failed"
+
+        event UHFOpenError \
+            severity warning high \
+            format "UHF Failed to open device"
+        
+        event UHFOtherError \
+            severity warning high \
+            format "UHF Other"
+        @ Allocation failed event
+        event MemoryAllocationFailed() \
+            severity warning low \
+            format "Failed to allocate memory"
+
+        event RadioFrequencyConfiguredOK(frequency: F32) \
+            severity activity high \
+            format "The radio frequency was configured to {}"
+
+
+        ###############################################################################
+        # Telemetry
+        ###############################################################################
+
+        @ readConfiguration: The voltage being supplied to the board from the EPS in volts
+        telemetry readConfiguration1: U8 
+
+        telemetry readConfiguration2: U8 
+
+
+        telemetry commandString: string
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #
@@ -58,6 +110,12 @@ module Components {
 
         @Port to set the value of a parameter
         param set port prmSetOut
+
+        @ Allocation port for a buffer
+        output port allocate: Fw.BufferGet
+
+        @ Deallocation port for buffers
+        output port deallocate: Fw.BufferSend
 
     }
 }
