@@ -78,8 +78,9 @@ module Components {
 
         telemetry readConfiguration2: U8 
 
+        telemetry temperature: U8
 
-        telemetry commandString: string
+        telemetry powerMode: bool
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #

@@ -48,28 +48,48 @@ namespace Components {
       ) override;
 
       // ----------------------------------------------------------------------
-      // User defined functions / variables /
+      // User defined functions 
       // ----------------------------------------------------------------------
-      U8 computeFint(double freq_hz);
-      std::array<char, 6> computeFfrac(double freq_hz, U8 Fint);
-      U32 computeCRC32(std::string& input);
-      U32 getLength(const unsigned char* input);
 
-      U8 getWriteData(Fw::Buffer readBuffer);
+      U8* getWriteData(Fw::Buffer readBuffer);
 
-      char* generateI2cCommand(U8 Fint, std::array<char, 6> Ffrac);
-      void checkStatus(Drv::I2cStatus);
+      void checkI2cStatus(Drv::I2cStatus);
 
       Fw::Buffer getReadBuffer(const char* command);
 
-      // Change these values once we actually know what frequency we will be using
-      float f_x0 = 26e6; // Crystal Oscillator Frequency
-      float outdiv = 8;  // Output Divider
-      float npresc = 2; // Prescaler Value
 
-      float FREQUENCY = 430e6;
+
+      // ----------------------------------------------------------------------
+      // User defined variables 
+      // ----------------------------------------------------------------------
+
+      // Preset
+      float FREQ_X0 = 26e6; // 26e6 : Crystal Oscillator Frequency
+      float OUTDIV = 8;  // 8 : Output Divider
+      float NPRESC = 2; // 2 : Prescaler Value
+
+      // Change these values once we actually know what frequency we will be using
+      float FREQUENCY = 430e6; // 430e6 : Chosen radio frequency
 
       U8 ADDRESS = 0x23; // Default but can be changed to 0x23
+
+      const char* WRITE_RADIO_FREQ = "ES+W230150E90942 F778726B\r"; // Command to configure radio frequency to 495 MHz (calculated from datasheet example)
+      const char* WRITE_BEACON_TRANSMISSION_PERIOD = "ES+W23070000003C FDEF1764\r"; // Command to configure beacon tranmission period to 60 seconds
+      const char* WRITE_POWER_MODE = "ES+W23F4 AA27131\r"; // Command that turns on low power mode
+
+      // READ Commands
+      const char* READ_RADIO_FREQ = "ES+R2301 CB4DD4BE\r"; // Command to read radio freqency configuration (example from datasheet)
+      const char* READ_UPTIME = "ES+R2302 52448504\r"; // Command to read the device uptime in seconds
+      const char* READ_TRANSMITTED_PACKETS = "ES+R2303 2543B592\r"; // Command to read number of transmitted packets
+      const char* READ_RECEIVED_PACKETS = "ES+R2304 BB272031\r"; // Command to read number of received packets
+      const char* READ_BEACON_TRANSMISSION_PERIOD = "ES+R2307 22E716B\r"; // Command to read beacon transmission period in seconds. 
+      const char* READ_INTERNAL_TEMP = "ES+R230A 9B48A582\r"; // Command to read internal temperature measurement
+      const char* READ_POWER_MODE = "ES+R23F4 C242FE41\r"; // Command that reads the power mode of the device (low power mode)
+
+
+      // There is also a command on page 87 to read current antenna status which may be useful.
+
+
 
       
 
