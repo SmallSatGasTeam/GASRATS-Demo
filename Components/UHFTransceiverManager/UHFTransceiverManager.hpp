@@ -83,7 +83,9 @@ namespace Components {
       const char* READ_TRANSMITTED_PACKETS = "ES+R2303 2543B592\r"; // Command to read number of transmitted packets
       const char* READ_RECEIVED_PACKETS = "ES+R2304 BB272031\r"; // Command to read number of received packets
       const char* READ_BEACON_TRANSMISSION_PERIOD = "ES+R2307 22E716B\r"; // Command to read beacon transmission period in seconds. 
-      const char* READ_INTERNAL_TEMP = "ES+R230A 9B48A582\r"; // Command to read internal temperature measurement
+      const char* READ_INTERNAL_TEMP_ASCII = "ES+R230A 9B48A582\r"; // Command to read internal temperature measurement
+
+
       const char* READ_POWER_MODE = "ES+R23F4 C242FE41\r"; // Command that reads the power mode of the device (low power mode)
 
 

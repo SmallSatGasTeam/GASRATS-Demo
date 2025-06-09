@@ -40,25 +40,38 @@ namespace Components {
         F32 frequency
     )
   {
-    // Configure Radio Frequency
-    Fw::Buffer readBuffer = getReadBuffer(this->WRITE_RADIO_FREQ);
-    U8* byte_write = getWriteData(readBuffer);
-    this->tlmWrite_readConfiguration1(byte_write[0]);
+    // // Configure Radio Frequency
+    // Fw::Buffer readBuffer = getReadBuffer(this->WRITE_RADIO_FREQ);
+    // U8* byte_write = getWriteData(readBuffer);
+    // this->tlmWrite_readConfiguration1(byte_write[0]);
 
     // Read Radio Frequency Configuration
-    Fw::Buffer readBuffer2 = getReadBuffer(this->READ_RADIO_FREQ);
-    U8* byte_read1= getWriteData(readBuffer2);
-    this->tlmWrite_readConfiguration2(byte_read1[0]);
+    // Fw::Buffer readBuffer2 = getReadBuffer(this->READ_RADIO_FREQ);
+    // U8* byte_read1= getWriteData(readBuffer2);
+    // this->tlmWrite_readConfiguration2(byte_read1[0]);
 
-    // Read Internal Temp
-    Fw::Buffer readBuffer3 = getReadBuffer(this->READ_INTERNAL_TEMP);
-    U8* byte_read2= getWriteData(readBuffer3);
-    this->tlmWrite_temperature((byte_read2[4]*100 + byte_read2[5]*10 + byte_read2[6]));
+
+    // // Read Internal Temp
+    // Fw::Buffer readBuffer3 = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII);
+    // U8* byte_read2= getWriteData(readBuffer3);
+    // this->tlmWrite_temperature((byte_read2[4]*100 + byte_read2[5]*10 + byte_read2[6]));
      
-    // Read power mode should be in normal
-    Fw::Buffer readBuffer4 = getReadBuffer(this->READ_POWER_MODE);
-    U8* byte_read3= getWriteData(readBuffer4);
-    this->tlmWrite_powerMode(byte_read3[4]);
+    // // Read power mode should be in normal
+    // Fw::Buffer readBuffer4 = getReadBuffer(this->READ_POWER_MODE);
+    // U8* byte_read3= getWriteData(readBuffer4);
+    // this->tlmWrite_powerMode(byte_read3[4]);
+
+    // this->deallocate_out(0, readBuffer2);
+    // this->deallocate_out(0, readBuffer3);
+    // this->deallocate_out(0, readBuffer4);
+
+    // // Read Internal Temp
+    Fw::Buffer readBuffer3 = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII);
+    U8* byte_read2= getWriteData(readBuffer3);
+    this->tlmWrite_temperature(byte_read2[0]);
+    this->deallocate_out(0, readBuffer3);
+
+
     
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
@@ -71,7 +84,7 @@ namespace Components {
     int size = readBuffer.getSize();
 
     //! Deallocate read buffer
-    this->deallocate_out(0, readBuffer);
+    // this->deallocate_out(0, readBuffer);
 
     // CAUTION: This set of data may contain different sizes for different commands
     return data;
@@ -101,18 +114,36 @@ namespace Components {
     //! Prepare both BufferBases
     sb.resetSer();
     sb1.resetDeser();
-    sb1.resetSer();
     
 
-
-    // for (int i = 0; i < 24; i++) {
-    //   sb.serialize(command[i]); //!< Serialize the command into the writeBuffer
+    // Use when provided a general command
+    // Serialize each byte into the write buffer
+    // for (U32 i = 0; i < strlen(command); i++) {
+    //   sb.serialize(command[i]);
     // }
 
-    // Serialize each byte into the write buffer
-    for (U32 i = 0; i < strlen(command); i++) {
-      sb.serialize(static_cast<U8>(command[i]));
-    }
+    // Use when testing
+    U8 dataBufferTemp[18];
+    dataBufferTemp[0] = 69;
+    dataBufferTemp[1] = 83;
+    dataBufferTemp[2] = 43;
+    dataBufferTemp[3] = 82;
+    dataBufferTemp[4] = 50;
+    dataBufferTemp[5] = 51;
+    dataBufferTemp[6] = 48;
+    dataBufferTemp[7] = 65;
+    dataBufferTemp[8] = 32;
+    dataBufferTemp[9] = 57;
+    dataBufferTemp[10] = 66;
+    dataBufferTemp[11] = 52;
+    dataBufferTemp[12] = 56;
+    dataBufferTemp[13] = 65;
+    dataBufferTemp[14] = 53;
+    dataBufferTemp[15] = 56;
+    dataBufferTemp[16] = 50;
+    dataBufferTemp[17] = 13;
+
+    sb.serialize(dataBufferTemp, 18, true);
 
 
     
