@@ -76,7 +76,9 @@
     <packet name="UHFTransceiverManager" id="8" level="2">
         <channel name="Components.UHFTransceiverManager.readConfiguration1"/>
         <channel name="Components.UHFTransceiverManager.readConfiguration2"/>
-        <channel name="Components.UHFTransceiverManager.commandString"/>
+        <channel name="Components.UHFTransceiverManager.powerMode"/>
+        <channel name="Components.UHFTransceiverManager.temperature"/>
+
 
     </packet>
 

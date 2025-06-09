@@ -141,6 +141,8 @@ module TransceiverI2CTest {
       UHFTransceiverManager.deallocate -> bufferManager.bufferSendIn
 
       UHFTransceiverManager.i2cReadWrite -> i2cLinuxDriver.writeRead
+      UHFTransceiverManager.i2cRead -> i2cLinuxDriver.read
+      UHFTransceiverManager.i2cWrite -> i2cLinuxDriver.write
 
 
     }

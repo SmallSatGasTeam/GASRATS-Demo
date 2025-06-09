@@ -56,7 +56,7 @@ namespace Components {
     // U8* byte_read2= getWriteData(readBuffer3);
     // this->tlmWrite_temperature((byte_read2[4]*100 + byte_read2[5]*10 + byte_read2[6]));
      
-    // // Read power mode should be in normal
+    // // Read power mode should be in normal (false)
     // Fw::Buffer readBuffer4 = getReadBuffer(this->READ_POWER_MODE);
     // U8* byte_read3= getWriteData(readBuffer4);
     // this->tlmWrite_powerMode(byte_read3[4]);
@@ -67,15 +67,15 @@ namespace Components {
 
     // // Read Internal Temp
     Fw::Buffer readBuffer3 = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII);
-    U8* byte_read2= getWriteData(readBuffer3);
+    U8* byte_read2 = reinterpret_cast<U8*>(readBuffer3.getData());
     this->tlmWrite_temperature(byte_read2[0]);
-    this->deallocate_out(0, readBuffer3);
 
+    // for (int i = 0; i < readBuffer3.getSize(); i++) {
+    //   this->log_ACTIVITY_HI_RadioFrequencyConfiguredOK(byte_read2[i]);
+    // }
 
-    
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
-
 
 
   U8* UHFTransceiverManager::getWriteData(Fw::Buffer readBuffer){
@@ -84,7 +84,7 @@ namespace Components {
     int size = readBuffer.getSize();
 
     //! Deallocate read buffer
-    // this->deallocate_out(0, readBuffer);
+    this->deallocate_out(0, readBuffer);
 
     // CAUTION: This set of data may contain different sizes for different commands
     return data;
@@ -115,43 +115,26 @@ namespace Components {
     sb.resetSer();
     sb1.resetDeser();
     
+    U8 dataBufferTemp[18];
 
     // Use when provided a general command
     // Serialize each byte into the write buffer
-    // for (U32 i = 0; i < strlen(command); i++) {
-    //   sb.serialize(command[i]);
-    // }
+    for (int i = 0; i < 17; i++) {
+      dataBufferTemp[i] = static_cast<char>(command[i]);
+      // this->log_ACTIVITY_HI_RadioFrequencyConfiguredOK(static_cast<char>(command[i]));
+    }
 
-    // Use when testing
-    U8 dataBufferTemp[18];
-    dataBufferTemp[0] = 69;
-    dataBufferTemp[1] = 83;
-    dataBufferTemp[2] = 43;
-    dataBufferTemp[3] = 82;
-    dataBufferTemp[4] = 50;
-    dataBufferTemp[5] = 51;
-    dataBufferTemp[6] = 48;
-    dataBufferTemp[7] = 65;
-    dataBufferTemp[8] = 32;
-    dataBufferTemp[9] = 57;
-    dataBufferTemp[10] = 66;
-    dataBufferTemp[11] = 52;
-    dataBufferTemp[12] = 56;
-    dataBufferTemp[13] = 65;
-    dataBufferTemp[14] = 53;
-    dataBufferTemp[15] = 56;
-    dataBufferTemp[16] = 50;
     dataBufferTemp[17] = 13;
-
     sb.serialize(dataBufferTemp, 18, true);
-
-
     
+
     //! Perform i2c read-write, and check the status of it:
     //! i2c read-write takes the following parameters: 
     //! (1) port num  (2) address  (3) writeBuffer (command)  (4) readBuffer (buffer receiving sensor data)
-    this->checkI2cStatus(this->i2cReadWrite_out(0, reg, writeBuffer, readBuffer));
+    // this->checkI2cStatus(this->i2cReadWrite_out(0, reg, writeBuffer, readBuffer));
 
+    this->checkI2cStatus(i2cWrite_out(0, reg, writeBuffer));
+    this->checkI2cStatus(i2cRead_out(0, reg, readBuffer));
     // Deallocate the memory in the writeBuffer, we are done using it.
     this->deallocate_out(0, writeBuffer);
     

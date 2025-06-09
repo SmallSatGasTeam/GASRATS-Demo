@@ -14,6 +14,10 @@ module Components {
         @ Writes I2CData: Drv.I2c
         output port i2cReadWrite: Drv.I2cWriteRead
 
+        output port i2cRead: Drv.I2c
+
+        output port i2cWrite: Drv.I2c
+
         @ pingOut : returns health ping
         output port pingOut: Svc.Ping 
 
