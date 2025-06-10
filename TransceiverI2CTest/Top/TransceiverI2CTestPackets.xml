@@ -74,10 +74,13 @@
     </packet>
 
     <packet name="UHFTransceiverManager" id="8" level="2">
-        <channel name="Components.UHFTransceiverManager.readConfiguration1"/>
-        <channel name="Components.UHFTransceiverManager.readConfiguration2"/>
+        <channel name="Components.UHFTransceiverManager.response"/>
+        <channel name="Components.UHFTransceiverManager.uptime"/>
         <channel name="Components.UHFTransceiverManager.powerMode"/>
         <channel name="Components.UHFTransceiverManager.temperature"/>
+        <channel name="Components.UHFTransceiverManager.packetsReceived"/>
+        <channel name="Components.UHFTransceiverManager.packetsTransmitted"/>
+
 
 
     </packet>

@@ -2,9 +2,7 @@ module Components {
     @ component contains functions that configure the UHF transceiver's settings, and allows for data to be sent / received. "
     active component UHFTransceiverManager {
 
-        async command configureFrequency(
-            $frequency: F32
-        ) opcode 0x01
+        async command configureFrequency() opcode 0x01
 
 
         ##############################################################################
@@ -77,14 +75,24 @@ module Components {
         # Telemetry
         ###############################################################################
 
-        @ readConfiguration: The voltage being supplied to the board from the EPS in volts
-        telemetry readConfiguration1: U8 
+        @ uptime U8 : The amount of time in seconds since startup
+        telemetry uptime: U8 
 
-        telemetry readConfiguration2: U8 
+        @ packetsReceived U8 : The amount of packets received 
+        telemetry packetsReceived: U8 
 
+        @ packetsTransmitted U8 : The amount of packets transmitted
+        telemetry packetsTransmitted: U8 
+
+        @ temperature STRING
         telemetry temperature: U8
 
         telemetry powerMode: bool
+
+        @ response STRING : The response from a READ/WRITE command
+        # telemetry response: string format "(1): Command, (2) Response: {}"
+        telemetry response: string 
+
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #

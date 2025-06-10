@@ -43,21 +43,42 @@ namespace Components {
       //! Handler implementation for command configureFrequency
       void configureFrequency_cmdHandler(
           FwOpcodeType opCode, //!< The opcode
-          U32 cmdSeq, //!< The command sequence number
-          F32 frequency
+          U32 cmdSeq //!< The command sequence number
+          
       ) override;
 
       // ----------------------------------------------------------------------
       // User defined functions 
       // ----------------------------------------------------------------------
 
-      U8* getWriteData(Fw::Buffer readBuffer);
+      struct Response {
+          U8 length;
+          Fw::String data;
+      };
+
+      //! getWriteData
+      //!
+      //! Method that takes in a readBuffer and returns a struct with the data and length of that buffer
+      UHFTransceiverManager::Response getWriteData(Fw::Buffer readBuffer);
 
       void checkI2cStatus(Drv::I2cStatus);
 
-      Fw::Buffer getReadBuffer(const char* command);
+      //! getReadBuffer
+      //!
+      //! Method that takes in a command and returns the response of that command
+      Fw::Buffer getReadBuffer(const char* command, U32 writeSize, U32 readSize);
 
+      //! responseToString
+      //!
+      //! Method that takes in a command and a readBuffer, formats the readBuffer and command in a string for telemetry
+      Fw::String responseToString(U8 command, Fw::Buffer readBuffer);
 
+      //! configureSettings
+      //!
+      //! Master method that configures all settings for transceiver. Should be called on startup.
+      void configureSettings();
+
+      bool checkResponse(Response response);
 
       // ----------------------------------------------------------------------
       // User defined variables 
@@ -80,7 +101,7 @@ namespace Components {
       const char* READ_TRANSMITTED_PACKETS = "ES+R2303 2543B592\r"; // Command to read number of transmitted packets
       const char* READ_RECEIVED_PACKETS = "ES+R2304 BB272031\r"; // Command to read number of received packets
       const char* READ_BEACON_TRANSMISSION_PERIOD = "ES+R2307 22E716B\r"; // Command to read beacon transmission period in seconds. 
-      const char* READ_INTERNAL_TEMP_ASCII = "ES+R230A 9B48A582"; // Command to read internal temperature measurement
+      const char* READ_INTERNAL_TEMP_ASCII = "ES+R230A 9b48a582"; // Command to read internal temperature measurement
 
 
       const char* READ_POWER_MODE = "ES+R23F4 C242FE41\r"; // Command that reads the power mode of the device (low power mode)
@@ -89,7 +110,7 @@ namespace Components {
       // There is also a command on page 87 to read current antenna status which may be useful.
 
 
-
+      
       
 
   };

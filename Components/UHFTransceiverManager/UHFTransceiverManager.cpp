@@ -9,6 +9,7 @@
 #include <zlib.h>
 #include <stdio.h>
 #include <iomanip>
+#include <cstring>
 
 namespace Components {
 
@@ -36,70 +37,69 @@ namespace Components {
   void UHFTransceiverManager ::
     configureFrequency_cmdHandler(
         FwOpcodeType opCode,
-        U32 cmdSeq,
-        F32 frequency
+        U32 cmdSeq
     )
   {
-    // // Configure Radio Frequency
-    // Fw::Buffer readBuffer = getReadBuffer(this->WRITE_RADIO_FREQ);
-    // U8* byte_write = getWriteData(readBuffer);
-    // this->tlmWrite_readConfiguration1(byte_write[0]);
-
-    // Read Radio Frequency Configuration
-    // Fw::Buffer readBuffer2 = getReadBuffer(this->READ_RADIO_FREQ);
-    // U8* byte_read1= getWriteData(readBuffer2);
-    // this->tlmWrite_readConfiguration2(byte_read1[0]);
-
-
-    // // Read Internal Temp
-    // Fw::Buffer readBuffer3 = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII);
-    // U8* byte_read2= getWriteData(readBuffer3);
-    // this->tlmWrite_temperature((byte_read2[4]*100 + byte_read2[5]*10 + byte_read2[6]));
-     
-    // // Read power mode should be in normal (false)
-    // Fw::Buffer readBuffer4 = getReadBuffer(this->READ_POWER_MODE);
-    // U8* byte_read3= getWriteData(readBuffer4);
-    // this->tlmWrite_powerMode(byte_read3[4]);
-
-    // this->deallocate_out(0, readBuffer2);
-    // this->deallocate_out(0, readBuffer3);
-    // this->deallocate_out(0, readBuffer4);
-
-    // // Read Internal Temp
-    Fw::Buffer readBuffer3 = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII);
-    U8* byte_read2 = reinterpret_cast<U8*>(readBuffer3.getData());
-    this->tlmWrite_temperature(byte_read2[0]);
-
-    // for (int i = 0; i < readBuffer3.getSize(); i++) {
-    //   this->log_ACTIVITY_HI_RadioFrequencyConfiguredOK(byte_read2[i]);
-    // }
-
+    configureSettings();
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 
+  void UHFTransceiverManager::configureSettings() {
+    // COMMAND: Configure radio frequency
 
-  U8* UHFTransceiverManager::getWriteData(Fw::Buffer readBuffer){
-    //! Get data out of the buffer
-    U8* data = reinterpret_cast<U8*>(readBuffer.getData());
-    int size = readBuffer.getSize();
+
+    // COMMAND: Read Temperature (Example READ command)
+    Fw::Buffer readBuffer = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII, 18, 17); // 18 -> writeSize, 17 -> readSize
+    Response temperatureRead = getWriteData(readBuffer);
+    this->tlmWrite_response(temperatureRead.data);
+
+  }
+
+  Fw::String UHFTransceiverManager::responseToString(U8 command, Fw::Buffer readBuffer) {
+    // This is a luxury, wait til other methods are finished.
+    return NULL;
+  } 
+
+  bool UHFTransceiverManager::checkResponse(Response response) {
+    // check first 2 characters of response for OK
+
+    const char *data = response.data.toChar();
+    
+    char charArray[response.length + 1];
+    strcpy(charArray, data);
+
+    
+    if ((charArray[0] == 79) && (charArray[1] = 75)) {
+      return true;
+    }
+    return false;
+  }
+
+  UHFTransceiverManager::Response UHFTransceiverManager::getWriteData(Fw::Buffer readBuffer){
+    U8* data = reinterpret_cast<U8*>(readBuffer.getData()); //! Allow us to get data out of readBuffer
+    U8 size = readBuffer.getSize(); //! Size of readBuffer
+    Response r; //! Response struct for storing contents and length of readBuffer
+    
+    char temp[size];
+    for (int i = 0; i < readBuffer.getSize(); i++) {
+      temp[i] = static_cast<char>(data[i]);
+    }
+
+    r.data = temp;
+    r.length = size;
 
     //! Deallocate read buffer
     this->deallocate_out(0, readBuffer);
 
-    // CAUTION: This set of data may contain different sizes for different commands
-    return data;
+    return r;
   }
 
-  Fw::Buffer UHFTransceiverManager::getReadBuffer(const char* command) {
-    const U32 writeBuffer_size = 24; // Buffer for command number
-    const U32 readBuffer_size = 24; // Buffer for storing the contents of what is returned
-
-    Fw::Buffer writeBuffer = this->allocate_out(0, writeBuffer_size);
-    Fw::Buffer readBuffer = this->allocate_out(0, readBuffer_size);
-
+  Fw::Buffer UHFTransceiverManager::getReadBuffer(const char* command, U32 writeSize, U32 readSize) {
+    Fw::Buffer writeBuffer = this->allocate_out(0, writeSize);
+    Fw::Buffer readBuffer = this->allocate_out(0, readSize);
 
     // Check to see if buffers were allocated properly, if not deallocate the possible memory allocated, and log a warning.
-    if (writeBuffer.getSize() < writeBuffer_size || readBuffer.getSize() < readBuffer_size) {
+    if (writeBuffer.getSize() < writeSize || readBuffer.getSize() < readSize) {
       this->deallocate_out(0, writeBuffer);
       this->deallocate_out(0, readBuffer);
       this->log_WARNING_LO_MemoryAllocationFailed();
@@ -107,35 +107,26 @@ namespace Components {
     
 
     Fw::SerializeBufferBase& sb = writeBuffer.getSerializeRepr();
-    Fw::SerializeBufferBase& sb1 = readBuffer.getSerializeRepr();      
+    sb.setBuffLen(writeSize);
 
-    U8 reg = this->ADDRESS; //!< I2c slave address for the device
 
-    //! Prepare both BufferBases
+    //! Prepare BufferBase
     sb.resetSer();
-    sb1.resetDeser();
     
     U8 dataBufferTemp[18];
 
-    // Use when provided a general command
     // Serialize each byte into the write buffer
-    for (int i = 0; i < 17; i++) {
+    for (int i = 0; i < readSize; i++) {
       dataBufferTemp[i] = static_cast<char>(command[i]);
-      // this->log_ACTIVITY_HI_RadioFrequencyConfiguredOK(static_cast<char>(command[i]));
     }
+    dataBufferTemp[readSize] = 0x0D;
 
-    dataBufferTemp[17] = 13;
-    sb.serialize(dataBufferTemp, 18, true);
-    
+    sb.serialize(dataBufferTemp, writeSize, true);
 
-    //! Perform i2c read-write, and check the status of it:
-    //! i2c read-write takes the following parameters: 
-    //! (1) port num  (2) address  (3) writeBuffer (command)  (4) readBuffer (buffer receiving sensor data)
-    // this->checkI2cStatus(this->i2cReadWrite_out(0, reg, writeBuffer, readBuffer));
+    this->checkI2cStatus(i2cWrite_out(0, this->ADDRESS, writeBuffer));
+    this->checkI2cStatus(i2cRead_out(0, this->ADDRESS, readBuffer));
 
-    this->checkI2cStatus(i2cWrite_out(0, reg, writeBuffer));
-    this->checkI2cStatus(i2cRead_out(0, reg, readBuffer));
-    // Deallocate the memory in the writeBuffer, we are done using it.
+    // Deallocate the writeBuffer, we are done using it.
     this->deallocate_out(0, writeBuffer);
     
     // Return the data (read) buffer
@@ -172,5 +163,5 @@ namespace Components {
         break;
     }
   }
-
+  
 }
