@@ -89,9 +89,7 @@ module Components {
 
         telemetry powerMode: bool
 
-        @ response STRING : The response from a READ/WRITE command
-        # telemetry response: string format "(1): Command, (2) Response: {}"
-        telemetry response: string 
+        telemetry response: string
 
 
         ###############################################################################

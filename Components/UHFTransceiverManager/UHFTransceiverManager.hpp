@@ -9,9 +9,6 @@
 
 
 #include "Components/UHFTransceiverManager/UHFTransceiverManagerComponentAc.hpp"
-#include "string"
-#include "sstream"
-#include <array>
 
 
 namespace Components {

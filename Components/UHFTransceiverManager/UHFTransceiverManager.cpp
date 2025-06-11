@@ -5,10 +5,6 @@
 // ======================================================================
 
 #include "Components/UHFTransceiverManager/UHFTransceiverManager.hpp"
-#include <cmath>
-#include <zlib.h>
-#include <stdio.h>
-#include <iomanip>
 #include <cstring>
 
 namespace Components {
@@ -52,6 +48,7 @@ namespace Components {
     Fw::Buffer readBuffer = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII, 18, 17); // 18 -> writeSize, 17 -> readSize
     Response temperatureRead = getWriteData(readBuffer);
     this->tlmWrite_response(temperatureRead.data);
+    this->deallocate_out(0, readBuffer);
 
   }
 
@@ -76,20 +73,11 @@ namespace Components {
   }
 
   UHFTransceiverManager::Response UHFTransceiverManager::getWriteData(Fw::Buffer readBuffer){
-    U8* data = reinterpret_cast<U8*>(readBuffer.getData()); //! Allow us to get data out of readBuffer
     U8 size = readBuffer.getSize(); //! Size of readBuffer
     Response r; //! Response struct for storing contents and length of readBuffer
-    
-    char temp[size];
-    for (int i = 0; i < readBuffer.getSize(); i++) {
-      temp[i] = static_cast<char>(data[i]);
-    }
 
-    r.data = temp;
+    r.data = reinterpret_cast<char*>(readBuffer.getData()); // Convert contents of read buffer to char array
     r.length = size;
-
-    //! Deallocate read buffer
-    this->deallocate_out(0, readBuffer);
 
     return r;
   }
@@ -119,7 +107,7 @@ namespace Components {
     for (int i = 0; i < readSize; i++) {
       dataBufferTemp[i] = static_cast<char>(command[i]);
     }
-    dataBufferTemp[readSize] = 0x0D;
+    dataBufferTemp[readSize] = 0x0D; // Last character in command should always be a carriage return <CR>
 
     sb.serialize(dataBufferTemp, writeSize, true);
 

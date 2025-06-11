@@ -8,7 +8,7 @@
 set(SOURCE_FILES
   "${CMAKE_CURRENT_LIST_DIR}/instances.fpp"
   # Note: Uncomment when using Svc:TlmPacketizer
-  #"${CMAKE_CURRENT_LIST_DIR}/TransceiverI2CTestPackets.xml"
+  "${CMAKE_CURRENT_LIST_DIR}/TransceiverI2CTestPackets.xml"
   "${CMAKE_CURRENT_LIST_DIR}/topology.fpp"
   "${CMAKE_CURRENT_LIST_DIR}/TransceiverI2CTestTopology.cpp"
 )
