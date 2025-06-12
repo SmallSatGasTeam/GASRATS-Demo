@@ -79,10 +79,15 @@
         <channel name="Components.UHFTransceiverManager.packetsTransmitted"/>
         <channel name="Components.UHFTransceiverManager.temperature"/>
         <channel name="Components.UHFTransceiverManager.lowPowerMode"/>
-        <channel name="Components.UHFTransceiverManager.response"/> 
+        <channel name="Components.UHFTransceiverManager.response1"/> 
         <channel name="Components.UHFTransceiverManager.responseStatus"/> 
 
     </packet>
+
+    <packet name="UHFTransceiverManager2" id="8" level="2">
+        <channel name="Components.UHFTransceiverManager.response2"/> 
+    </packet>
+
 
     <!-- Ignored packets -->
 

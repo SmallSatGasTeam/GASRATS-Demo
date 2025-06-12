@@ -44,6 +44,13 @@ namespace Components {
           
       ) override;
 
+      //! Handler implementation for command transmitData
+      void transmitData_cmdHandler(
+          FwOpcodeType opCode, //!< The opcode
+          U32 cmdSeq, //!< The command sequence number
+          const Fw::CmdStringArg& data
+      ) override;
+
       // ----------------------------------------------------------------------
       // User defined functions 
       // ----------------------------------------------------------------------
@@ -89,9 +96,11 @@ namespace Components {
       U8 ADDRESS = 0x23; // Address -> 0x23 
 
 
-      const char* WRITE_RADIO_FREQ = "ES+W230150E90942 F778726B"; // Command to configure radio frequency to 495 MHz (calculated from datasheet example)
+      const char* WRITE_RADIO_FREQ = "ES+W230150E90942 F778726B"; // Command to configure radio frequency to 437 MHz (calculated from datasheet example)
       const char* WRITE_BEACON_TRANSMISSION_PERIOD = "ES+W23070000003C FDEF1764"; // Command to configure beacon tranmission period to 60 seconds
-      const char* WRITE_POWER_MODE = "ES+W23F4 AA27131"; // Command that turns on low power mode
+      const char* WRITE_POWER_MODE = "ES+W23F4 0AA27131"; // Command that turns on low power mode
+      const char* WRITE_SCW_PIPE_ON = "ES+W23003323 feec0437"; // Command that activates pipe mode for SCW
+      const char* WRITE_SCW_PIPE_OFF = "ES+W23003303 ccda66b5"; // Command that activates pipe mode for SCW
 
       // READ Commands
       const char* READ_RADIO_FREQ = "ES+R2301 CB4DD4BE"; // Command to read radio freqency configuration (example from datasheet)
@@ -100,9 +109,9 @@ namespace Components {
       const char* READ_RECEIVED_PACKETS = "ES+R2304 BB272031"; // Command to read number of received packets
       const char* READ_BEACON_TRANSMISSION_PERIOD = "ES+R2307 22E716B"; // Command to read beacon transmission period in seconds. 
       const char* READ_INTERNAL_TEMP_ASCII = "ES+R230A 9b48a582"; // Command to read internal temperature measurement
+      const char* READ_SCW = "ES+R2300 bc4ae428"; // Command that reads status control word
 
-
-      const char* READ_POWER_MODE = "ES+R23F4 C242FE41\r"; // Command that reads the power mode of the device (low power mode)
+      const char* READ_POWER_MODE = "ES+R23F4 C242FE41"; // Command that reads the power mode of the device (low power mode)
 
 
       // There is also a command on page 87 to read current antenna status which may be useful.

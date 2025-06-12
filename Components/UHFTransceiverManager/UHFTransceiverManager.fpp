@@ -7,6 +7,8 @@ module Components {
         ##############################################################################
         async command configureFrequency() opcode 0x01
 
+        async command transmitData($data: string) opcode 0x02 
+
 
         ##############################################################################
         # Ports
@@ -59,6 +61,11 @@ module Components {
             severity activity high \
             format "The radio frequency was configured to {}"
 
+        event somethingHappened(response: string) \
+            severity activity high \
+            format "{}"
+        
+
 
         ###############################################################################
         # Telemetry
@@ -80,7 +87,10 @@ module Components {
         telemetry lowPowerMode: bool
 
         @ response [STRING] : Full response that was returned from a READ / WRITE command.
-        telemetry response: string
+        telemetry response1: string
+
+        @ response [STRING] : Full response that was returned from a READ / WRITE command.
+        telemetry response2: string
 
         @ responseStatus [STRING] : Status of response. Either OK or ERR
         telemetry responseStatus: bool
