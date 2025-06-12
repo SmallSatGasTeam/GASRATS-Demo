@@ -48,15 +48,18 @@ namespace Components {
       // User defined functions 
       // ----------------------------------------------------------------------
 
+      //! struct Response
+      //!
+      //! This holds a response from an I2C transaction and a status: OK or ERR
       struct Response {
-          U8 length;
-          Fw::String data;
+          Fw::String fullResponse; // Full Response string that was returned
+          bool status; // First few characters of response dictate the status
       };
 
-      //! getWriteData
+      //! parseResponse
       //!
-      //! Method that takes in a readBuffer and returns a struct with the data and length of that buffer
-      UHFTransceiverManager::Response getWriteData(Fw::Buffer readBuffer);
+      //! Method that takes in a readBuffer and parses response by filling in all found values in response. Refer to `struct Response`
+      UHFTransceiverManager::Response parseResponse(Fw::Buffer readBuffer);
 
       void checkI2cStatus(Drv::I2cStatus);
 
@@ -75,8 +78,6 @@ namespace Components {
       //! Master method that configures all settings for transceiver. Should be called on startup.
       void configureSettings();
 
-      bool checkResponse(Response response);
-
       // ----------------------------------------------------------------------
       // User defined variables 
       // ----------------------------------------------------------------------
@@ -88,16 +89,16 @@ namespace Components {
       U8 ADDRESS = 0x23; // Address -> 0x23 
 
 
-      const char* WRITE_RADIO_FREQ = "ES+W230150E90942 F778726B\r"; // Command to configure radio frequency to 495 MHz (calculated from datasheet example)
-      const char* WRITE_BEACON_TRANSMISSION_PERIOD = "ES+W23070000003C FDEF1764\r"; // Command to configure beacon tranmission period to 60 seconds
-      const char* WRITE_POWER_MODE = "ES+W23F4 AA27131\r"; // Command that turns on low power mode
+      const char* WRITE_RADIO_FREQ = "ES+W230150E90942 F778726B"; // Command to configure radio frequency to 495 MHz (calculated from datasheet example)
+      const char* WRITE_BEACON_TRANSMISSION_PERIOD = "ES+W23070000003C FDEF1764"; // Command to configure beacon tranmission period to 60 seconds
+      const char* WRITE_POWER_MODE = "ES+W23F4 AA27131"; // Command that turns on low power mode
 
       // READ Commands
-      const char* READ_RADIO_FREQ = "ES+R2301 CB4DD4BE\r"; // Command to read radio freqency configuration (example from datasheet)
-      const char* READ_UPTIME = "ES+R2302 52448504\r"; // Command to read the device uptime in seconds
-      const char* READ_TRANSMITTED_PACKETS = "ES+R2303 2543B592\r"; // Command to read number of transmitted packets
-      const char* READ_RECEIVED_PACKETS = "ES+R2304 BB272031\r"; // Command to read number of received packets
-      const char* READ_BEACON_TRANSMISSION_PERIOD = "ES+R2307 22E716B\r"; // Command to read beacon transmission period in seconds. 
+      const char* READ_RADIO_FREQ = "ES+R2301 CB4DD4BE"; // Command to read radio freqency configuration (example from datasheet)
+      const char* READ_UPTIME = "ES+R2302 52448504"; // Command to read the device uptime in seconds
+      const char* READ_TRANSMITTED_PACKETS = "ES+R2303 2543B592"; // Command to read number of transmitted packets
+      const char* READ_RECEIVED_PACKETS = "ES+R2304 BB272031"; // Command to read number of received packets
+      const char* READ_BEACON_TRANSMISSION_PERIOD = "ES+R2307 22E716B"; // Command to read beacon transmission period in seconds. 
       const char* READ_INTERNAL_TEMP_ASCII = "ES+R230A 9b48a582"; // Command to read internal temperature measurement
 
 

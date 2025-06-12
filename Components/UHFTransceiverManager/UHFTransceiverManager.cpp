@@ -42,13 +42,18 @@ namespace Components {
 
   void UHFTransceiverManager::configureSettings() {
     // COMMAND: Configure radio frequency
-
+    // Current this results in a successful write, but an error when reading. Its because the size for the readBuffer (3rd argument) is not valid therefore it will just keep reading until the buffer is full.
+    // Need to find a way to allow this function to accomodate for variable read sizes. 
+    Fw::Buffer readBuffer1 = getReadBuffer(this->READ_RADIO_FREQ, strlen(this->READ_RADIO_FREQ)+1, 64); // 18 -> writeSize, 17 -> readSize
+    // Response radioFrequencyResponse = parseResponse(readBuffer1);
+    // this->tlmWrite_response(radioFrequencyResponse.fullResponse);
+    // this->deallocate_out(0, readBuffer1);
 
     // COMMAND: Read Temperature (Example READ command)
-    Fw::Buffer readBuffer = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII, 18, 17); // 18 -> writeSize, 17 -> readSize
-    Response temperatureRead = getWriteData(readBuffer);
-    this->tlmWrite_response(temperatureRead.data);
-    this->deallocate_out(0, readBuffer);
+    // Fw::Buffer readBuffer2 = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII, 18, 17); // 18 -> writeSize, 17 -> readSize
+    // Response temperatureRead = parseResponse(readBuffer2);
+    // this->tlmWrite_response(temperatureRead.fullResponse);
+    // this->deallocate_out(0, readBuffer2);
 
   }
 
@@ -57,27 +62,21 @@ namespace Components {
     return NULL;
   } 
 
-  bool UHFTransceiverManager::checkResponse(Response response) {
-    // check first 2 characters of response for OK
-
-    const char *data = response.data.toChar();
-    
-    char charArray[response.length + 1];
-    strcpy(charArray, data);
-
-    
-    if ((charArray[0] == 79) && (charArray[1] = 75)) {
-      return true;
-    }
-    return false;
-  }
-
-  UHFTransceiverManager::Response UHFTransceiverManager::getWriteData(Fw::Buffer readBuffer){
+  UHFTransceiverManager::Response UHFTransceiverManager::parseResponse(Fw::Buffer readBuffer){
+    U8* data = static_cast<U8*>(readBuffer.getData());
     U8 size = readBuffer.getSize(); //! Size of readBuffer
     Response r; //! Response struct for storing contents and length of readBuffer
 
-    r.data = reinterpret_cast<char*>(readBuffer.getData()); // Convert contents of read buffer to char array
-    r.length = size;
+    r.fullResponse = reinterpret_cast<char*>(readBuffer.getData()); // Convert contents of read buffer to char array
+
+    // Logic to determine what data is found in the fullResponse.
+    // Checking status
+    if (data[0] != 79) {
+      r.status = false;
+    } else {
+      r.status = true;
+    }
+
 
     return r;
   }
@@ -101,13 +100,13 @@ namespace Components {
     //! Prepare BufferBase
     sb.resetSer();
     
-    U8 dataBufferTemp[18];
+    U8 dataBufferTemp[writeSize];
 
     // Serialize each byte into the write buffer
-    for (int i = 0; i < readSize; i++) {
+    for (int i = 0; i < writeSize; i++) {
       dataBufferTemp[i] = static_cast<char>(command[i]);
     }
-    dataBufferTemp[readSize] = 0x0D; // Last character in command should always be a carriage return <CR>
+    dataBufferTemp[writeSize] = 0x0D; // Last character in command should always be a carriage return <CR>
 
     sb.serialize(dataBufferTemp, writeSize, true);
 

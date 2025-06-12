@@ -2,11 +2,14 @@ module Components {
     @ component contains functions that configure the UHF transceiver's settings, and allows for data to be sent / received. "
     active component UHFTransceiverManager {
 
+        ##############################################################################
+        # Commands
+        ##############################################################################
         async command configureFrequency() opcode 0x01
 
 
         ##############################################################################
-        #### Uncomment the following examples to start customizing your component ####
+        # Ports
         ##############################################################################
 
         @ Writes I2CData: Drv.I2c
@@ -19,20 +22,6 @@ module Components {
         @ pingOut : returns health ping
         output port pingOut: Svc.Ping 
 
-        # @ Example async command
-        # async command COMMAND_NAME(param_name: U32)
-
-        # @ Example telemetry counter
-        # telemetry ExampleCounter: U64
-
-        # @ Example event
-        # event ExampleStateEvent(example_state: Fw.On) severity activity high id 0 format "State set to {}"
-
-        # @ Example port: receiving calls from the rate group
-        # sync input port run: Svc.Sched
-
-        # @ Example parameter
-        # param PARAMETER_NAME: U32
 
         ###############################################################################
         # Events
@@ -75,21 +64,26 @@ module Components {
         # Telemetry
         ###############################################################################
 
-        @ uptime U8 : The amount of time in seconds since startup
+        @ uptime [U8] : The amount of time in seconds since startup.
         telemetry uptime: U8 
 
-        @ packetsReceived U8 : The amount of packets received 
+        @ packetsReceived [U8] : The amount of packets received .
         telemetry packetsReceived: U8 
 
-        @ packetsTransmitted U8 : The amount of packets transmitted
+        @ packetsTransmitted [U8] : The amount of packets transmitted.
         telemetry packetsTransmitted: U8 
 
-        @ temperature STRING
+        @ temperature [STRING] : The temperature of transceiver.
         telemetry temperature: U8
 
-        telemetry powerMode: bool
+        @ powerMode [BOOL] : Power mode of transceiver. If true, the device is in low power mode. 
+        telemetry lowPowerMode: bool
 
+        @ response [STRING] : Full response that was returned from a READ / WRITE command.
         telemetry response: string
+
+        @ responseStatus [STRING] : Status of response. Either OK or ERR
+        telemetry responseStatus: bool
 
 
         ###############################################################################
