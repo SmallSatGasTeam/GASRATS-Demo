@@ -21,6 +21,11 @@ module Components {
 
         output port i2cWrite: Drv.I2c
 
+        @ Reads and writes UART
+        output port uartWriteOut: Drv.Send
+
+        sync input port uartRead: Drv.SerialRead
+
         @ pingOut : returns health ping
         output port pingOut: Svc.Ping 
 
