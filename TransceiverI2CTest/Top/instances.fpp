@@ -129,4 +129,5 @@ module TransceiverI2CTest {
   instance i2cLinuxDriver: Drv.LinuxI2cDriver base id 0x1F00
 
   instance uartLinuxDriver: Drv.LinuxUartDriver base id 0x1E00
+
 }

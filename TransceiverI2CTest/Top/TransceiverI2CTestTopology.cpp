@@ -160,8 +160,12 @@ void setupTopology(const TopologyState& state) {
         comDriver.start(name, COMM_PRIORITY, Default::STACK_SIZE);
     }
     //Configure i2c Device
-    const char* device = "/dev/i2c-1";
-    i2cLinuxDriver.open(device);
+    const char* device1 = "/dev/i2c-1";
+    i2cLinuxDriver.open(device1);
+
+    const char* device2 = "/dev/ttyS0";
+    uartLinuxDriver.open(device2, uartLinuxDriver.BAUD_9600, uartLinuxDriver.NO_FLOW, uartLinuxDriver.PARITY_NONE, 128);
+
 }
 
 // Variables used for cycle simulation

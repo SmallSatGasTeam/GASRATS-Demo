@@ -48,13 +48,30 @@ namespace Components {
         const Fw::CmdStringArg& data
     )
   {
-
-
-
-
+    
 
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
+
+  void UHFTransceiverManager ::
+    uartRecv_handler(
+        FwIndexType portNum,
+        Fw::Buffer& recvBuffer,
+        const Drv::RecvStatus& recvStatus
+    )
+  {
+    Response r = parseResponse(recvBuffer);
+    this->tlmWrite_response1(r.fullResponse);
+    this->tlmWrite_recvStatus(recvStatus);
+    // TODO
+  }
+
+  // void UHFTransceiverManager ::
+  //   uartReady_handler(FwIndexType portNum)
+  // {
+  //   // TODO
+
+  // }
   // ----------------------------------------------------------------------
   // User defined methods
   // ----------------------------------------------------------------------
@@ -120,65 +137,90 @@ namespace Components {
     // this->log_ACTIVITY_HI_somethingHappened(r7.fullResponse);
     // this->deallocate_out(0, readBuffer7);
 
-    Fw::String str8(".....Now reading status control word........");
-    this->log_ACTIVITY_HI_somethingHappened(str8);
-    Fw::Buffer readBuffer8 = getReadBuffer(this->READ_SCW, strlen(this->READ_SCW)+1, 64); // 18 -> writeSize, 17 -> readSize
-    Response r8 = parseResponse(readBuffer8);
-    this->log_ACTIVITY_HI_somethingHappened(r8.fullResponse);
-    this->deallocate_out(0, readBuffer8);
+    // Fw::String str8(".....Now reading status control word........");
+    // this->log_ACTIVITY_HI_somethingHappened(str8);
+    // Fw::Buffer readBuffer8 = getReadBuffer(this->READ_SCW, strlen(this->READ_SCW)+1, 64); // 18 -> writeSize, 17 -> readSize
+    // Response r8 = parseResponse(readBuffer8);
+    // this->log_ACTIVITY_HI_somethingHappened(r8.fullResponse);
+    // this->deallocate_out(0, readBuffer8);
 
 
-    Fw::String str12(".....Now reading status control word........");
-    this->log_ACTIVITY_HI_somethingHappened(str12);
-    Fw::Buffer readBuffer12 = getReadBuffer(this->READ_SCW, strlen(this->READ_SCW)+1, 64); // 18 -> writeSize, 17 -> readSize
-    Response r12 = parseResponse(readBuffer12);
-    this->log_ACTIVITY_HI_somethingHappened(r12.fullResponse);
-    this->deallocate_out(0, readBuffer12);
+    // Fw::String str12(".....Now reading status control word........");
+    // this->log_ACTIVITY_HI_somethingHappened(str12);
+    // Fw::Buffer readBuffer12 = getReadBuffer(this->READ_SCW, strlen(this->READ_SCW)+1, 64); // 18 -> writeSize, 17 -> readSize
+    // Response r12 = parseResponse(readBuffer12);
+    // this->log_ACTIVITY_HI_somethingHappened(r12.fullResponse);
+    // this->deallocate_out(0, readBuffer12);
 
+    
 
-    Fw::String str9(".....Now writing pipe on status control word........");
-    this->log_ACTIVITY_HI_somethingHappened(str9);
-    Fw::Buffer readBuffer9 = getReadBuffer(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1, 64); // 18 -> writeSize, 17 -> readSize
-    Response r9 = parseResponse(readBuffer9);
-    this->log_ACTIVITY_HI_somethingHappened(r9.fullResponse);
-    this->deallocate_out(0, readBuffer9);
+    Fw::String str(".....Now reading pipe mode configuration (should be 5)........");
+    this->log_ACTIVITY_HI_somethingHappened(str);
+    Fw::Buffer readBuffer = getReadBuffer(this->READ_SCW, strlen(this->READ_SCW)+1, 64, false); // 18 -> writeSize, 17 -> readSize
+    Response r = parseResponse(readBuffer);
+    this->log_ACTIVITY_HI_somethingHappened(r.fullResponse);
+    this->deallocate_out(0, readBuffer);
 
-    // When you go into pipe mode you can no longer communicate via I2C.
+    // Fw::String str9(".....Now writing pipe configuration to 10 seconds........");
+    // this->log_ACTIVITY_HI_somethingHappened(str9);
+    // Fw::Buffer readBuffer9 = getReadBuffer(this->WRITE_PIPE_PERIOD, strlen(this->WRITE_PIPE_PERIOD)+1, 64, false); // 18 -> writeSize, 17 -> readSize
+    // Response r9 = parseResponse(readBuffer9);
+    // this->log_ACTIVITY_HI_somethingHappened(r9.fullResponse);
+    // this->deallocate_out(0, readBuffer9);
 
-    Fw::String str10(".....Now reading status control word........");
-    this->log_ACTIVITY_HI_somethingHappened(str10);
-    Fw::Buffer readBuffer10 = getReadBuffer(this->READ_SCW, strlen(this->READ_SCW)+1, 64); // 18 -> writeSize, 17 -> readSize
-    Response r10 = parseResponse(readBuffer10);
-    this->log_ACTIVITY_HI_somethingHappened(r10.fullResponse);
-    this->deallocate_out(0, readBuffer10);
+    // Fw::String str2(".....Now reading pipe mode configuration (should be 10)........");
+    // this->log_ACTIVITY_HI_somethingHappened(str2);
+    // Fw::Buffer readBuffer2 = getReadBuffer(this->READ_PIPE_PERIOD, strlen(this->READ_PIPE_PERIOD)+1, 64, false); // 18 -> writeSize, 17 -> readSize
+    // Response r2 = parseResponse(readBuffer2);
+    // this->log_ACTIVITY_HI_somethingHappened(r2.fullResponse);
+    // this->deallocate_out(0, readBuffer2);
 
+    // Fw::String str2(".....Turning on pipe mode........");
+    // this->log_ACTIVITY_HI_somethingHappened(str2);
+    // Fw::Buffer readBuffer4 = getReadBuffer(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1, 64, false); // 18 -> writeSize, 17 -> readSize
+    // Response r4 = parseResponse(readBuffer4);
+    // this->tlmWrite_response1(r4.fullResponse);
+    // this->deallocate_out(0, readBuffer4);
 
-    Fw::String str11(".....Now writing pipe off status control word........");
-    this->log_ACTIVITY_HI_somethingHappened(str11);
-    Fw::Buffer readBuffer11 = getReadBuffer(this->WRITE_SCW_PIPE_OFF, strlen(this->WRITE_SCW_PIPE_OFF)+1, 64); // 18 -> writeSize, 17 -> readSize
-    Response r11 = parseResponse(readBuffer11);
-    this->log_ACTIVITY_HI_somethingHappened(r11.fullResponse);
-    this->deallocate_out(0, readBuffer11);
+    sleep(10);
 
-
-    Fw::String str13(".....Now reading status control word........");
-    this->log_ACTIVITY_HI_somethingHappened(str13);
-    Fw::Buffer readBuffer13 = getReadBuffer(this->READ_SCW, strlen(this->READ_SCW)+1, 64); // 18 -> writeSize, 17 -> readSize
-    Response r13 = parseResponse(readBuffer13);
-    this->log_ACTIVITY_HI_somethingHappened(r13.fullResponse);
-    this->deallocate_out(0, readBuffer13);
-
-
-
-    // U8* data = static_cast<U8*>(readBuffer8.getData());
-    // data[5] = 1;
+    Fw::String str5(".....Test UART command........");
+    this->log_ACTIVITY_HI_somethingHappened(str5);
+    Fw::Buffer readBuffer5 = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1, 128, true); // 18 -> writeSize, 17 -> readSize
+    Response r5 = parseResponse(readBuffer5);
+    this->tlmWrite_response1(r5.fullResponse);
+    this->deallocate_out(0, readBuffer5);
 
 
     // COMMAND: Read Temperature (Example READ command)
-    // Fw::Buffer readBuffer2 = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII, 18, 25); // 18 -> writeSize, 17 -> readSize
-    // Response temperatureRead = parseResponse(readBuffer2);
-    // this->tlmWrite_response(temperatureRead.fullResponse);
-    // this->deallocate_out(0, readBuffer2);
+    // Fw::Buffer readBuffer3 = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII, 18, 25, true); // 18 -> writeSize, 17 -> readSize
+    // Response temperatureRead = parseResponse(readBuffer3);
+    // this->tlmWrite_response1(temperatureRead.fullResponse);
+    // this->deallocate_out(0, readBuffer3);
+
+    // Fw::String str10(".....Now reading status control word........");
+    // this->log_ACTIVITY_HI_somethingHappened(str10);
+    // Fw::Buffer readBuffer10 = getReadBuffer(this->READ_SCW, strlen(this->READ_SCW)+1, 64); // 18 -> writeSize, 17 -> readSize
+    // Response r10 = parseResponse(readBuffer10);
+    // this->log_ACTIVITY_HI_somethingHappened(r10.fullResponse);
+    // this->deallocate_out(0, readBuffer10);
+
+
+    // Fw::String str11(".....Now writing pipe off status control word........");
+    // this->log_ACTIVITY_HI_somethingHappened(str11);
+    // Fw::Buffer readBuffer11 = getReadBuffer(this->WRITE_SCW_PIPE_OFF, strlen(this->WRITE_SCW_PIPE_OFF)+1, 64); // 18 -> writeSize, 17 -> readSize
+    // Response r11 = parseResponse(readBuffer11);
+    // this->log_ACTIVITY_HI_somethingHappened(r11.fullResponse);
+    // this->deallocate_out(0, readBuffer11);
+
+
+    // Fw::String str13(".....Now reading status control word........");
+    // this->log_ACTIVITY_HI_somethingHappened(str13);
+    // Fw::Buffer readBuffer13 = getReadBuffer(this->READ_SCW, strlen(this->READ_SCW)+1, 64); // 18 -> writeSize, 17 -> readSize
+    // Response r13 = parseResponse(readBuffer13);
+    // this->log_ACTIVITY_HI_somethingHappened(r13.fullResponse);
+    // this->deallocate_out(0, readBuffer13);
+    
 
   }
 
@@ -206,7 +248,7 @@ namespace Components {
     return r;
   }
 
-  Fw::Buffer UHFTransceiverManager::getReadBuffer(const char* command, U32 writeSize, U32 readSize) {
+  Fw::Buffer UHFTransceiverManager::getReadBuffer(const char* command, U32 writeSize, U32 readSize, bool UARTMODE) {
     Fw::Buffer writeBuffer = this->allocate_out(0, writeSize);
     Fw::Buffer readBuffer = this->allocate_out(0, readSize);
 
@@ -239,9 +281,14 @@ namespace Components {
 
     sb.serialize(dataBufferTemp, writeSize, true);
 
-    this->checkI2cStatus(i2cWrite_out(0, this->ADDRESS, writeBuffer));
-    this->checkI2cStatus(i2cRead_out(0, this->ADDRESS, readBuffer));
+    if (UARTMODE) {
+      this->uartSend_out(0, writeBuffer);
 
+    } else {
+      this->checkI2cStatus(i2cWrite_out(0, this->ADDRESS, writeBuffer));
+      this->checkI2cStatus(i2cRead_out(0, this->ADDRESS, readBuffer));
+    }
+    
     // Deallocate the writeBuffer, we are done using it.
     this->deallocate_out(0, writeBuffer);
     
@@ -279,5 +326,6 @@ namespace Components {
         break;
     }
   }
+  
   
 }

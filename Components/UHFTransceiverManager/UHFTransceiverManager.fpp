@@ -21,10 +21,14 @@ module Components {
 
         output port i2cWrite: Drv.I2c
 
-        @ Reads and writes UART
-        output port uartWriteOut: Fw.BufferSend
+        @ UART SEND. Output port
+        output port uartSend: Drv.ByteStreamSend
 
-        sync input port uartRead: Fw.BufferGet
+        @ UART RECV. Input port.
+        sync input port uartRecv: Drv.ByteStreamRecv
+
+        # @ UART READY. 
+        # sync input port uartReady: Drv.ByteStreamReady
 
         @ pingOut : returns health ping
         output port pingOut: Svc.Ping 
@@ -99,6 +103,8 @@ module Components {
 
         @ responseStatus [STRING] : Status of response. Either OK or ERR
         telemetry responseStatus: bool
+
+        telemetry recvStatus: U8
 
 
         ###############################################################################
