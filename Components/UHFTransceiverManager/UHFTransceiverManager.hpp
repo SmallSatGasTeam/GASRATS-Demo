@@ -100,7 +100,7 @@ namespace Components {
       const char* WRITE_BEACON_TRANSMISSION_PERIOD = "ES+W23070000003C FDEF1764"; // Command to configure beacon tranmission period to 60 seconds
       const char* WRITE_POWER_MODE = "ES+W23F4 0AA27131"; // Command that turns on low power mode
       const char* WRITE_SCW_PIPE_ON = "ES+W23003323 feec0437"; // Command that activates pipe mode for SCW
-      const char* WRITE_SCW_PIPE_OFF = "ES+W23003303 ccda66b5"; // Command that activates pipe mode for SCW
+      const char* WRITE_SCW_PIPE_OFF = "ES+W23003303 ccda66b5"; // Command that deactivates pipe mode for SCW
 
       // READ Commands
       const char* READ_RADIO_FREQ = "ES+R2301 CB4DD4BE"; // Command to read radio freqency configuration (example from datasheet)
