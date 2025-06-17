@@ -32,7 +32,7 @@ namespace Components {
   // ----------------------------------------------------------------------
 
   void UHFTransceiverManager ::
-    configureFrequency_cmdHandler(
+    configureRFSettings_cmdHandler(
         FwOpcodeType opCode,
         U32 cmdSeq
     )

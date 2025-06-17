@@ -38,7 +38,7 @@ namespace Components {
       // ----------------------------------------------------------------------
 
       //! Handler implementation for command configureFrequency
-      void configureFrequency_cmdHandler(
+      void configureRFSettings_cmdHandler(
           FwOpcodeType opCode, //!< The opcode
           U32 cmdSeq //!< The command sequence number
           

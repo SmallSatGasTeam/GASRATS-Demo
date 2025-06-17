@@ -5,7 +5,7 @@ module Components {
         ##############################################################################
         # Commands
         ##############################################################################
-        async command configureFrequency() opcode 0x01
+        async command configureRFSettings() opcode 0x01
 
         async command transmitData($data: string) opcode 0x02 
 
