@@ -44,7 +44,7 @@ module TransceiverI2CTest {
 
     instance UHFTransceiverManager
     instance i2cLinuxDriver
-    instance uartDrv
+    instance uartLinuxDriver
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -145,8 +145,16 @@ module TransceiverI2CTest {
       UHFTransceiverManager.i2cRead -> i2cLinuxDriver.read
       UHFTransceiverManager.i2cWrite -> i2cLinuxDriver.write
 
-      UHFTransceiverManager.uartWriteOut -> uartDrv.uartWrite
-      uartDrv.uartReadPollOut -> UHFTransceiverManager.uartRead
+      uartLinuxDriver.allocate -> bufferManager.BufferGet
+
+      # Deallocate buffer after your component is done processing it
+      uartLinuxDriver.deallocate -> UHFTransceiverManager.deallocate
+
+      # Send UART data from your component
+      UHFTransceiverManager.uartWriteOut -> uartLinuxDriver.write
+
+      # Receive UART data in your component
+      uartLinuxDriver.readBufferSend -> UHFTransceiverManager.uartRead
 
 
     }
