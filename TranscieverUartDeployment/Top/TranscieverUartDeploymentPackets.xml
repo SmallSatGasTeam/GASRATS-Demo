@@ -3,81 +3,101 @@
     <import_topology>TranscieverUartDeployment/Top/TranscieverUartDeploymentTopologyAppAi.xml</import_topology>
 
     <packet name="CDH" id="1" level="1">
-        <channel name="cmdDisp.CommandsDispatched"/>
-        <channel name="rateGroup1.RgMaxTime"/>
-        <channel name="rateGroup2.RgMaxTime"/>
-        <channel name="rateGroup3.RgMaxTime"/>
-        <channel name="cmdSeq.CS_LoadCommands"/>
-        <channel name="cmdSeq.CS_CancelCommands"/>
-        <channel name="cmdSeq.CS_CommandsExecuted"/>
-        <channel name="cmdSeq.CS_SequencesCompleted"/>
-        <channel name="fileUplink.FilesReceived"/>
-        <channel name="fileUplink.PacketsReceived"/>
-        <channel name="bufferManager.TotalBuffs"/>
-        <channel name="bufferManager.CurrBuffs"/>
-        <channel name="bufferManager.HiBuffs"/>
-        <channel name="fileDownlink.FilesSent"/>
-        <channel name="fileDownlink.PacketsSent"/>
-        <channel name="fileManager.CommandsExecuted"/>
+        <channel name="svc.cmdDisp.CommandsDispatched"/>
+        <channel name="svc.rateGroup1.RgMaxTime"/>
+        <channel name="svc.rateGroup2.RgMaxTime"/>
+        <channel name="svc.rateGroup3.RgMaxTime"/>
+        <channel name="svc.cmdSeq.CS_LoadCommands"/>
+        <channel name="svc.cmdSeq.CS_CancelCommands"/>
+        <channel name="svc.cmdSeq.CS_CommandsExecuted"/>
+        <channel name="svc.cmdSeq.CS_SequencesCompleted"/>
+        <channel name="svc.fileUplink.FilesReceived"/>
+        <channel name="svc.fileUplink.PacketsReceived"/>
+        <channel name="svc.bufferManager.TotalBuffs"/>
+        <channel name="svc.bufferManager.CurrBuffs"/>
+        <channel name="svc.bufferManager.HiBuffs"/>
+        <channel name="svc.fileDownlink.FilesSent"/>
+        <channel name="svc.fileDownlink.PacketsSent"/>
+        <channel name="svc.fileManager.CommandsExecuted"/>
         <!-- Uncomment to use Svc::TlmPacketizer -->
         <!--channel name="tlmSend.SendLevel"/-->
     </packet>
 
     <packet name="CDHErrors" id="2" level="1">
-        <channel name="rateGroup1.RgCycleSlips"/>
-        <channel name="rateGroup2.RgCycleSlips"/>
-        <channel name="rateGroup3.RgCycleSlips"/>
-        <channel name="cmdSeq.CS_Errors"/>
-        <channel name="fileUplink.Warnings"/>
-        <channel name="fileDownlink.Warnings"/>
-        <channel name="health.PingLateWarnings"/>
-        <channel name="fileManager.Errors"/>
-        <channel name="bufferManager.NoBuffs"/>
-        <channel name="bufferManager.EmptyBuffs"/>
-        <channel name="fileManager.Errors"/>
+        <channel name="svc.rateGroup1.RgCycleSlips"/>
+        <channel name="svc.rateGroup2.RgCycleSlips"/>
+        <channel name="svc.rateGroup3.RgCycleSlips"/>
+        <channel name="svc.cmdSeq.CS_Errors"/>
+        <channel name="svc.fileUplink.Warnings"/>
+        <channel name="svc.fileDownlink.Warnings"/>
+        <channel name="svc.health.PingLateWarnings"/>
+        <channel name="svc.fileManager.Errors"/>
+        <channel name="svc.bufferManager.NoBuffs"/>
+        <channel name="svc.bufferManager.EmptyBuffs"/>
+        <channel name="svc.fileManager.Errors"/>
     </packet>
 
     <packet name="DriveTlm" id="3" level="1">
-        <channel name="blockDrv.BD_Cycles"/>
+        <channel name="drv.blockDrv.BD_Cycles"/>
     </packet>
 
     <packet name="Comms" id="4" level="1">
-        <channel name="comQueue.comQueueDepth"/>
-        <channel name="comQueue.buffQueueDepth"/>
+        <channel name="svc.comQueue.comQueueDepth"/>
+        <channel name="svc.comQueue.buffQueueDepth"/>
     </packet>
 
     <packet name="SystemRes1" id="5" level="2">
-        <channel name="systemResources.MEMORY_TOTAL"/>
-        <channel name="systemResources.MEMORY_USED"/>
-        <channel name="systemResources.NON_VOLATILE_TOTAL"/>
-        <channel name="systemResources.NON_VOLATILE_FREE"/>
+        <channel name="svc.systemResources.MEMORY_TOTAL"/>
+        <channel name="svc.systemResources.MEMORY_USED"/>
+        <channel name="svc.systemResources.NON_VOLATILE_TOTAL"/>
+        <channel name="svc.systemResources.NON_VOLATILE_FREE"/>
     </packet>
 
-    <packet name="SystemRes2" id="7" level="2">
-        <channel name="systemResources.CPU"/>
-        <channel name="systemResources.CPU_00"/>
-        <channel name="systemResources.CPU_01"/>
-        <channel name="systemResources.CPU_02"/>
-        <channel name="systemResources.CPU_03"/>
-        <channel name="systemResources.CPU_04"/>
-        <channel name="systemResources.CPU_05"/>
-        <channel name="systemResources.CPU_06"/>
-        <channel name="systemResources.CPU_07"/>
-        <channel name="systemResources.CPU_08"/>
-        <channel name="systemResources.CPU_09"/>
-        <channel name="systemResources.CPU_10"/>
-        <channel name="systemResources.CPU_11"/>
-        <channel name="systemResources.CPU_12"/>
-        <channel name="systemResources.CPU_13"/>
-        <channel name="systemResources.CPU_14"/>
-        <channel name="systemResources.CPU_15"/>
+    <packet name="SystemRes2" id="6" level="2">
+        <channel name="svc.systemResources.CPU"/>
+        <channel name="svc.systemResources.CPU_00"/>
+        <channel name="svc.systemResources.CPU_01"/>
+        <channel name="svc.systemResources.CPU_02"/>
+        <channel name="svc.systemResources.CPU_03"/>
+        <channel name="svc.systemResources.CPU_04"/>
+        <channel name="svc.systemResources.CPU_05"/>
+        <channel name="svc.systemResources.CPU_06"/>
+        <channel name="svc.systemResources.CPU_07"/>
+        <channel name="svc.systemResources.CPU_08"/>
+        <channel name="svc.systemResources.CPU_09"/>
+        <channel name="svc.systemResources.CPU_10"/>
+        <channel name="svc.systemResources.CPU_11"/>
+        <channel name="svc.systemResources.CPU_12"/>
+        <channel name="svc.systemResources.CPU_13"/>
+        <channel name="svc.systemResources.CPU_14"/>
+        <channel name="svc.systemResources.CPU_15"/>
+    </packet>
+
+    <packet name="UHFTransceiverManager" id="7" level="2">
+        <channel name="Components.UHFTransceiverManager.uptime"/>
+        <channel name="Components.UHFTransceiverManager.packetsReceived"/>
+        <channel name="Components.UHFTransceiverManager.packetsTransmitted"/>
+        <channel name="Components.UHFTransceiverManager.temperature"/>
+        <channel name="Components.UHFTransceiverManager.lowPowerMode"/>
+        <channel name="Components.UHFTransceiverManager.response1"/> 
+        <channel name="Components.UHFTransceiverManager.responseStatus"/> 
+        <channel name="Components.UHFTransceiverManager.recvStatus"/>
+
+    </packet>
+
+    <packet name="UHFTransceiverManager2" id="8" level="2">
+        <channel name="Components.UHFTransceiverManager.response2"/> 
+    </packet>
+
+    <packet name="LinuxUartDriver" id="9" level="2">
+        <channel name="Drv.LinuxUartDriver.BytesSent"/>
+        <channel name="Drv.LinuxUartDriver.BytesRecv"/>
     </packet>
 
     <!-- Ignored packets -->
 
     <ignore>
-        <channel name="cmdDisp.CommandErrors"/>
-        <channel name="comDriver.BytesSent"/>
-        <channel name="comDriver.BytesRecv"/>
+        <channel name="svc.cmdDisp.CommandErrors"/>
+        
     </ignore>
 </packets>

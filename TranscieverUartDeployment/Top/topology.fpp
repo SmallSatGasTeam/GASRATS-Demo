@@ -42,6 +42,10 @@ module TranscieverUartDeployment {
     instance textLogger
     instance systemResources
 
+    instance LinuxUartDriver
+    instance i2cLinuxDriver
+    instance UHFTransceiverManager
+
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
     # ----------------------------------------------------------------------
@@ -135,6 +139,23 @@ module TranscieverUartDeployment {
 
     connections TranscieverUartDeployment {
       # Add here connections to user-defined components
+      # Buffer Connections
+      UHFTransceiverManager.allocate -> bufferManager.bufferGetCallee
+      UHFTransceiverManager.deallocate -> bufferManager.bufferSendIn
+
+      LinuxUartDriver.allocate -> bufferManager.bufferGetCallee
+      LinuxUartDriver.deallocate -> bufferManager.bufferSendIn
+
+      # I2C Connections
+      UHFTransceiverManager.i2cReadWrite -> i2cLinuxDriver.writeRead
+      UHFTransceiverManager.i2cRead -> i2cLinuxDriver.read
+      UHFTransceiverManager.i2cWrite -> i2cLinuxDriver.write
+
+      # UART Connections
+      UHFTransceiverManager.uartSend -> LinuxUartDriver.$send
+      LinuxUartDriver.$recv -> UHFTransceiverManager.uartRecv
+      # uartLinuxDriver.$ready -> UHFTransceiverManager.uartReady
+
     }
 
   }

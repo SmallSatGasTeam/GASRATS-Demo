@@ -22,10 +22,16 @@ using namespace TranscieverUartDeployment;
 // initialization phase.
 Fw::MallocAllocator mallocator;
 
+// // The reference topology uses the F´ packet protocol when communicating with the ground and therefore uses the F´
+// // framing and deframing implementations.
+// Svc::EndurosatFraming framing; // using our own custom implementation!
+// Svc::EndurosatDeframing deframing; // using our own custom implementation!
+
 // The reference topology uses the F´ packet protocol when communicating with the ground and therefore uses the F´
 // framing and deframing implementations.
-Svc::EndurosatFraming framing; // using our own custom implementation!
-Svc::EndurosatDeframing deframing; // using our own custom implementation!
+Svc::FprimeFraming framing;
+Svc::FprimeDeframing deframing;
+
 
 Svc::ComQueue::QueueConfigurationTable configurationTable;
 
@@ -150,16 +156,33 @@ void setupTopology(const TopologyState& state) {
     loadParameters();
     // Autocoded task kick-off (active components). Function provided by autocoder.
     startTasks(state);
-    if (state.uartDevice != nullptr) {
+
+    // TCP setup
+    if (state.hostname != nullptr && state.port != 0) {
         Os::TaskString name("ReceiveTask");
-        // Uplink is configured for receive so a socket task is started
-        if (comDriver.open(state.uartDevice, static_cast<Drv::LinuxUartDriver::UartBaudRate>(state.baudRate), 
-                           Drv::LinuxUartDriver::NO_FLOW, Drv::LinuxUartDriver::PARITY_NONE, Svc::DeframerCfg::RING_BUFFER_SIZE)) {
-            comDriver.start(COMM_PRIORITY, Default::STACK_SIZE);
-        } else {
+        comDriver.configure(state.hostname, state.port);
+        comDriver.start(name, COMM_PRIORITY, Default::STACK_SIZE);
+    }
+
+    // UART setup
+    if (state.uartDevice != nullptr) {
+        if (!LinuxUartDriver.open(state.uartDevice,
+                                  static_cast<Drv::LinuxUartDriver::UartBaudRate>(state.baudRate),
+                                  Drv::LinuxUartDriver::NO_FLOW,
+                                  Drv::LinuxUartDriver::PARITY_NONE,
+                                  Svc::DeframerCfg::RING_BUFFER_SIZE)) {
             printf("Failed to open UART device %s at baud rate %" PRIu32 "\n", state.uartDevice, state.baudRate);
         }
     }
+
+    //Configure i2c Device
+    const char* device1 = "/dev/i2c-1";
+    i2cLinuxDriver.open(device1);
+
+    const char* device2 = "/dev/ttyS0";
+    LinuxUartDriver.open(device2, LinuxUartDriver.BAUD_115K, LinuxUartDriver.NO_FLOW, LinuxUartDriver.PARITY_NONE, 128);
+    LinuxUartDriver.start();
+
 }
 
 // Variables used for cycle simulation
@@ -194,8 +217,12 @@ void teardownTopology(const TopologyState& state) {
     freeThreads(state);
 
     // Other task clean-up.
-    comDriver.quitReadThread();
+    comDriver.stop();
     (void)comDriver.join();
+
+    // // temp
+    LinuxUartDriver.quitReadThread();
+    (void)LinuxUartDriver.join();
 
     // Resource deallocation
     cmdSeq.deallocateBuffer(mallocator);

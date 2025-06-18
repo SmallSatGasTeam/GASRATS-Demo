@@ -164,7 +164,7 @@ void setupTopology(const TopologyState& state) {
     i2cLinuxDriver.open(device1);
 
     const char* device2 = "/dev/ttyS0";
-    uartLinuxDriver.open(device2, uartLinuxDriver.BAUD_9600, uartLinuxDriver.NO_FLOW, uartLinuxDriver.PARITY_NONE, 128);
+    uartLinuxDriver.open(device2, uartLinuxDriver.BAUD_115K, uartLinuxDriver.NO_FLOW, uartLinuxDriver.PARITY_NONE, 128);
 
 }
 

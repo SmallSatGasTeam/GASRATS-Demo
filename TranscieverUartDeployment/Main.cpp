@@ -51,11 +51,21 @@ int main(int argc, char* argv[]) {
     I32 option = 0;
     CHAR* uart_device = nullptr;
     U32 baud_rate = 0;
+    CHAR* hostname = nullptr;
+    U16 port_number = 5000;
     Os::init();
 
     // Loop while reading the getopt supplied options
-    while ((option = getopt(argc, argv, "hb:d:")) != -1) {
+    while ((option = getopt(argc, argv, "hb:d:p:a:")) != -1) {
         switch (option) {
+            // Handle the -a argument for address/hostname
+            case 'a':
+                hostname = optarg;
+                break;
+            // Handle the -p port number argument
+            case 'p':
+                port_number = static_cast<U16>(atoi(optarg));
+                break;
             // Handle the -b baud rate argument
             case 'b':
                 baud_rate = static_cast<U32>(atoi(optarg));
@@ -78,6 +88,8 @@ int main(int argc, char* argv[]) {
     TranscieverUartDeployment::TopologyState inputs;
     inputs.baudRate = baud_rate;
     inputs.uartDevice = uart_device;
+    inputs.hostname = hostname;
+    inputs.port = port_number;
 
     // Setup program shutdown via Ctrl-C
     signal(SIGINT, signalHandler);

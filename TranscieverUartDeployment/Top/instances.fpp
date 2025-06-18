@@ -87,6 +87,10 @@ module TranscieverUartDeployment {
     stack size Default.STACK_SIZE \
     priority 96
 
+  instance UHFTransceiverManager: Components.UHFTransceiverManager base id 0xFD00 \
+    queue size Default.QUEUE_SIZE \
+    stack size Default.STACK_SIZE \
+    priority 100
   # ----------------------------------------------------------------------
   # Queued component instances
   # ----------------------------------------------------------------------
@@ -99,7 +103,7 @@ module TranscieverUartDeployment {
   # ----------------------------------------------------------------------
 
   @ Communications driver. May be swapped with other com drivers like UART or TCP
-  instance comDriver: Drv.LinuxUartDriver base id 0x4000
+  instance comDriver: Drv.TcpServer base id 0x4000
 
   instance framer: Svc.Framer base id 0x4100
 
@@ -120,5 +124,9 @@ module TranscieverUartDeployment {
   instance systemResources: Svc.SystemResources base id 0x4A00
 
   instance comStub: Svc.ComStub base id 0x4B00
+
+  instance LinuxUartDriver: Drv.LinuxUartDriver base id 0x4C00
+
+  instance i2cLinuxDriver: Drv.LinuxI2cDriver base id 0x1F00
 
 }

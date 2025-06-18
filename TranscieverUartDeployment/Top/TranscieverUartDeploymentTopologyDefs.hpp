@@ -25,6 +25,8 @@ namespace TranscieverUartDeployment {
 struct TopologyState {
     const CHAR* uartDevice;
     U32 baudRate;
+    const CHAR* hostname;
+    U16 port;
 };
 
 /**
