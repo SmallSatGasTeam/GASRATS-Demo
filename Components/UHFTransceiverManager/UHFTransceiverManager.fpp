@@ -25,7 +25,7 @@ module Components {
         output port uartSend: Drv.ByteStreamSend
 
         @ UART RECV. Input port.
-        sync input port uartRecv: Drv.ByteStreamRecv
+        async input port uartRecv: Drv.ByteStreamRecv
 
         # @ UART READY. 
         # sync input port uartReady: Drv.ByteStreamReady
@@ -70,7 +70,7 @@ module Components {
             severity activity high \
             format "The radio frequency was configured to {}"
 
-        event somethingHappened(response: string) \
+        event debuggingEvent(response: string) \
             severity activity high \
             format "{}"
         

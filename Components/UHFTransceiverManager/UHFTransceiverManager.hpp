@@ -82,13 +82,21 @@ namespace Components {
       //! Method that takes in a readBuffer and parses response by filling in all found values in response. Refer to `struct Response`
       UHFTransceiverManager::Response parseResponse(Fw::Buffer readBuffer);
 
+      //! checkI2cStatus
+      //!
+      //! Method that logs the status of an I2C transaction
       void checkI2cStatus(Drv::I2cStatus);
+
+      //! logEvent
+      //!
+      //! Debugging method that logs the size of a buffer in an event
+      void logEvent(Fw::Buffer buffer);
 
 
       //! getReadBuffer
       //!
       //! Method that takes in a command and returns the response of that command
-      Fw::Buffer getReadBuffer(const char* command, U32 writeSize, U32 readSize, bool UARTMODE);
+      Fw::Buffer sendI2cCommand(const char* command, U32 writeSize, U32 readSize);
 
       //! responseToString
       //!
@@ -100,6 +108,11 @@ namespace Components {
       //! Master method that configures all settings for transceiver. Should be called on startup.
       void configureSettings();
 
+      //! sendUartCommand
+      //!
+      //! Method that sends a UART command
+      void sendUartCommand(const char* command, U32 writeSize);
+
       // ----------------------------------------------------------------------
       // User defined variables 
       // ----------------------------------------------------------------------
@@ -110,15 +123,12 @@ namespace Components {
 
       U8 ADDRESS = 0x23; // Address -> 0x23 
 
-      U8 state;
-
-
       const char* WRITE_RADIO_FREQ = "ES+W230150E90942 F778726B"; // Command to configure radio frequency to 437 MHz (calculated from datasheet example)
       const char* WRITE_BEACON_TRANSMISSION_PERIOD = "ES+W23070000003C FDEF1764"; // Command to configure beacon tranmission period to 60 seconds
       const char* WRITE_POWER_MODE = "ES+W23F4 0AA27131"; // Command that turns on low power mode
       const char* WRITE_SCW_PIPE_ON = "ES+W23003323 feec0437"; // Command that activates pipe mode for SCW
       const char* WRITE_SCW_PIPE_OFF = "ES+W23003303 ccda66b5"; // Command that deactivates pipe mode for SCW
-      const char* WRITE_PIPE_PERIOD = "ES+W23060000000A 2fb731c8"; // Command to change pipe mode timeout period (to 10 secs)
+      const char* WRITE_PIPE_PERIOD = "ES+W23060000000B b6be6072"; // Command to change pipe mode timeout period (to 11 secs)
 
       // READ Commands
       const char* READ_RADIO_FREQ = "ES+R2301 CB4DD4BE"; // Command to read radio freqency configuration (example from datasheet)

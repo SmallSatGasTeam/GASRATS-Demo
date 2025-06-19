@@ -7,7 +7,7 @@
 #include "Components/UHFTransceiverManager/UHFTransceiverManager.hpp"
 #include <cstring>
 #include <unistd.h>
-
+#include <string>
 namespace Components {
 
   // ----------------------------------------------------------------------
@@ -60,13 +60,17 @@ namespace Components {
         const Drv::RecvStatus& recvStatus
     )
   {
+    Fw::String str("---uartRecv_handler was used---");
+    this->log_ACTIVITY_HI_debuggingEvent(str);
+
     Response r = parseResponse(recvBuffer);
     this->tlmWrite_response1(r.fullResponse);
+    this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
     this->tlmWrite_recvStatus(recvStatus);
-    // if (recvBuffer.getSize() > 0) {
-    //   this->deallocate_out(0, recvBuffer);
-    // }
-    // TODO
+    logEvent(recvBuffer);
+    if (recvBuffer.isValid()) {
+      this->deallocate_out(0, recvBuffer);
+    }
   }
 
 
@@ -75,34 +79,62 @@ namespace Components {
   // ----------------------------------------------------------------------
 
   void UHFTransceiverManager::configureSettings() {
-    Fw::String str("---Now reading pipe mode configuration (should be 5)---");
-    this->log_ACTIVITY_HI_somethingHappened(str);
-    Fw::Buffer readBuffer1 = getReadBuffer(this->READ_SCW, strlen(this->READ_SCW)+1, 64, false); // 18 -> writeSize, 17 -> readSize
+    // Sending I2C Command
+    // ---------------------------------------------------------------------------------------
+
+    Fw::String str1("---Reading pipe period (should be 10 secs)---");
+    this->log_ACTIVITY_HI_debuggingEvent(str1);
+    Fw::Buffer readBuffer1 = sendI2cCommand(this->READ_PIPE_PERIOD, strlen(this->READ_PIPE_PERIOD)+1, 64); 
     Response r = parseResponse(readBuffer1);
-    this->log_ACTIVITY_HI_somethingHappened(r.fullResponse);
-    if (readBuffer1.getSize() > 0) {
+    this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
+    logEvent(readBuffer1);
+    if (readBuffer1.isValid()) {
       this->deallocate_out(0, readBuffer1);
     }
-
     // ---------------------------------------------------------------------------------------
-    sleep(10);
 
-    Fw::String str5("---Test UART command---");
-    this->log_ACTIVITY_HI_somethingHappened(str5);
-    Fw::Buffer readBuffer2 = getReadBuffer(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1, 64, true); // 18 -> writeSize, 17 -> readSize
-    // if (readBuffer2.getSize() > 0) {
-    //   this->deallocate_out(0, readBuffer2);
-    // }
-    
+
+    // Sending Uart Command
+    // ---------------------------------------------------------------------------------------
+
+    Fw::String str5("---Changing pipe period using UART (to 11 secs)---");
+    this->log_ACTIVITY_HI_debuggingEvent(str5);
+    sendUartCommand(this->WRITE_PIPE_PERIOD, strlen(this->WRITE_PIPE_PERIOD)+1); 
+
     // -----------------------------------------------------------------------------------------
     
+    sleep(5); // Necessary so UART has time to use the receive port before we read again
+
+    // Sending I2C Command
+    // ---------------------------------------------------------------------------------------
+
+    Fw::String str2("---Reading pipe period (should now be 11 secs)---");
+    this->log_ACTIVITY_HI_debuggingEvent(str2);
+    Fw::Buffer readBuffer2 = sendI2cCommand(this->READ_PIPE_PERIOD, strlen(this->READ_PIPE_PERIOD)+1, 64); 
+    Response r2 = parseResponse(readBuffer2);
+    this->log_ACTIVITY_HI_debuggingEvent(r2.fullResponse);
+    logEvent(readBuffer2);
+    if (readBuffer2.isValid()) {
+      this->deallocate_out(0, readBuffer2);
+    }
+    // ---------------------------------------------------------------------------------------
+
+    // NOTES FOR MONDAY!
+    // All of the commands above work:
+    //   If you try to run them again know it will read 11 secs for pipe period because I didn't change it back.
+    //   Something to work on: Integrate Devin's framer because currently the UART responses were limited to 8 bytes (meaning some responses got cut off) run the code to see what I mean.
+    //   Then try to see if you can turn on pipe mode and get a signal.
+
+
 
   }
 
-  Fw::String UHFTransceiverManager::responseToString(U8 command, Fw::Buffer readBuffer) {
-    // This is a luxury, wait til other methods are finished.
-    return NULL;
-  } 
+  void UHFTransceiverManager::logEvent(Fw::Buffer buffer) {
+    U32 size = buffer.getSize();
+    std::string text = "Size of writeBuffer: " + std::to_string(size);
+    Fw::String str(text.c_str());
+    this->log_ACTIVITY_HI_debuggingEvent(str);
+  }    
 
   UHFTransceiverManager::Response UHFTransceiverManager::parseResponse(Fw::Buffer readBuffer){
     U8* data = static_cast<U8*>(readBuffer.getData());
@@ -123,7 +155,7 @@ namespace Components {
     return r;
   }
 
-  Fw::Buffer UHFTransceiverManager::getReadBuffer(const char* command, U32 writeSize, U32 readSize, bool UARTMODE) {
+  Fw::Buffer UHFTransceiverManager::sendI2cCommand(const char* command, U32 writeSize, U32 readSize) {
     Fw::Buffer writeBuffer = this->allocate_out(0, writeSize);
     Fw::Buffer readBuffer = this->allocate_out(0, readSize);
 
@@ -139,44 +171,69 @@ namespace Components {
       return Fw::Buffer(); // return a default buffer early to avoid continuing
     }
     
-
+    // Prepare writeBuffer to be serialized
     Fw::SerializeBufferBase& sb = writeBuffer.getSerializeRepr();
     sb.setBuffLen(writeSize);
-
-
-    //! Prepare BufferBase
     sb.resetSer();
-    
-    U8 dataBufferTemp[writeSize];
-
+  
     // Serialize each byte into the write buffer
+    U8 dataBufferTemp[writeSize];
     for (int i = 0; i < (writeSize-1); i++) {
       dataBufferTemp[i] = static_cast<char>(command[i]);
     }
     dataBufferTemp[writeSize-1] = 0x0D; // Last character in command should always be a carriage return <CR>
-
-    // Fw::String str(reinterpret_cast<const char*>(dataBufferTemp));
-
-    // this->tlmWrite_response(str);
-
     sb.serialize(dataBufferTemp, writeSize, true);
 
-    if (UARTMODE) {
-      this->uartSend_out(0, writeBuffer);
-
-
-    } else {
-      this->checkI2cStatus(i2cWrite_out(0, this->ADDRESS, writeBuffer));
-      this->checkI2cStatus(i2cRead_out(0, this->ADDRESS, readBuffer));
-    }
+    // Send the serialized command out over I2C and get the read buffer back
+    this->checkI2cStatus(i2cWrite_out(0, this->ADDRESS, writeBuffer));
+    this->checkI2cStatus(i2cRead_out(0, this->ADDRESS, readBuffer));
     
+    // Debugging function that logs the size of write buffer
+    logEvent(writeBuffer);
+
     // Deallocate the writeBuffer, we are done using it.
-    // if (writeBuffer.getSize() > 0) {
-    //   this->deallocate_out(0, writeBuffer);
-    // }
+    if (writeBuffer.isValid()) {
+      this->deallocate_out(0, writeBuffer);
+    }
     
     // Return the data (read) buffer
     return readBuffer;
+  }
+
+  void UHFTransceiverManager::sendUartCommand(const char* command, U32 writeSize) {
+    Fw::Buffer writeBuffer = this->allocate_out(0, writeSize);
+
+    // Check to see if buffers were allocated properly, if not deallocate the possible memory allocated, and log a warning.
+    if (writeBuffer.getSize() < writeSize) {
+      this->log_WARNING_LO_MemoryAllocationFailed();
+      if (writeBuffer.getSize() > 0) {
+        this->deallocate_out(0, writeBuffer);
+      }
+    }
+    
+    // Prepare writeBuffer to be serialized
+    Fw::SerializeBufferBase& sb = writeBuffer.getSerializeRepr();
+    sb.setBuffLen(writeSize);
+    sb.resetSer();
+    
+
+    // Serialize each byte into the write buffer
+    U8 dataBufferTemp[writeSize];
+    for (int i = 0; i < (writeSize-1); i++) {
+      dataBufferTemp[i] = static_cast<char>(command[i]);
+    }
+    dataBufferTemp[writeSize-1] = 0x0D; // Last character in command should always be a carriage return <CR>
+    sb.serialize(dataBufferTemp, writeSize, true);
+
+    // Send serialized command out over UART
+    this->uartSend_out(0, writeBuffer);
+    
+    // Debugging function that logs the size of write buffer
+    logEvent(writeBuffer);
+
+    // It appears that you do not have to deallocate UART Buffers?
+    // If you do it fails
+    
   }
 
   void UHFTransceiverManager::checkI2cStatus(Drv::I2cStatus i2cStatus) {

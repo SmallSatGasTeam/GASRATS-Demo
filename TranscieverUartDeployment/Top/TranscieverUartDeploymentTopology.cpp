@@ -179,7 +179,7 @@ void setupTopology(const TopologyState& state) {
     const char* device1 = "/dev/i2c-1";
     i2cLinuxDriver.open(device1);
 
-    const char* device2 = "/dev/ttyS0";
+    const char* device2 = "/dev/ttyAMA0";
     LinuxUartDriver.open(device2, LinuxUartDriver.BAUD_115K, LinuxUartDriver.NO_FLOW, LinuxUartDriver.PARITY_NONE, 128);
     LinuxUartDriver.start();
 
