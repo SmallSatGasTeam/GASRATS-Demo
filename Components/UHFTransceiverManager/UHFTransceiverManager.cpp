@@ -64,9 +64,9 @@ namespace Components {
     this->log_ACTIVITY_HI_debuggingEvent(str);
 
     Response r = parseResponse(recvBuffer);
-    this->tlmWrite_response1(r.fullResponse);
+    // this->tlmWrite_response1(r.fullResponse);
     this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
-    this->tlmWrite_recvStatus(recvStatus);
+    // this->tlmWrite_recvStatus(recvStatus);
     logEvent(recvBuffer);
     if (recvBuffer.isValid()) {
       this->deallocate_out(0, recvBuffer);
@@ -91,33 +91,51 @@ namespace Components {
     if (readBuffer1.isValid()) {
       this->deallocate_out(0, readBuffer1);
     }
-    // ---------------------------------------------------------------------------------------
 
+    Fw::String str4("---activating PIPE Mode---");
+    this->log_ACTIVITY_HI_debuggingEvent(str4);
+    Fw::Buffer readBuffer4 = sendI2cCommand(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1, 64); 
+    Response r4 = parseResponse(readBuffer4);
+    this->log_ACTIVITY_HI_debuggingEvent(r4.fullResponse);
+    logEvent(readBuffer4);
+    if (readBuffer1.isValid()) {
+      this->deallocate_out(0, readBuffer4);
+    }
 
-    // Sending Uart Command
-    // ---------------------------------------------------------------------------------------
+    sleep (7);
 
-    Fw::String str5("---Changing pipe period using UART (to 11 secs)---");
+    Fw::String str5("---Reading temperature while in PIPE Mode---");
     this->log_ACTIVITY_HI_debuggingEvent(str5);
-    sendUartCommand(this->WRITE_PIPE_PERIOD, strlen(this->WRITE_PIPE_PERIOD)+1); 
+
+    sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
+    sleep(2);
+    sendUartCommand(this->ANTENNA_TEST_DATA1, strlen(this->ANTENNA_TEST_DATA1)+1); 
+    sleep(2);
+    sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
+    sleep(2); // Necessary so UART has time to use the receive port before we read again
+    sendUartCommand(this->ANTENNA_TEST_DATA2, strlen(this->ANTENNA_TEST_DATA2)+1); 
+    sleep(2); // Necessary so UART has time to use the receive port before we read again
+
+
+    sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
+    sleep(2); // Necessary so UART has time to use the receive port before we read again
+    sendUartCommand(this->ANTENNA_TEST_DATA3, strlen(this->ANTENNA_TEST_DATA3)+1); 
+    sleep(2); // Necessary so UART has time to use the receive port before we read again
+    sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
+    sleep(2); // Necessary so UART has time to use the receive port before we read again
+    sendUartCommand(this->ANTENNA_TEST_DATA4, strlen(this->ANTENNA_TEST_DATA4)+1); 
+    sleep(2); // Necessary so UART has time to use the receive port before we read again
+    sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
+
+
+
+
+
 
     // -----------------------------------------------------------------------------------------
-    
-    sleep(5); // Necessary so UART has time to use the receive port before we read again
+      
+    sleep(1); // Necessary so UART has time to use the receive port before we read again
 
-    // Sending I2C Command
-    // ---------------------------------------------------------------------------------------
-
-    Fw::String str2("---Reading pipe period (should now be 11 secs)---");
-    this->log_ACTIVITY_HI_debuggingEvent(str2);
-    Fw::Buffer readBuffer2 = sendI2cCommand(this->READ_PIPE_PERIOD, strlen(this->READ_PIPE_PERIOD)+1, 64); 
-    Response r2 = parseResponse(readBuffer2);
-    this->log_ACTIVITY_HI_debuggingEvent(r2.fullResponse);
-    logEvent(readBuffer2);
-    if (readBuffer2.isValid()) {
-      this->deallocate_out(0, readBuffer2);
-    }
-    // ---------------------------------------------------------------------------------------
 
     // NOTES FOR MONDAY!
     // All of the commands above work:
@@ -131,7 +149,7 @@ namespace Components {
 
   void UHFTransceiverManager::logEvent(Fw::Buffer buffer) {
     U32 size = buffer.getSize();
-    std::string text = "Size of writeBuffer: " + std::to_string(size);
+    std::string text = "Size of Buffer: " + std::to_string(size);
     Fw::String str(text.c_str());
     this->log_ACTIVITY_HI_debuggingEvent(str);
   }    
@@ -142,7 +160,7 @@ namespace Components {
     Response r; //! Response struct for storing contents and length of readBuffer
 
     r.fullResponse = reinterpret_cast<char*>(readBuffer.getData()); // Convert contents of read buffer to char array
-
+    r.size = size;
     // Logic to determine what data is found in the fullResponse.
     // Checking status
     if (data[0] != 79) {

@@ -106,7 +106,7 @@ namespace Svc {
         if (ring.get_allocated_size() < size + 2) { // Need at least the data + 2 CRC bytes
             return false;
         }
-        U8* data = nullptr;
+        U8 data[size+2];
         ring.peek(data, size + 2, 6); // Peek at the data field 1 and 2, plus the CRC
 
         // Calculate CRC over Data Field 1 and Data Field 2

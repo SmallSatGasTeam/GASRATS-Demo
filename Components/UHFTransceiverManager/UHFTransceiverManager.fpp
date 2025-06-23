@@ -25,7 +25,7 @@ module Components {
         output port uartSend: Drv.ByteStreamSend
 
         @ UART RECV. Input port.
-        async input port uartRecv: Drv.ByteStreamRecv
+        sync input port uartRecv: Drv.ByteStreamRecv
 
         # @ UART READY. 
         # sync input port uartReady: Drv.ByteStreamReady
