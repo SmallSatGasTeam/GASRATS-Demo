@@ -24,13 +24,13 @@ Fw::MallocAllocator mallocator;
 
 // The reference topology uses the F´ packet protocol when communicating with the ground and therefore uses the F´
 // framing and deframing implementations.
-// Svc::EndurosatFraming framing; // using our own custom implementation!
-// Svc::EndurosatDeframing deframing; // using our own custom implementation!
+Svc::EndurosatFraming framing; // using our own custom implementation!
+Svc::EndurosatDeframing deframing; // using our own custom implementation!
 
 // // The reference topology uses the F´ packet protocol when communicating with the ground and therefore uses the F´
 // // framing and deframing implementations.
-Svc::FprimeFraming framing;
-Svc::FprimeDeframing deframing;
+// Svc::FprimeFraming framing;
+// Svc::FprimeDeframing deframing;
 
 
 Svc::ComQueue::QueueConfigurationTable configurationTable;

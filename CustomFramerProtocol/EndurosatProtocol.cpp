@@ -1,5 +1,6 @@
 #include "EndurosatProtocol.hpp"
 #include "FpConfig.hpp"
+#include "stdlib.h"
 #include <cstring>
 #include <vector> // Don't forget to include vector!
 #include <cstdint> // For fixed-width integer types
@@ -25,6 +26,19 @@ namespace Svc {
         }
         return crc;
     }
+
+    U16 calculate_crc16(U16 crc, U8 byte) {
+        crc ^= static_cast<U16>(byte) << 8;
+        for (int j = 0; j < 8; ++j) {
+            if (crc & 0x8000) {
+                crc = (crc << 1) ^ 0x1021;
+            } else {
+                crc <<= 1;
+            }
+        }
+        return crc;
+    }
+
 
     void EndurosatFraming::frame(const U8* const data, const U32 size, Fw::ComPacket::ComPacketType packet_type) {
         FW_ASSERT(data != nullptr);
@@ -102,20 +116,56 @@ namespace Svc {
         // transceiver_send(radio_packet.data(), static_cast<U32>(radio_packet.size()));
     }
 
+    // bool EndurosatDeframing::validate(Types::CircularBuffer& ring, U32 size) {
+    //     if (ring.get_allocated_size() < size + 2) { // Need at least the data + 2 CRC bytes
+    //         return false;
+    //     }
+
+    //     // We think this is what is causing there to be an error when using the custom framing protocol. The buffer is apparently a nullptr?
+    //     Fw::Buffer buffer = m_interface->allocate(size+2); // added
+    //     ring.peek(buffer.getData(), size + 2, 6); // Peek at the data field 1 and 2, plus the CRC //added
+
+    //     // U8* data = nullptr; // old lines of code
+    //     // ring.peek(data, size + 2, 6); // Peek at the data field 1 and 2, plus the CRC
+
+    //     U8* data = static_cast<U8*>(buffer.getData()); // added 
+
+    //     // Calculate CRC over Data Field 1 and Data Field 2
+    //     U16 expected_crc = calculate_crc16(data, size);
+
+    //     // Extract the CRC from the packet
+    //     U16 given_crc = (static_cast<U16>(data[size]) << 8) | data[size + 1];
+
+    //     return given_crc == expected_crc;
+    // }
+
     bool EndurosatDeframing::validate(Types::CircularBuffer& ring, U32 size) {
-        if (ring.get_allocated_size() < size + 2) { // Need at least the data + 2 CRC bytes
+        // Make sure we have enough bytes: data + 2 CRC bytes
+        if (ring.get_allocated_size() < size + 2) {
             return false;
         }
-        U8 data[size+2];
-        ring.peek(data, size + 2, 6); // Peek at the data field 1 and 2, plus the CRC
 
-        // Calculate CRC over Data Field 1 and Data Field 2
-        U16 expected_crc = calculate_crc16(data, size);
+        // --- Compute CRC over size bytes (Data Field 1 + Data Field 2) ---
+        U16 crc = 0xFFFF; // Initial seed per CCITT-FALSE
 
-        // Extract the CRC from the packet
-        U16 given_crc = (static_cast<U16>(data[size]) << 8) | data[size + 1];
+        for (U32 i = 0; i < size; ++i) {
+            U8 byte;
+            Fw::SerializeStatus status = ring.peek(byte, i + 6);  // Offset by 6 to skip preamble/sync/length
+            FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
+            crc = calculate_crc16(crc, byte);
+        }
 
-        return given_crc == expected_crc;
+        // --- Peek the 2 CRC bytes (MSB first) ---
+        U8 crc_msb = 0;
+        U8 crc_lsb = 0;
+        Fw::SerializeStatus status1 = ring.peek(crc_msb, size + 6);
+        Fw::SerializeStatus status2 = ring.peek(crc_lsb, size + 7);
+        FW_ASSERT(status1 == Fw::FW_SERIALIZE_OK, status1);
+        FW_ASSERT(status2 == Fw::FW_SERIALIZE_OK, status2);
+
+        U16 given_crc = (static_cast<U16>(crc_msb) << 8) | crc_lsb;
+
+        return crc == given_crc;
     }
 
     DeframingProtocol::DeframingStatus EndurosatDeframing::deframe(Types::CircularBuffer& ring, U32& needed) {
