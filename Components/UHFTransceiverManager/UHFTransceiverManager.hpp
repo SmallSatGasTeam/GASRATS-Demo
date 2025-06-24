@@ -141,6 +141,9 @@ namespace Components {
       const char* READ_SCW = "ES+R2300 bc4ae428"; // Command that reads status control word
       const char* READ_PIPE_PERIOD = "ES+R2306 5529411d"; // Command to read pipe mode timeout period configuration
       const char* READ_POWER_MODE = "ES+R23F4 C242FE41"; // Command that reads the power mode of the device (low power mode)
+      const char* READ_SOURCE_CALLSIGN = "ES+R23F6 2c4c9f6d"; // Command that reads the source callsign
+      const char* READ_DESTINATION_CALLSIGN = "ES+R23F5 b545ced7"; // Command that reads the destination callsign
+
 
       const char* ANTENNA_TEST_DATA1 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
       const char* ANTENNA_TEST_DATA2 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";

@@ -82,50 +82,70 @@ namespace Components {
     // Sending I2C Command
     // ---------------------------------------------------------------------------------------
 
-    Fw::String str1("---Reading pipe period (should be 10 secs)---");
-    this->log_ACTIVITY_HI_debuggingEvent(str1);
-    Fw::Buffer readBuffer1 = sendI2cCommand(this->READ_PIPE_PERIOD, strlen(this->READ_PIPE_PERIOD)+1, 64); 
-    Response r = parseResponse(readBuffer1);
-    this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
-    logEvent(readBuffer1);
-    if (readBuffer1.isValid()) {
-      this->deallocate_out(0, readBuffer1);
-    }
+      Fw::String str1("---Reading source callsign---");
+      this->log_ACTIVITY_HI_debuggingEvent(str1);
+      Fw::Buffer readBuffer1 = sendI2cCommand(this->READ_SOURCE_CALLSIGN, strlen(this->READ_SOURCE_CALLSIGN)+1, 64); 
+      Response r = parseResponse(readBuffer1);
+      this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
+      logEvent(readBuffer1);
+      if (readBuffer1.isValid()) {
+        this->deallocate_out(0, readBuffer1);
+      }
 
-    Fw::String str4("---activating PIPE Mode---");
-    this->log_ACTIVITY_HI_debuggingEvent(str4);
-    Fw::Buffer readBuffer4 = sendI2cCommand(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1, 64); 
-    Response r4 = parseResponse(readBuffer4);
-    this->log_ACTIVITY_HI_debuggingEvent(r4.fullResponse);
-    logEvent(readBuffer4);
-    if (readBuffer1.isValid()) {
-      this->deallocate_out(0, readBuffer4);
-    }
+      Fw::String str2("---Reading destination callsign---");
+      this->log_ACTIVITY_HI_debuggingEvent(str2);
+      Fw::Buffer readBuffer2 = sendI2cCommand(this->READ_DESTINATION_CALLSIGN, strlen(this->READ_DESTINATION_CALLSIGN)+1, 64); 
+      Response r2 = parseResponse(readBuffer2);
+      this->log_ACTIVITY_HI_debuggingEvent(r2.fullResponse);
+      logEvent(readBuffer2);
+      if (readBuffer1.isValid()) {
+        this->deallocate_out(0, readBuffer2);
+      }
 
-    sleep (7);
+    // Fw::String str1("---Reading pipe period (should be 10 secs)---");
+    // this->log_ACTIVITY_HI_debuggingEvent(str1);
+    // Fw::Buffer readBuffer1 = sendI2cCommand(this->READ_PIPE_PERIOD, strlen(this->READ_PIPE_PERIOD)+1, 64); 
+    // Response r = parseResponse(readBuffer1);
+    // this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
+    // logEvent(readBuffer1);
+    // if (readBuffer1.isValid()) {
+    //   this->deallocate_out(0, readBuffer1);
+    // }
 
-    Fw::String str5("---Reading temperature while in PIPE Mode---");
-    this->log_ACTIVITY_HI_debuggingEvent(str5);
+    // Fw::String str4("---activating PIPE Mode---");
+    // this->log_ACTIVITY_HI_debuggingEvent(str4);
+    // Fw::Buffer readBuffer4 = sendI2cCommand(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1, 64); 
+    // Response r4 = parseResponse(readBuffer4);
+    // this->log_ACTIVITY_HI_debuggingEvent(r4.fullResponse);
+    // logEvent(readBuffer4);
+    // if (readBuffer1.isValid()) {
+    //   this->deallocate_out(0, readBuffer4);
+    // }
 
-    sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
-    sleep(2);
-    sendUartCommand(this->ANTENNA_TEST_DATA1, strlen(this->ANTENNA_TEST_DATA1)+1); 
-    sleep(2);
-    sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
-    sleep(2); // Necessary so UART has time to use the receive port before we read again
-    sendUartCommand(this->ANTENNA_TEST_DATA2, strlen(this->ANTENNA_TEST_DATA2)+1); 
-    sleep(2); // Necessary so UART has time to use the receive port before we read again
+    // sleep (7);
+
+    // Fw::String str5("---Reading temperature while in PIPE Mode---");
+    // this->log_ACTIVITY_HI_debuggingEvent(str5);
+
+    // sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
+    // sleep(2);
+    // sendUartCommand(this->ANTENNA_TEST_DATA1, strlen(this->ANTENNA_TEST_DATA1)+1); 
+    // sleep(2);
+    // sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
+    // sleep(2); // Necessary so UART has time to use the receive port before we read again
+    // sendUartCommand(this->ANTENNA_TEST_DATA2, strlen(this->ANTENNA_TEST_DATA2)+1); 
+    // sleep(2); // Necessary so UART has time to use the receive port before we read again
 
 
-    sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
-    sleep(2); // Necessary so UART has time to use the receive port before we read again
-    sendUartCommand(this->ANTENNA_TEST_DATA3, strlen(this->ANTENNA_TEST_DATA3)+1); 
-    sleep(2); // Necessary so UART has time to use the receive port before we read again
-    sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
-    sleep(2); // Necessary so UART has time to use the receive port before we read again
-    sendUartCommand(this->ANTENNA_TEST_DATA4, strlen(this->ANTENNA_TEST_DATA4)+1); 
-    sleep(2); // Necessary so UART has time to use the receive port before we read again
-    sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
+    // sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
+    // sleep(2); // Necessary so UART has time to use the receive port before we read again
+    // sendUartCommand(this->ANTENNA_TEST_DATA3, strlen(this->ANTENNA_TEST_DATA3)+1); 
+    // sleep(2); // Necessary so UART has time to use the receive port before we read again
+    // sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
+    // sleep(2); // Necessary so UART has time to use the receive port before we read again
+    // sendUartCommand(this->ANTENNA_TEST_DATA4, strlen(this->ANTENNA_TEST_DATA4)+1); 
+    // sleep(2); // Necessary so UART has time to use the receive port before we read again
+    // sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
 
 
 
