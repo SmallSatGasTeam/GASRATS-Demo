@@ -7,7 +7,7 @@ module Components {
         ##############################################################################
         async command configureRFSettings() opcode 0x01
 
-        async command transmitData($data: string) opcode 0x02 
+        async command sendData($data: string) opcode 0x02 
 
 
         ##############################################################################
@@ -26,6 +26,7 @@ module Components {
 
         @ UART RECV. Input port.
         sync input port uartRecv: Drv.ByteStreamRecv
+
 
         # @ UART READY. 
         # sync input port uartReady: Drv.ByteStreamReady

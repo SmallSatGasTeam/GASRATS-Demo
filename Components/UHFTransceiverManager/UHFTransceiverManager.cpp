@@ -42,13 +42,18 @@ namespace Components {
   }
 
   void UHFTransceiverManager ::
-    transmitData_cmdHandler(
+    sendData_cmdHandler(
         FwOpcodeType opCode,
         U32 cmdSeq,
         const Fw::CmdStringArg& data
     )
   {
+    Fw::String str("---sendData_cmdHandler was used---");
+    this->log_ACTIVITY_HI_debuggingEvent(str);
     
+    const char* dataPtr = data.toChar();
+    U32 size = strlen(dataPtr) + 1; // +1 for carriage return
+    sendUartCommand(data.toChar(), size);
 
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
@@ -173,6 +178,11 @@ namespace Components {
     Fw::String str(text.c_str());
     this->log_ACTIVITY_HI_debuggingEvent(str);
   }    
+  
+  void UHFTransceiverManager::transmitData(const char* command, U32 writeSize) {
+    sendUartCommand(command, writeSize);
+  }
+
 
   UHFTransceiverManager::Response UHFTransceiverManager::parseResponse(Fw::Buffer readBuffer){
     U8* data = static_cast<U8*>(readBuffer.getData());

@@ -31,6 +31,21 @@ namespace Components {
       //! Destroy UHFTransceiverManager object
       ~UHFTransceiverManager();
 
+      //! transmitData
+      //!
+      //! Method that sends a command over UART
+      void transmitData(const char* command, U32 writeSize);
+      
+      //! sendUartCommand
+      //!
+      //! Method that sends a UART command
+      void sendUartCommand(const char* command, U32 writeSize);
+
+      //! logEvent
+      //!
+      //! Debugging method that logs the size of a buffer in an event
+      void logEvent(Fw::Buffer buffer);
+
     PRIVATE:
 
       // ----------------------------------------------------------------------
@@ -52,18 +67,11 @@ namespace Components {
       ) override;
 
       //! Handler implementation for command transmitData
-      void transmitData_cmdHandler(
+      void sendData_cmdHandler(
           FwOpcodeType opCode, //!< The opcode
           U32 cmdSeq, //!< The command sequence number
           const Fw::CmdStringArg& data
       ) override;
-
-      // //! Handler implementation for uartReady
-      // //!
-      // //! UART READY.
-      // void uartReady_handler(
-      //     FwIndexType portNum //!< The port number
-      // ) override;
 
       // ----------------------------------------------------------------------
       // User defined functions 
@@ -88,12 +96,10 @@ namespace Components {
       //! Method that logs the status of an I2C transaction
       void checkI2cStatus(Drv::I2cStatus);
 
-      //! logEvent
-      //!
-      //! Debugging method that logs the size of a buffer in an event
-      void logEvent(Fw::Buffer buffer);
+      
 
-
+      
+      
       //! getReadBuffer
       //!
       //! Method that takes in a command and returns the response of that command
@@ -109,10 +115,7 @@ namespace Components {
       //! Master method that configures all settings for transceiver. Should be called on startup.
       void configureSettings();
 
-      //! sendUartCommand
-      //!
-      //! Method that sends a UART command
-      void sendUartCommand(const char* command, U32 writeSize);
+      
 
       // ----------------------------------------------------------------------
       // User defined variables 
@@ -148,7 +151,6 @@ namespace Components {
       const char* ANTENNA_TEST_DATA1 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
       const char* ANTENNA_TEST_DATA2 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
       const char* ANTENNA_TEST_DATA3 = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
-      const char* ANTENNA_TEST_DATA4 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFfAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 
 

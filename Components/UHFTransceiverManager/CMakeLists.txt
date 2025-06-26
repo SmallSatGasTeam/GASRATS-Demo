@@ -24,7 +24,7 @@ set(SOURCE_FILES
 # is an acceptable alternative and will be internally converted to `Ref_SignalGen`.
 #
 # set(MOD_DEPS
-#   MyPackage_MyOtherModule
+#
 # )
 
 register_fprime_module()

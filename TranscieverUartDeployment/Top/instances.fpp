@@ -128,5 +128,6 @@ module TranscieverUartDeployment {
   instance LinuxUartDriver: Drv.LinuxUartDriver base id 0x4C00
 
   instance i2cLinuxDriver: Drv.LinuxI2cDriver base id 0x1F00
+   
 
 }

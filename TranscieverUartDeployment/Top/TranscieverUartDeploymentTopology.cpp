@@ -102,6 +102,9 @@ void configureTopology() {
     framer.setup(framing);
     deframer.setup(deframing);
 
+    // This calls a custom function in EndurosatProtocol.cpp to set up the UHFTransceiverManager to allow the protocol to send data via UHFTransceiverManager
+    framing.setup(&UHFTransceiverManager); 
+
     // Command sequencer needs to allocate memory to hold contents of command sequences
     cmdSeq.allocateBuffer(0, mallocator, CMD_SEQ_BUFFER_SIZE);
 
