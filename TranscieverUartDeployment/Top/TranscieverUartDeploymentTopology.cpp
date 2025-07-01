@@ -24,13 +24,13 @@ Fw::MallocAllocator mallocator;
 
 // The reference topology uses the F´ packet protocol when communicating with the ground and therefore uses the F´
 // framing and deframing implementations.
-Svc::EndurosatFraming framing; // using our own custom implementation!
-Svc::EndurosatDeframing deframing; // using our own custom implementation!
+// Svc::EndurosatFraming framing; // using our own custom implementation!
+// Svc::EndurosatDeframing deframing; // using our own custom implementation!
 
 // // The reference topology uses the F´ packet protocol when communicating with the ground and therefore uses the F´
 // // framing and deframing implementations.
-// Svc::FprimeFraming framing;
-// Svc::FprimeDeframing deframing;
+Svc::FprimeFraming framing;
+Svc::FprimeDeframing deframing;
 
 
 Svc::ComQueue::QueueConfigurationTable configurationTable;
@@ -87,6 +87,8 @@ Svc::Health::PingEntry pingEntries[] = {
  * desired, but is extracted here for clarity.
  */
 void configureTopology() {
+    printf("[DEBUG] TranscieverUartDeployment::configureTopology() called\n");
+
     // Buffer managers need a configured set of buckets and an allocator used to allocate memory for those buckets.
     Svc::BufferManager::BufferBins upBuffMgrBins;
     memset(&upBuffMgrBins, 0, sizeof(upBuffMgrBins));
@@ -99,11 +101,15 @@ void configureTopology() {
     bufferManager.setup(BUFFER_MANAGER_ID, 0, mallocator, upBuffMgrBins);
 
     // Framer and Deframer components need to be passed a protocol handler
+    printf("[DEBUG] Setting up Deframer with address: %p \n", &deframing);
     framer.setup(framing);
     deframer.setup(deframing);
 
+
+    // deframing.setup(deframer); // added
+
     // This calls a custom function in EndurosatProtocol.cpp to set up the UHFTransceiverManager to allow the protocol to send data via UHFTransceiverManager
-    framing.setupComp(&UHFTransceiverManager); 
+    // framing.setupComp(&UHFTransceiverManager); 
 
     // Command sequencer needs to allocate memory to hold contents of command sequences
     cmdSeq.allocateBuffer(0, mallocator, CMD_SEQ_BUFFER_SIZE);

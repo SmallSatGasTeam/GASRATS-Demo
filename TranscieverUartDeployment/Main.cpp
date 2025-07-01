@@ -97,6 +97,7 @@ int main(int argc, char* argv[]) {
     (void)printf("Hit Ctrl-C to quit\n");
 
     // Setup, cycle, and teardown topology
+    printf("Setting up topology...\n");
     TranscieverUartDeployment::setupTopology(inputs);
     TranscieverUartDeployment::startSimulatedCycle(Fw::TimeInterval(1,0));  // Program loop cycling rate groups at 1Hz
     TranscieverUartDeployment::teardownTopology(inputs);

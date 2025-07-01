@@ -277,7 +277,7 @@ namespace Components {
     this->uartSend_out(0, writeBuffer);
     
     // Debugging function that logs the size of write buffer
-    logEvent(writeBuffer);
+    // logEvent(writeBuffer);
 
     // It appears that you do not have to deallocate UART Buffers?
     // If you do it fails
