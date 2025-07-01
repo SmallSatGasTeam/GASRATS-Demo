@@ -183,6 +183,19 @@ namespace Components {
     sendUartCommand(command, writeSize);
   }
 
+  void UHFTransceiverManager::deallocate_buffer(Fw::Buffer& buffer) {
+    // Deallocate the buffer if it is valid
+    if (buffer.isValid()) {
+      this->deallocate_out(0, buffer);
+    } else {
+      this->log_WARNING_LO_MemoryAllocationFailed();
+    }
+  }
+
+  void UHFTransceiverManager::initiatePipeMode() {
+    this->sendUartCommand(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1);
+  }
+
 
   UHFTransceiverManager::Response UHFTransceiverManager::parseResponse(Fw::Buffer readBuffer){
     U8* data = static_cast<U8*>(readBuffer.getData());

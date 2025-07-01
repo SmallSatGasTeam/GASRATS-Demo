@@ -46,6 +46,11 @@ namespace Components {
       //! Debugging method that logs the size of a buffer in an event
       void logEvent(Fw::Buffer buffer);
 
+      void deallocate_buffer(Fw::Buffer& buffer);
+
+      void initiatePipeMode();
+
+
     PRIVATE:
 
       // ----------------------------------------------------------------------
@@ -85,6 +90,7 @@ namespace Components {
           bool status; // First few characters of response dictate the status
           U32 size;
       };
+
 
       //! parseResponse
       //!
