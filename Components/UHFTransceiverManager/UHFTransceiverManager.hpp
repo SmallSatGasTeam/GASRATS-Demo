@@ -46,9 +46,11 @@ namespace Components {
       //! Debugging method that logs the size of a buffer in an event
       void logEvent(Fw::Buffer buffer);
 
+      //! allocate_buffer
+      //!
+      //! Public method that deallocates a buffer, to be used in the framer
       void deallocate_buffer(Fw::Buffer& buffer);
 
-      void initiatePipeMode();
 
 
     PRIVATE:
@@ -76,6 +78,13 @@ namespace Components {
           FwOpcodeType opCode, //!< The opcode
           U32 cmdSeq, //!< The command sequence number
           const Fw::CmdStringArg& data
+      ) override;
+
+      //! Handler implementation for uartReady
+      //!
+      //! UART READY. This port is used to check if the UART driver is ready to send data.
+      void uartReady_handler(
+          FwIndexType portNum //!< The port number
       ) override;
 
       // ----------------------------------------------------------------------
@@ -158,7 +167,7 @@ namespace Components {
       const char* ANTENNA_TEST_DATA2 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
       const char* ANTENNA_TEST_DATA3 = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
-
+      bool m_reinitialize = false; // Flag to indicate if the component should be reinitialized
 
 
 

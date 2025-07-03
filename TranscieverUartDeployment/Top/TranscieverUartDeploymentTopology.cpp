@@ -24,13 +24,13 @@ Fw::MallocAllocator mallocator;
 
 // The reference topology uses the F´ packet protocol when communicating with the ground and therefore uses the F´
 // framing and deframing implementations.
-Svc::EndurosatFraming framing; // using our own custom implementation!
-Svc::EndurosatDeframing deframing; // using our own custom implementation!
+// Svc::EndurosatFraming framing; // using our own custom implementation!
+// Svc::EndurosatDeframing deframing; // using our own custom implementation!
 
 // // The reference topology uses the F´ packet protocol when communicating with the ground and therefore uses the F´
 // // framing and deframing implementations.
-// Svc::FprimeFraming framing;
-// Svc::FprimeDeframing deframing;
+Svc::FprimeFraming framing;
+Svc::FprimeDeframing deframing;
 
 
 Svc::ComQueue::QueueConfigurationTable configurationTable;
@@ -100,14 +100,12 @@ void configureTopology() {
     upBuffMgrBins.bins[2].numBuffers = COM_DRIVER_BUFFER_COUNT;
     bufferManager.setup(BUFFER_MANAGER_ID, 0, mallocator, upBuffMgrBins);
 
-    framing.setupComp(&UHFTransceiverManager); //<- This sets up the UHFTransceiverManager to allow the protocol to send data via it
-
+    // Setup Framing and Deframing protocols
+    // framing.setupComp(&UHFTransceiverManager); //<- This sets up the UHFTransceiverManager to allow the protocol to send data via it
     framer.setup(framing); // <- Standard Framer setup
     deframer.setup(deframing); // <- Standard Deframer setup
-
-
-    deframing.setup(deframer); // added
-    framing.setup(framer); // added
+    // deframing.setup(deframer); // <- Sets up the deframing protocol with the deframing interface
+    // framing.setup(framer); // <- Sets up the framing protocol with the framer interface
 
     // Command sequencer needs to allocate memory to hold contents of command sequences
     cmdSeq.allocateBuffer(0, mallocator, CMD_SEQ_BUFFER_SIZE);

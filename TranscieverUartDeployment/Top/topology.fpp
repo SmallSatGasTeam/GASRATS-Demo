@@ -155,7 +155,7 @@ module TranscieverUartDeployment {
       # UART Connections
       UHFTransceiverManager.uartSend -> LinuxUartDriver.$send
       LinuxUartDriver.$recv -> UHFTransceiverManager.uartRecv
-      # uartLinuxDriver.$ready -> UHFTransceiverManager.uartReady
+      LinuxUartDriver.$ready -> UHFTransceiverManager.uartReady
 
     }
 

@@ -14,22 +14,32 @@ module Components {
         # Ports
         ##############################################################################
 
-        @ Writes I2CData: Drv.I2c
+        ## ---------------------------------------------------------------------------
+        ## I2C Ports
+        ## ---------------------------------------------------------------------------
+        @ I2C READ/WRITE. This port is used to read and write data to device.
         output port i2cReadWrite: Drv.I2cWriteRead
 
+        @ I2C WRITE. This port is used to write data to device.
         output port i2cRead: Drv.I2c
 
+        @ I2C WRITE. This port is used to write data to device.
         output port i2cWrite: Drv.I2c
 
+        ## ---------------------------------------------------------------------------
+        ## UART Ports
+        ## ---------------------------------------------------------------------------
         @ UART SEND. Output port
         output port uartSend: Drv.ByteStreamSend
 
         @ UART RECV. Input port.
         sync input port uartRecv: Drv.ByteStreamRecv
 
+        @ UART READY. This port is used to check if the UART driver is ready to send data.
+        sync input port uartReady: Drv.ByteStreamReady
 
-        # @ UART READY. 
-        # sync input port uartReady: Drv.ByteStreamReady
+        @ Status of the last radio transmission
+        output port comStatus: Fw.SuccessCondition
 
         @ pingOut : returns health ping
         output port pingOut: Svc.Ping 
@@ -66,6 +76,10 @@ module Components {
         event MemoryAllocationFailed() \
             severity warning low \
             format "Failed to allocate memory"
+
+        event UHFUartNotReady \
+            severity warning high \
+            format "UART is not ready to send data"
 
         event RadioFrequencyConfiguredOK(frequency: F32) \
             severity activity high \

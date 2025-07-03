@@ -8,6 +8,8 @@
 #include <cstring>
 #include <unistd.h>
 #include <string>
+#include "Fw/Types/BasicTypes.hpp"
+
 namespace Components {
 
   // ----------------------------------------------------------------------
@@ -77,6 +79,19 @@ namespace Components {
       this->deallocate_out(0, recvBuffer);
     }
   }
+
+  void UHFTransceiverManager ::
+    uartReady_handler(FwIndexType portNum)
+  {
+    Fw::String str("---uartReady_handler was used---");
+    this->log_ACTIVITY_HI_debuggingEvent(str);
+    Fw::Success radioSuccess = Fw::Success::SUCCESS;
+    if (this->isConnected_comStatus_OutputPort(0) && m_reinitialize) {
+        this->m_reinitialize = false;
+        this->comStatus_out(0, radioSuccess);
+    }
+  }
+
 
 
   // ----------------------------------------------------------------------
@@ -184,18 +199,20 @@ namespace Components {
   }
 
   void UHFTransceiverManager::deallocate_buffer(Fw::Buffer& buffer) {
+    // !!! Debugging output to trace the deallocation process
+    printf("Buffer size: %d\n", buffer.getSize());
+    printf("Buffer data: \n");
+    for (U32 i = 0; i < buffer.getSize(); i++) {
+      printf("%02X ", static_cast<U8*>(buffer.getData())[i]);
+    }
+    printf("\n");
+    // !!! End of Debugging output
+
     // Deallocate the buffer if it is valid
     if (buffer.isValid()) {
       this->deallocate_out(0, buffer);
-    } else {
-      this->log_WARNING_LO_MemoryAllocationFailed();
     }
   }
-
-  void UHFTransceiverManager::initiatePipeMode() {
-    this->sendUartCommand(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1);
-  }
-
 
   UHFTransceiverManager::Response UHFTransceiverManager::parseResponse(Fw::Buffer readBuffer){
     U8* data = static_cast<U8*>(readBuffer.getData());
@@ -262,6 +279,12 @@ namespace Components {
   }
 
   void UHFTransceiverManager::sendUartCommand(const char* command, U32 writeSize) {
+    // Check m_reinitialize flag to see if we need to reinitialize the component
+    if (this->m_reinitialize) {
+      this->log_WARNING_HI_UHFUartNotReady();
+      // TODO: Research into how complex adding a priority queue would be.
+      return;
+    }
     Fw::Buffer writeBuffer = this->allocate_out(0, writeSize);
 
     // Check to see if buffers were allocated properly, if not deallocate the possible memory allocated, and log a warning.
@@ -287,13 +310,19 @@ namespace Components {
     sb.serialize(dataBufferTemp, writeSize, true);
 
     // Send serialized command out over UART
-    this->uartSend_out(0, writeBuffer);
-    
-    // Debugging function that logs the size of write buffer
-    // logEvent(writeBuffer);
+    Drv::SendStatus status = this->uartSend_out(0, writeBuffer);
 
-    // It appears that you do not have to deallocate UART Buffers?
-    // If you do it fails
+    // Check the status of the send operation
+    if (status.e != Drv::SendStatus::SEND_OK) {
+      this->m_reinitialize = true; // Set the reinitialize flag to true
+
+      if (this->isConnected_comStatus_OutputPort(0)) {
+        Fw::Success radioFailure = Fw::Success::FAILURE; // Indicate failure
+        this->comStatus_out(0, radioFailure); // Notify the connected port about the failure
+      }
+      // TODO: Look into adding a priority queue to handle the reinitialization of the component.
+      this->log_WARNING_HI_UHFUartNotReady(); // Log the warning
+    }
     
   }
 
