@@ -157,6 +157,9 @@ module TranscieverUartDeployment {
       LinuxUartDriver.$recv -> UHFTransceiverManager.uartRecv
       LinuxUartDriver.$ready -> UHFTransceiverManager.uartReady
 
+      # Other connections
+      # UHFTransceiverManager.comStatus -> comQueue.comStatusIn
+
     }
 
   }
