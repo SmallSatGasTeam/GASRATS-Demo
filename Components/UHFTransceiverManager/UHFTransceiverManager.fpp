@@ -44,6 +44,9 @@ module Components {
         @ pingOut : returns health ping
         output port pingOut: Svc.Ping 
 
+        @ bufferSend : This port is used to send buffers (data) to the framer to send over the antenna.
+        output port bufferSend: Fw.BufferSend
+
 
         ###############################################################################
         # Events

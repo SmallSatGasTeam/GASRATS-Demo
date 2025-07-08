@@ -7,10 +7,11 @@
 # Note: using PROJECT_NAME as EXECUTABLE_NAME
 ####
 set(SOURCE_FILES
+  "${CMAKE_CURRENT_LIST_DIR}/EndurosatProtocol.cpp"
   "${CMAKE_CURRENT_LIST_DIR}/DeframingProtocol.cpp"
   "${CMAKE_CURRENT_LIST_DIR}/FramingProtocol.cpp"
   "${CMAKE_CURRENT_LIST_DIR}/FprimeProtocol.cpp"
-  "${CMAKE_CURRENT_LIST_DIR}/EndurosatProtocol.cpp"
+  
 )
 
 set(MOD_DEPS
@@ -18,6 +19,7 @@ set(MOD_DEPS
     Fw/Time
     Utils/Hash
     Utils/Types
+    Svc/Deframer
     Components/UHFTransceiverManager # Added because for some reason without this line, the UHFTransceiverManager is not found
 )
 

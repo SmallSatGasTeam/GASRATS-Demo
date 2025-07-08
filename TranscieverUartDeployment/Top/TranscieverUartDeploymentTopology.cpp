@@ -101,7 +101,7 @@ void configureTopology() {
     bufferManager.setup(BUFFER_MANAGER_ID, 0, mallocator, upBuffMgrBins);
 
     // Setup Framing and Deframing protocols
-    // framing.setupComp(&UHFTransceiverManager); //<- This sets up the UHFTransceiverManager to allow the protocol to send data via it
+    framing.setupComp(&UHFTransceiverManager); //<- This sets up the UHFTransceiverManager to allow the protocol to send data via it
     framer.setup(framing); // <- Standard Framer setup
     deframer.setup(deframing); // <- Standard Deframer setup
     

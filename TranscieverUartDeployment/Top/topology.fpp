@@ -158,8 +158,8 @@ module TranscieverUartDeployment {
       LinuxUartDriver.$ready -> UHFTransceiverManager.uartReady
 
       # Other connections
-      # UHFTransceiverManager.comStatus -> comQueue.comStatusIn
-
+      UHFTransceiverManager.comStatus -> comQueue.comStatusIn
+      UHFTransceiverManager.bufferSend -> framer.bufferIn
     }
 
   }

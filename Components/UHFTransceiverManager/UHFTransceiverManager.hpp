@@ -46,7 +46,7 @@ namespace Components {
       //! Debugging method that logs the size of a buffer in an event
       void logEvent(Fw::Buffer buffer);
 
-      //! allocate_buffer
+      //! deallocate_buffer
       //!
       //! Public method that deallocates a buffer, to be used in the framer
       void deallocate_buffer(Fw::Buffer& buffer);
@@ -99,6 +99,11 @@ namespace Components {
           bool status; // First few characters of response dictate the status
           U32 size;
       };
+
+      //! \brief sendDataBuffer: Method that sends a data buffer over the framer interface
+      //!! @param buffer: The Fw::Buffer to send
+      //!
+      void sendDataBuffer(Fw::Buffer& buffer);
 
 
       //! parseResponse

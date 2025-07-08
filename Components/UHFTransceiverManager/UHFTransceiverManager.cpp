@@ -71,13 +71,12 @@ namespace Components {
     this->log_ACTIVITY_HI_debuggingEvent(str);
 
     Response r = parseResponse(recvBuffer);
-    // this->tlmWrite_response1(r.fullResponse);
     this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
-    // this->tlmWrite_recvStatus(recvStatus);
     logEvent(recvBuffer);
     if (recvBuffer.isValid()) {
       this->deallocate_out(0, recvBuffer);
     }
+
   }
 
   void UHFTransceiverManager ::
@@ -85,8 +84,9 @@ namespace Components {
   {
     Fw::String str("---uartReady_handler was used---");
     this->log_ACTIVITY_HI_debuggingEvent(str);
+
     Fw::Success radioSuccess = Fw::Success::SUCCESS;
-    if (this->isConnected_comStatus_OutputPort(0) && m_reinitialize) {
+    if (this->isConnected_comStatus_OutputPort(0) && this->m_reinitialize) {
         this->m_reinitialize = false;
         this->comStatus_out(0, radioSuccess);
     }
@@ -122,68 +122,36 @@ namespace Components {
         this->deallocate_out(0, readBuffer2);
       }
 
-    // Fw::String str1("---Reading pipe period (should be 10 secs)---");
-    // this->log_ACTIVITY_HI_debuggingEvent(str1);
-    // Fw::Buffer readBuffer1 = sendI2cCommand(this->READ_PIPE_PERIOD, strlen(this->READ_PIPE_PERIOD)+1, 64); 
-    // Response r = parseResponse(readBuffer1);
-    // this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
-    // logEvent(readBuffer1);
-    // if (readBuffer1.isValid()) {
-    //   this->deallocate_out(0, readBuffer1);
-    // }
+      Fw::String str3("---Turning on pipe mode---");
+      this->log_ACTIVITY_HI_debuggingEvent(str3);
+      Fw::Buffer readBuffer4 = sendI2cCommand(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1, 64); 
+      Response r3 = parseResponse(readBuffer4);
+      this->log_ACTIVITY_HI_debuggingEvent(r3.fullResponse);
+      logEvent(readBuffer4);
+      if (readBuffer4.isValid()) {
+        this->deallocate_out(0, readBuffer4);
+      }
 
-    // Fw::String str4("---activating PIPE Mode---");
-    // this->log_ACTIVITY_HI_debuggingEvent(str4);
-    // Fw::Buffer readBuffer4 = sendI2cCommand(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1, 64); 
-    // Response r4 = parseResponse(readBuffer4);
-    // this->log_ACTIVITY_HI_debuggingEvent(r4.fullResponse);
-    // logEvent(readBuffer4);
-    // if (readBuffer1.isValid()) {
-    //   this->deallocate_out(0, readBuffer4);
-    // }
+      Fw::String str4("---Sending Data Buffer with Hello World!---");
+      this->log_ACTIVITY_HI_debuggingEvent(str4);
 
-    // sleep (7);
-
-    // Fw::String str5("---Reading temperature while in PIPE Mode---");
-    // this->log_ACTIVITY_HI_debuggingEvent(str5);
-
-    // sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
-    // sleep(2);
-    // sendUartCommand(this->ANTENNA_TEST_DATA1, strlen(this->ANTENNA_TEST_DATA1)+1); 
-    // sleep(2);
-    // sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
-    // sleep(2); // Necessary so UART has time to use the receive port before we read again
-    // sendUartCommand(this->ANTENNA_TEST_DATA2, strlen(this->ANTENNA_TEST_DATA2)+1); 
-    // sleep(2); // Necessary so UART has time to use the receive port before we read again
-
-
-    // sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
-    // sleep(2); // Necessary so UART has time to use the receive port before we read again
-    // sendUartCommand(this->ANTENNA_TEST_DATA3, strlen(this->ANTENNA_TEST_DATA3)+1); 
-    // sleep(2); // Necessary so UART has time to use the receive port before we read again
-    // sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
-    // sleep(2); // Necessary so UART has time to use the receive port before we read again
-    // sendUartCommand(this->ANTENNA_TEST_DATA4, strlen(this->ANTENNA_TEST_DATA4)+1); 
-    // sleep(2); // Necessary so UART has time to use the receive port before we read again
-    // sendUartCommand(this->READ_INTERNAL_TEMP_ASCII, strlen(this->READ_INTERNAL_TEMP_ASCII)+1); 
-
-
-
-
-
+      // Prepare writeBuffer to be serialized
+      Fw::Buffer writeBuffer = this->allocate_out(0, 13); // Allocate a buffer of size 64 bytes
+      Fw::SerializeBufferBase& sb = writeBuffer.getSerializeRepr();
+      sb.setBuffLen(13);
+      sb.resetSer();
+      const char command[13] = "Hello World!"; // Command to send
+      // Serialize each byte into the write buffer
+      U8 dataBufferTemp[13];
+      for (int i = 0; i < (13); i++) {
+        dataBufferTemp[i] = static_cast<char>(command[i]);
+      }
+      sb.serialize(dataBufferTemp, 13, true);
+      sendDataBuffer(writeBuffer); // Send the read buffer out over the framer interface
 
     // -----------------------------------------------------------------------------------------
       
     sleep(1); // Necessary so UART has time to use the receive port before we read again
-
-
-    // NOTES FOR MONDAY!
-    // All of the commands above work:
-    //   If you try to run them again know it will read 11 secs for pipe period because I didn't change it back.
-    //   Something to work on: Integrate Devin's framer because currently the UART responses were limited to 8 bytes (meaning some responses got cut off) run the code to see what I mean.
-    //   Then try to see if you can turn on pipe mode and get a signal.
-
-
 
   }
 
@@ -192,7 +160,19 @@ namespace Components {
     std::string text = "Size of Buffer: " + std::to_string(size);
     Fw::String str(text.c_str());
     this->log_ACTIVITY_HI_debuggingEvent(str);
-  }    
+  }
+  
+  void UHFTransceiverManager::sendDataBuffer(Fw::Buffer& buffer) {
+    printf("Sending data buffer of size: %d\n", buffer.getSize());
+    // Check if the buffer is valid before sending
+    if (!buffer.isValid()) {
+      this->log_WARNING_LO_MemoryAllocationFailed();
+      return; // Exit early if the buffer is not valid
+    }
+
+    // Send the buffer out over the framer interface
+    this->bufferSend_out(0, buffer);
+  }
   
   void UHFTransceiverManager::transmitData(const char* command, U32 writeSize) {
     sendUartCommand(command, writeSize);
