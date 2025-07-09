@@ -39,6 +39,7 @@ namespace Components {
         U32 cmdSeq
     )
   {
+    printf("UHFTransceiverManager::configureRFSettings_cmdHandler(opCode=%d, cmdSeq=%d)\n", opCode, cmdSeq);
     configureSettings();
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
