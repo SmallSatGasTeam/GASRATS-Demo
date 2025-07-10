@@ -123,36 +123,27 @@ namespace Components {
         this->deallocate_out(0, readBuffer2);
       }
 
-      Fw::String str3("---Turning on pipe mode---");
-      this->log_ACTIVITY_HI_debuggingEvent(str3);
-      Fw::Buffer readBuffer4 = sendI2cCommand(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1, 64); 
-      Response r3 = parseResponse(readBuffer4);
-      this->log_ACTIVITY_HI_debuggingEvent(r3.fullResponse);
-      logEvent(readBuffer4);
-      if (readBuffer4.isValid()) {
-        this->deallocate_out(0, readBuffer4);
-      }
+      // Fw::String str3("---Turning on pipe mode---");
+      // this->log_ACTIVITY_HI_debuggingEvent(str3);
+      // Fw::Buffer readBuffer4 = sendI2cCommand(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1, 64); 
+      // Response r3 = parseResponse(readBuffer4);
+      // this->log_ACTIVITY_HI_debuggingEvent(r3.fullResponse);
+      // logEvent(readBuffer4);
+      // if (readBuffer4.isValid()) {
+      //   this->deallocate_out(0, readBuffer4);
+      // }
 
-      Fw::String str4("---Sending Data Buffer with Hello World!---");
-      this->log_ACTIVITY_HI_debuggingEvent(str4);
-
-      // Prepare writeBuffer to be serialized
-      Fw::Buffer writeBuffer = this->allocate_out(0, 13); // Allocate a buffer of size 64 bytes
-      Fw::SerializeBufferBase& sb = writeBuffer.getSerializeRepr();
-      sb.setBuffLen(13);
-      sb.resetSer();
-      const char command[13] = "Hello World!"; // Command to send
-      // Serialize each byte into the write buffer
-      U8 dataBufferTemp[13];
-      for (int i = 0; i < (13); i++) {
-        dataBufferTemp[i] = static_cast<char>(command[i]);
-      }
-      sb.serialize(dataBufferTemp, 13, true);
-      sendDataBuffer(writeBuffer); // Send the read buffer out over the framer interface
+      // ---------------------------------------------------------------------------------------
+      // Testing how we would send data over the transceiver
+      // ---------------------------------------------------------------------------------------
+      char data[13] = "Hello World!"; // data to send
+      sendDataBuffer(data); // Send the buffer out over the framer interface
+      // ---------------------------------------------------------------------------------------
+      // END OF TESTING
+      // ---------------------------------------------------------------------------------------
 
     // -----------------------------------------------------------------------------------------
       
-    sleep(1); // Necessary so UART has time to use the receive port before we read again
 
   }
 
@@ -163,16 +154,38 @@ namespace Components {
     this->log_ACTIVITY_HI_debuggingEvent(str);
   }
   
-  void UHFTransceiverManager::sendDataBuffer(Fw::Buffer& buffer) {
-    printf("Sending data buffer of size: %d\n", buffer.getSize());
-    // Check if the buffer is valid before sending
-    if (!buffer.isValid()) {
+  void UHFTransceiverManager::sendDataBuffer(const char* data) {
+    // Log event
+    Fw::String str("---Sending Data Buffer---");
+    this->log_ACTIVITY_HI_debuggingEvent(str);
+
+    // Initalize writeBuffer and verify it can be sent, if not deallocate it
+    Fw::Buffer writeBuffer = this->allocate_out(0, strlen(data)); // Allocate buffer of size: length of data
+    if (writeBuffer.getSize() < strlen(data)) {
+      if (writeBuffer.isValid()) {
+        this->deallocate_out(0, writeBuffer);
+      }
       this->log_WARNING_LO_MemoryAllocationFailed();
-      return; // Exit early if the buffer is not valid
     }
 
+    // Prepare buffer to receive serialized data
+    Fw::SerializeBufferBase& sb = writeBuffer.getSerializeRepr();
+    sb.resetSer();
+
+    // Serialize data into buffer
+    U8 dataBufferTemp[strlen(data)];
+    for (int i = 0; i < (strlen(data)); i++) {
+      dataBufferTemp[i] = static_cast<char>(data[i]);
+    }
+    sb.serialize(dataBufferTemp, strlen(data), true);
+
     // Send the buffer out over the framer interface
-    this->bufferSend_out(0, buffer);
+    printf("Data to be serialized: %s\n", dataBufferTemp);
+    printf("Sending data buffer with data: %s\n", writeBuffer.getData());
+    this->sendBuffer_out(0, writeBuffer);
+    
+    
+    this->log_ACTIVITY_HI_transmitDataSuccess();
   }
   
   void UHFTransceiverManager::transmitData(const char* command, U32 writeSize) {
@@ -301,7 +314,6 @@ namespace Components {
         Fw::Success radioFailure = Fw::Success::FAILURE; // Indicate failure
         this->comStatus_out(0, radioFailure); // Notify the connected port about the failure
       }
-      // TODO: Look into adding a priority queue to handle the reinitialization of the component.
       this->log_WARNING_HI_UHFUartNotReady(); // Log the warning
     }
     

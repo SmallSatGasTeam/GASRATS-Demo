@@ -33,10 +33,10 @@ module Components {
         output port uartSend: Drv.ByteStreamSend
 
         @ UART RECV. Input port.
-        sync input port uartRecv: Drv.ByteStreamRecv
+        async input port uartRecv: Drv.ByteStreamRecv
 
         @ UART READY. This port is used to check if the UART driver is ready to send data.
-        sync input port uartReady: Drv.ByteStreamReady
+        async input port uartReady: Drv.ByteStreamReady
 
         @ Status of the last radio transmission
         output port comStatus: Fw.SuccessCondition
@@ -45,7 +45,7 @@ module Components {
         output port pingOut: Svc.Ping 
 
         @ bufferSend : This port is used to send buffers (data) to the framer to send over the antenna.
-        output port bufferSend: Fw.BufferSend
+        output port sendBuffer: Fw.BufferSend
 
 
         ###############################################################################
@@ -84,9 +84,9 @@ module Components {
             severity warning high \
             format "UART is not ready to send data"
 
-        event RadioFrequencyConfiguredOK(frequency: F32) \
+        event transmitDataSuccess \
             severity activity high \
-            format "The radio frequency was configured to {}"
+            format "Data was successfully transmitted"
 
         event debuggingEvent(response: string) \
             severity activity high \

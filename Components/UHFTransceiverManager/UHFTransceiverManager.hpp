@@ -103,7 +103,7 @@ namespace Components {
       //! \brief sendDataBuffer: Method that sends a data buffer over the framer interface
       //!! @param buffer: The Fw::Buffer to send
       //!
-      void sendDataBuffer(Fw::Buffer& buffer);
+      void sendDataBuffer(const char* data);
 
 
       //! parseResponse
