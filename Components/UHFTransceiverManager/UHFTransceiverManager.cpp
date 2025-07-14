@@ -123,15 +123,15 @@ namespace Components {
         this->deallocate_out(0, readBuffer2);
       }
 
-      // Fw::String str3("---Turning on pipe mode---");
-      // this->log_ACTIVITY_HI_debuggingEvent(str3);
-      // Fw::Buffer readBuffer4 = sendI2cCommand(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1, 64); 
-      // Response r3 = parseResponse(readBuffer4);
-      // this->log_ACTIVITY_HI_debuggingEvent(r3.fullResponse);
-      // logEvent(readBuffer4);
-      // if (readBuffer4.isValid()) {
-      //   this->deallocate_out(0, readBuffer4);
-      // }
+      Fw::String str3("---Turning on pipe mode---");
+      this->log_ACTIVITY_HI_debuggingEvent(str3);
+      Fw::Buffer readBuffer4 = sendI2cCommand(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1, 64); 
+      Response r3 = parseResponse(readBuffer4);
+      this->log_ACTIVITY_HI_debuggingEvent(r3.fullResponse);
+      logEvent(readBuffer4);
+      if (readBuffer4.isValid()) {
+        this->deallocate_out(0, readBuffer4);
+      }
 
       // ---------------------------------------------------------------------------------------
       // Testing how we would send data over the transceiver
@@ -174,8 +174,8 @@ namespace Components {
 
     // Serialize data into buffer
     U8 dataBufferTemp[strlen(data)];
-    for (int i = 0; i < (strlen(data) - 1); i++) {
-      dataBufferTemp[i] = static_cast<char>(data[i]);
+    for (int i = 0; i < (strlen(data)); i++) {
+      dataBufferTemp[i] = static_cast<U8>(data[i]);
     }
     sb.serialize(dataBufferTemp, strlen(data), true);
 
@@ -188,8 +188,25 @@ namespace Components {
     this->log_ACTIVITY_HI_transmitDataSuccess();
   }
   
-  void UHFTransceiverManager::transmitData(const char* command, U32 writeSize) {
-    sendUartCommand(command, writeSize);
+  void UHFTransceiverManager::transmitData(Fw::Buffer sendBuffer) {
+    if (!sendBuffer.isValid()) {
+      Fw::String str("sendBuffer was invalid");
+      this->log_ACTIVITY_HI_debuggingEvent(str);
+    } 
+    else {
+    Drv::SendStatus status = this->uartSend_out(0, sendBuffer);
+    // this->deallocate_out(0, sendBuffer);
+    if (status.e != Drv::SendStatus::SEND_OK) {
+      this->m_reinitialize = true; // Set the reinitialize flag to true
+
+      if (this->isConnected_comStatus_OutputPort(0)) {
+        Fw::Success radioFailure = Fw::Success::FAILURE; // Indicate failure
+        this->comStatus_out(0, radioFailure); // Notify the connected port about the failure
+      }
+      this->log_WARNING_HI_UHFUartNotReady(); // Log the warning
+    }
+  }
+
   }
 
   void UHFTransceiverManager::deallocate_buffer(Fw::Buffer& buffer) {

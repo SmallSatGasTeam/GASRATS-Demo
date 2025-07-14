@@ -34,7 +34,7 @@ namespace Components {
       //! transmitData
       //!
       //! Method that sends a command over UART
-      void transmitData(const char* command, U32 writeSize);
+      void transmitData(Fw::Buffer);
       
       //! sendUartCommand
       //!
@@ -166,11 +166,6 @@ namespace Components {
       const char* READ_POWER_MODE = "ES+R23F4 C242FE41"; // Command that reads the power mode of the device (low power mode)
       const char* READ_SOURCE_CALLSIGN = "ES+R23F6 2c4c9f6d"; // Command that reads the source callsign
       const char* READ_DESTINATION_CALLSIGN = "ES+R23F5 b545ced7"; // Command that reads the destination callsign
-
-
-      const char* ANTENNA_TEST_DATA1 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-      const char* ANTENNA_TEST_DATA2 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-      const char* ANTENNA_TEST_DATA3 = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
       bool m_reinitialize = false; // Flag to indicate if the component should be reinitialized
 
