@@ -119,7 +119,7 @@ namespace Components {
       Response r2 = parseResponse(readBuffer2);
       this->log_ACTIVITY_HI_debuggingEvent(r2.fullResponse);
       logEvent(readBuffer2);
-      if (readBuffer1.isValid()) {
+      if (readBuffer2.isValid()) {
         this->deallocate_out(0, readBuffer2);
       }
 
@@ -174,7 +174,7 @@ namespace Components {
 
     // Serialize data into buffer
     U8 dataBufferTemp[strlen(data)];
-    for (int i = 0; i < (strlen(data)); i++) {
+    for (int i = 0; i < (strlen(data) - 1); i++) {
       dataBufferTemp[i] = static_cast<char>(data[i]);
     }
     sb.serialize(dataBufferTemp, strlen(data), true);

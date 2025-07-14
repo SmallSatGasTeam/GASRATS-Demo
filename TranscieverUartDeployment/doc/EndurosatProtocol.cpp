@@ -5,7 +5,7 @@
 
 #include "Utils/Hash/Hash.hpp"
 
-// #include "DeframingProtocolInterface.hpp"
+#include "DeframingProtocolInterface.hpp"
 #include "FramingProtocolInterface.hpp"
 
 
@@ -53,7 +53,7 @@ namespace Svc {
         return crc;
     };
 
-    bool EndurosatDeframing::validate(Types::CircularBuffer& ring, U32 size) {
+    bool EndurosatDeframing::EndurosatValidate(Types::CircularBuffer& ring, U32 size) {
         // !!! Debugging output to trace the validation process
         // printf("[DEBUG]  Validating ring buffer of size %d\n", size);
         // !!! End of Debugging output
@@ -83,6 +83,31 @@ namespace Svc {
         return given_crc == expected_crc;
     }
 
+    bool EndurosatDeframing::FPrimevalidate(Types::CircularBuffer& ring, U32 size) {
+        Utils::Hash hash;
+        Utils::HashBuffer hashBuffer;
+        // Initialize the checksum and loop through all bytes calculating it
+        hash.init();
+        for (U32 i = 0; i < size; i++) {
+            U8 byte;
+            const Fw::SerializeStatus status = ring.peek(byte, i);
+            FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
+            hash.update(&byte, 1);
+        }
+        hash.final(hashBuffer);
+        // Now loop through the hash digest bytes and check for equality
+        for (U32 i = 0; i < HASH_DIGEST_LENGTH; i++) {
+            U8 calc = static_cast<U8>(hashBuffer.getBuffAddr()[i]);
+            U8 sent = 0;
+            const Fw::SerializeStatus status = ring.peek(sent, size + i);
+            FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
+            if (calc != sent) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Might need to have a main method that calls either EndurosatFraming::frame or Fprime::frame, 
     // because there are communication packets that fprime creates that might only work with fprime framing. 
 
@@ -92,19 +117,22 @@ namespace Svc {
 
     void EndurosatFraming::frame(const U8* const data, const U32 size, Fw::ComPacket::ComPacketType packet_type) {
         // // Based on what the packet type is, we can call the appropriate framing function
+       
         printf("[DEBUG]  Framing with packet type %d\n", packet_type);
+
         if (packet_type == Fw::ComPacket::FW_PACKET_UNKNOWN || packet_type == Fw::ComPacket::FW_PACKET_COMMAND || 
             packet_type == Fw::ComPacket::FW_PACKET_TELEM || packet_type == Fw::ComPacket::FW_PACKET_LOG ||
             packet_type == Fw::ComPacket::FW_PACKET_IDLE) {
             // For these packet types, we use the F
             printf("[DEBUG]  Framing with FPrimeFrame\n");
             setUseFPrimeProtocol(true); // Set the flag to use FPrime framing
-            FW_ASSERT(getUseFprimeProtocol(), true);
+            FW_ASSERT(getUseFprimeProtocol());
             FPrimeFrame(data, size, packet_type);
         } else {
             printf("[DEBUG]  Framing with EndurosatFrame\n");
             setUseFPrimeProtocol(false); // Set the flag to use FPrime framing
-            FW_ASSERT(getUseFprimeProtocol(), false);
+            printf("getUseFprimeProtocol: %d\n", getUseFprimeProtocol());
+            FW_ASSERT(!getUseFprimeProtocol());
             EndurosatFrame(data, size, packet_type);
         }
 
@@ -115,11 +143,11 @@ namespace Svc {
         printf("\n");
         printf("Frame Report: \n");
         printf("->  [DEBUG] Framing data of size %d with packet type %d\n", size, packet_type);
-        // printf("->  [DEBUG] Data: ");
-        // for (U32 i = 0; i < size; ++i) {
-        //     printf(" %02X", data[i]);
-        // }
-        // printf("\n");
+        printf("->  [DEBUG] Data: ");
+        for (U32 i = 0; i < size; ++i) {
+            printf(" %02X", data[i]);
+        }
+        printf("\n");
         // !!! End of Debugging output
 
         // Check if the data pointer and interface are valid
@@ -339,14 +367,14 @@ namespace Svc {
 
         
         // !!! Debugging output to trace the peeked data
-        // printf("->  [DEBUG]  Size Field 1: %d, Total Packet Size: %d\n", size_field_1, total_packet_size);
-        // U8 debugPeek[total_packet_size];
-        // ring.peek(debugPeek, total_packet_size, 0);
-        // printf("->  [DEBUG]  Peeked data from ring buffer (%d bytes):", total_packet_size+2);
-        // for (U32 i = 0; i < sizeof(debugPeek) + 2; i++) {
-        //     printf(" %02X", debugPeek[i]);
-        // }
-        // printf("\n");
+        printf("->  [DEBUG]  Size Field 1: %d, Total Packet Size: %d\n", size_field_1, total_packet_size);
+        U8 debugPeek[total_packet_size];
+        ring.peek(debugPeek, total_packet_size, 0);
+        printf("->  [DEBUG]  Peeked data from ring buffer (%d bytes):", total_packet_size+2);
+        for (U32 i = 0; i < sizeof(debugPeek) + 2; i++) {
+            printf(" %02X", debugPeek[i]);
+        }
+        printf("\n");
         // !!! End of Debugging output
 
         // check that it's bigger than we expected
@@ -360,7 +388,7 @@ namespace Svc {
         // once we know we have the amount of data we'd expect, we can check if it's valid and use the data
         // check the checksum
 
-        if (!this->validate(ring, total_packet_size )) { 
+        if (!this->EndurosatValidate(ring, total_packet_size )) { 
             return DeframingProtocol::DEFRAMING_INVALID_CHECKSUM;
         } 
 
@@ -412,7 +440,7 @@ namespace Svc {
             return DeframingProtocol::DEFRAMING_MORE_NEEDED;
         }
         // Check the checksum
-        if (not this->validate(ring, needed - HASH_DIGEST_LENGTH)) {
+        if (not this->FPrimevalidate(ring, needed - HASH_DIGEST_LENGTH)) {
             return DeframingProtocol::DEFRAMING_INVALID_CHECKSUM;
         }
         Fw::Buffer buffer = m_interface->allocate(size);

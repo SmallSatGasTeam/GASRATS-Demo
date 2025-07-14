@@ -84,9 +84,11 @@ void Deframer ::framedIn_handler(
     Fw::Buffer& recvBuffer,
     const Drv::RecvStatus& recvStatus
 ) {
+    printf("Deframer::framedIn_handler was called\n");
     // Check whether there is data to process
     if (recvStatus.e == Drv::RecvStatus::RECV_OK) {
         // There is: process the data
+        printf("Deframer: Processing recvBuffer\n");
         processBuffer(recvBuffer);
     }
     // Deallocate the buffer
@@ -235,6 +237,7 @@ void Deframer ::processBuffer(Fw::Buffer& buffer) {
 }
 
 void Deframer ::processRing() {
+    printf("Deframer::processRing() called, likely deframing something...\n");
     FW_ASSERT(m_protocol != nullptr);
 
     // The number of remaining bytes in the ring buffer
@@ -261,8 +264,8 @@ void Deframer ::processRing() {
 
         status = m_protocol->deframe(m_inRing, needed);
 
-        printf("[DEBUG] Deframer::processRing() called with status: %d, needed: %d, remaining: %d\n",
-            status, needed, remaining);
+        // printf("[DEBUG] Deframer::processRing() called with status: %d, needed: %d, remaining: %d\n",
+            // status, needed, remaining);
         // Deframing protocol must not consume data in the ring buffer
         FW_ASSERT(
             m_inRing.get_allocated_size() == remaining,

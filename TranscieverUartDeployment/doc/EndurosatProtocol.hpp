@@ -3,16 +3,14 @@
 #ifndef SVC_ENDUROSAT_PROTOCOL_HPP
 #define SVC_ENDUROSAT_PROTOCOL_HPP
 
-#include "Svc/Deframer/Deframer.hpp"
 #include <Svc/FramingProtocol/FramingProtocol.hpp>
-// #include <Svc/FramingProtocol/DeframingProtocol.hpp>
+#include <Svc/FramingProtocol/DeframingProtocol.hpp>
 #include <Components/UHFTransceiverManager/UHFTransceiverManager.hpp>
-
+#include <Svc/Deframer/Deframer.hpp>
 
 
 namespace Svc {
-    
-    extern Deframer DEFRAMER_OBJECT; 
+    extern Deframer DEFRAMER_OBJECT; //!< Global deframer object
 
     namespace EndurosatFrameHeader {
         // Put our different data that the transciever will need here
@@ -94,16 +92,6 @@ namespace Svc {
             //! Constructor
             EndurosatDeframing();
 
-
-            //! This'll validate the buffer via the validation protocol specified by the transciever's datasheet
-            //! \param buffer: CircularBuffer to validate
-            //! \param size: The data size in bytes
-            //! \return true if the buffer is valid, false otherwise
-            bool validate(
-                Types::CircularBuffer& buffer, 
-                U32 size //! The data size in bytes
-            );
-
             //! \brief This will deframe the data into a radio packet for EndurosatDeframe
             //! \param data: pointer to a set of bytes to be framed
             //! \param needed: Number of bytes needed, this is updated by the caller
@@ -124,6 +112,18 @@ namespace Svc {
             ) override;
 
             bool getUseFPrimeProtocol(); //!< Get whether to use F´ protocol
+
+            //! \brief This'll validate the buffer via the validation protocol specified by the transciever's datasheet. (Endurosat CRC16 Checksum)
+            //! \param buffer: CircularBuffer to validate
+            //! \param size: The data size in bytes
+            //! \return true if the buffer is valid, false otherwise
+            bool EndurosatValidate(Types::CircularBuffer& ring, U32 size); //<- Validate the buffer using 
+
+            //! \brief This'll validate the buffer using the validation protocol specified by Fprime. (Fprime CRC32 Checksum)
+            //! \param buffer: CircularBuffer to validate
+            //! \param size: The data size in bytes
+            //! \return true if the buffer is valid, false otherwise
+            bool FPrimevalidate(Types::CircularBuffer& ring, U32 size); 
 
             
         
