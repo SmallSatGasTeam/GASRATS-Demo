@@ -71,9 +71,11 @@ namespace Components {
     Fw::String str("---uartRecv_handler was used---");
     this->log_ACTIVITY_HI_debuggingEvent(str);
 
-    Response r = parseResponse(recvBuffer);
+
+
+    Response r = parseBuffer(recvBuffer);
     this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
-    logEvent(recvBuffer);
+
     if (recvBuffer.isValid()) {
       this->deallocate_out(0, recvBuffer);
     }
@@ -100,60 +102,42 @@ namespace Components {
   // ----------------------------------------------------------------------
 
   void UHFTransceiverManager::configureSettings() {
-    // Sending I2C Command
+    sendCommand("---Reading source callsign---", this->READ_SOURCE_CALLSIGN, false);
+    sendCommand("---Reading destination callsign---", this->READ_DESTINATION_CALLSIGN, false);
+    sendCommand("---Reading status control word---", this->READ_SCW, false);
+    sendCommand("---Turning on pipe mode---", this->WRITE_SCW_PIPE_ON, false);
+
     // ---------------------------------------------------------------------------------------
-
-      Fw::String str1("---Reading source callsign---");
-      this->log_ACTIVITY_HI_debuggingEvent(str1);
-      Fw::Buffer readBuffer1 = sendI2cCommand(this->READ_SOURCE_CALLSIGN, strlen(this->READ_SOURCE_CALLSIGN)+1, 64); 
-      Response r = parseResponse(readBuffer1);
-      this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
-      logEvent(readBuffer1);
-      if (readBuffer1.isValid()) {
-        this->deallocate_out(0, readBuffer1);
-      }
-
-      Fw::String str2("---Reading destination callsign---");
-      this->log_ACTIVITY_HI_debuggingEvent(str2);
-      Fw::Buffer readBuffer2 = sendI2cCommand(this->READ_DESTINATION_CALLSIGN, strlen(this->READ_DESTINATION_CALLSIGN)+1, 64); 
-      Response r2 = parseResponse(readBuffer2);
-      this->log_ACTIVITY_HI_debuggingEvent(r2.fullResponse);
-      logEvent(readBuffer2);
-      if (readBuffer2.isValid()) {
-        this->deallocate_out(0, readBuffer2);
-      }
-
-      Fw::String str3("---Turning on pipe mode---");
-      this->log_ACTIVITY_HI_debuggingEvent(str3);
-      Fw::Buffer readBuffer4 = sendI2cCommand(this->WRITE_SCW_PIPE_ON, strlen(this->WRITE_SCW_PIPE_ON)+1, 64); 
-      Response r3 = parseResponse(readBuffer4);
-      this->log_ACTIVITY_HI_debuggingEvent(r3.fullResponse);
-      logEvent(readBuffer4);
-      if (readBuffer4.isValid()) {
-        this->deallocate_out(0, readBuffer4);
-      }
-
-      // ---------------------------------------------------------------------------------------
-      // Testing how we would send data over the transceiver
-      // ---------------------------------------------------------------------------------------
-      char data[13] = "Hello World!"; // data to send
-      sendDataBuffer(data); // Send the buffer out over the framer interface
-      // ---------------------------------------------------------------------------------------
-      // END OF TESTING
-      // ---------------------------------------------------------------------------------------
-
-    // -----------------------------------------------------------------------------------------
-      
-
+    // Testing how we would send data over the transceiver
+    // ---------------------------------------------------------------------------------------
+    char data[91] = "Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World!"; // data to send
+    sendDataBuffer(data); // Send the buffer out over the framer interface
+    // ---------------------------------------------------------------------------------------
+    // END OF TESTING
+    // ---------------------------------------------------------------------------------------
   }
 
-  void UHFTransceiverManager::logEvent(Fw::Buffer buffer) {
-    U32 size = buffer.getSize();
-    std::string text = "Size of Buffer: " + std::to_string(size);
-    Fw::String str(text.c_str());
+  // This is just a reusable method to send a command, it logs the command being sent
+  void UHFTransceiverManager::sendCommand(const char* message, const char* command, bool useUart) {
+    // log an event
+    Fw::String str(message);
     this->log_ACTIVITY_HI_debuggingEvent(str);
+
+    // send the command
+
+    if (useUart) {
+      sendUartCommand(command, strlen(command)+1);
+    } else {
+      Fw::Buffer readBuffer = sendI2cCommand(command, strlen(command)+1, 64);
+      Response r = parseBuffer(readBuffer);
+      this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
+      if (readBuffer.isValid()) {
+        this->deallocate_out(0, readBuffer);
+      }
+    }
+
   }
-  
+
   void UHFTransceiverManager::sendDataBuffer(const char* data) {
     // Log event
     Fw::String str("---Sending Data Buffer---");
@@ -179,9 +163,9 @@ namespace Components {
     }
     sb.serialize(dataBufferTemp, strlen(data), true);
 
-    // Send the buffer out over the framer interface
-    printf("Data to be serialized: %s\n", dataBufferTemp);
-    printf("Sending data buffer with data: %s\n", writeBuffer.getData());
+    Fw::String str1("");
+    str1.format("Data being sent: %s", dataBufferTemp);
+    this->log_ACTIVITY_HI_debuggingEvent(str1);
     this->sendBuffer_out(0, writeBuffer);
     
     
@@ -194,18 +178,18 @@ namespace Components {
       this->log_ACTIVITY_HI_debuggingEvent(str);
     } 
     else {
-    Drv::SendStatus status = this->uartSend_out(0, sendBuffer);
-    // this->deallocate_out(0, sendBuffer);
-    if (status.e != Drv::SendStatus::SEND_OK) {
-      this->m_reinitialize = true; // Set the reinitialize flag to true
+      Drv::SendStatus status = this->uartSend_out(0, sendBuffer);
+      // this->deallocate_out(0, sendBuffer);
+      if (status.e != Drv::SendStatus::SEND_OK) {
+        this->m_reinitialize = true; // Set the reinitialize flag to true
 
-      if (this->isConnected_comStatus_OutputPort(0)) {
-        Fw::Success radioFailure = Fw::Success::FAILURE; // Indicate failure
-        this->comStatus_out(0, radioFailure); // Notify the connected port about the failure
+        if (this->isConnected_comStatus_OutputPort(0)) {
+          Fw::Success radioFailure = Fw::Success::FAILURE; // Indicate failure
+          this->comStatus_out(0, radioFailure); // Notify the connected port about the failure
+        }
+        this->log_WARNING_HI_UHFUartNotReady(); // Log the warning
       }
-      this->log_WARNING_HI_UHFUartNotReady(); // Log the warning
     }
-  }
 
   }
 
@@ -225,13 +209,14 @@ namespace Components {
     }
   }
 
-  UHFTransceiverManager::Response UHFTransceiverManager::parseResponse(Fw::Buffer readBuffer){
-    U8* data = static_cast<U8*>(readBuffer.getData());
-    U8 size = readBuffer.getSize(); //! Size of readBuffer
-    Response r; //! Response struct for storing contents and length of readBuffer
+  UHFTransceiverManager::Response UHFTransceiverManager::parseBuffer(Fw::Buffer buffer){
+    char* data = reinterpret_cast<char*>(buffer.getData());
+    U8 size = buffer.getSize(); //! Size of readBuffer
 
-    r.fullResponse = reinterpret_cast<char*>(readBuffer.getData()); // Convert contents of read buffer to char array
+    Response r; //! Response struct for storing contents and length of readBuffer
+    r.fullResponse = data; // Convert contents of read buffer to char array
     r.size = size;
+
     // Logic to determine what data is found in the fullResponse.
     // Checking status
     if (data[0] != 79) {
@@ -239,7 +224,6 @@ namespace Components {
     } else {
       r.status = true;
     }
-
 
     return r;
   }
@@ -276,10 +260,7 @@ namespace Components {
     // Send the serialized command out over I2C and get the read buffer back
     this->checkI2cStatus(i2cWrite_out(0, this->ADDRESS, writeBuffer));
     this->checkI2cStatus(i2cRead_out(0, this->ADDRESS, readBuffer));
-    
-    // Debugging function that logs the size of write buffer
-    logEvent(writeBuffer);
-
+  
     // Deallocate the writeBuffer, we are done using it.
     if (writeBuffer.isValid()) {
       this->deallocate_out(0, writeBuffer);

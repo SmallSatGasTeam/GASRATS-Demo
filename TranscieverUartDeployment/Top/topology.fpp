@@ -146,7 +146,6 @@ module TranscieverUartDeployment {
       LinuxUartDriver.allocate -> bufferManager.bufferGetCallee
       LinuxUartDriver.deallocate -> bufferManager.bufferSendIn
 
-      ## Commented out so we can test framer
       # I2C Connections
       UHFTransceiverManager.i2cReadWrite -> i2cLinuxDriver.writeRead
       UHFTransceiverManager.i2cRead -> i2cLinuxDriver.read
@@ -160,6 +159,7 @@ module TranscieverUartDeployment {
       # Other connections
       UHFTransceiverManager.comStatus -> comQueue.comStatusIn
       UHFTransceiverManager.sendBuffer -> comQueue.buffQueueIn[0] # Inject dataBuffer directly into the bufferQueue
+      
     }
 
   }
