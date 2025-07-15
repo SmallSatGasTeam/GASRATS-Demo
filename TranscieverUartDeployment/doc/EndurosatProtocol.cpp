@@ -63,17 +63,6 @@ namespace Svc {
         
         U8 data[size]; 
         ring.peek(data, size, 6); // Gets all data after the header
-
-        // printf("->  [DEBUG]  Ring Buffer: ");
-        // for (U32 i = 0; i < size-2; i++) {
-        //     printf(" %02X", data[i]);
-        // }
-        // printf("\n->  [DEBUG]  CRC16: ");
-        // for (U32 i = size-2; i < size; i++) {
-        //     printf(" %02X", data[i]);
-        // }
-        // printf("\n");        
-        // Calculate CRC over Data Field 1 and Data Field 2
         U16 expected_crc = calculate_crc16(data, size-2);
 
         U8 crc_low = data[size];
@@ -117,7 +106,6 @@ namespace Svc {
 
     void EndurosatFraming::frame(const U8* const data, const U32 size, Fw::ComPacket::ComPacketType packet_type) {
         // // Based on what the packet type is, we can call the appropriate framing function
-       
         printf("[DEBUG]  Framing with packet type %d\n", packet_type);
 
         if (packet_type == Fw::ComPacket::FW_PACKET_UNKNOWN || packet_type == Fw::ComPacket::FW_PACKET_COMMAND || 
@@ -249,10 +237,11 @@ namespace Svc {
 
         U16 crc_ax25 = calculate_crc16(ax25_start, ax25_crc_len); // <- CRC16 calculation over the AX.25 frame data
         // Serialize the CRC into the AX.25 frame
-        status = serializer.serialize(static_cast<U8>(crc_ax25 & 0xFF)); 
-        FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
         status = serializer.serialize(static_cast<U8>((crc_ax25 >> 8) & 0xFF));
         FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
+        status = serializer.serialize(static_cast<U8>(crc_ax25 & 0xFF)); 
+        FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
+        
 
         // End flag
         status = serializer.serialize(static_cast<U8>(0x7E));
@@ -269,16 +258,29 @@ namespace Svc {
         const U32 radio_crc_len = length_byte_len + ax25_len; //<- Tells us how many bytes to include in the CRC calculation for the radio packet
 
         U16 crc_radio = calculate_crc16(radio_crc_start, radio_crc_len); //<- CRC16 calculation over the radio packet data
-        status = serializer.serialize(static_cast<U8>(crc_radio & 0xFF));
-        FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
         status = serializer.serialize(static_cast<U8>((crc_radio >> 8) & 0xFF));
         FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
+        status = serializer.serialize(static_cast<U8>(crc_radio & 0xFF));
+        FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
+        
 
         // Set actual size (tells the buffer how much data is actually in it)
         buffer.setSize(total_len);
 
+        const char*  framedData = reinterpret_cast<char*>(buffer.getData());
+        printf("->  [DEBUG] Data: ");
+        for (U32 i = 0; i < buffer.getSize(); ++i) {
+            printf(" %02X", framedData[i]);
+        }
+        printf("\n");
+
         // Send the buffer to the interface
-        m_interface->send(buffer);
+        // m_interface->send(buffer);
+
+
+        m_uhfManager->transmitData(buffer);
+        DEFRAMER_OBJECT.setUseFPrimeProtocol(true);
+
         // !!! Debugging output to trace the framing process
         printf("->  [DEBUG] Framing complete. Total size: %d bytes\n", total_len);
     }
@@ -324,15 +326,36 @@ namespace Svc {
         m_interface->send(buffer);
     }
 
+    bool isEnduroSatFramed(Types::CircularBuffer& ring) {
+        if (ring.get_allocated_size() < 6) {
+                return false;  // not enough data to even guess
+        }
+        if (ring.get_allocated_size() >= 6) {
+            U8 preamble[5];
+            ring.peek(preamble, 5, 0);
+            for (int i = 0; i < 5; ++i) {
+                if (preamble[i] != 0xAA) {
+                    return false;
+                }
+            }
+            U8 sync;
+            ring.peek(sync, 5);
+            return sync == 0x7E;
+        }
+        return false;
+    }
+
     DeframingProtocol::DeframingStatus EndurosatDeframing::deframe(Types::CircularBuffer& ring, U32& needed) {
-        if (DEFRAMER_OBJECT.getUseFPrimeProtocol()) {
-            // If we are using the FPrime protocol, call the FPrime deframe method
-            return this->FPrimeDeframe(ring, needed);
-        } else {
-            // Otherwise, use the Endurosat deframe method
+        if (isEnduroSatFramed(ring)) {
+            DEFRAMER_OBJECT.setUseFPrimeProtocol(false);
             return this->EndurosatDeframe(ring, needed);
+        } else {
+            DEFRAMER_OBJECT.setUseFPrimeProtocol(true);
+            return this->FPrimeDeframe(ring, needed);
         }
     }
+
+    
 
     DeframingProtocol::DeframingStatus EndurosatDeframing::EndurosatDeframe(Types::CircularBuffer& ring, U32& needed) {
         // !!! Debugging output to trace the deframing process
@@ -365,7 +388,6 @@ namespace Svc {
         needed = size_field_1 + 9;
         U8 total_packet_size = size_field_1 + 9; // add the size of the other fixed sized sections
 
-        
         // !!! Debugging output to trace the peeked data
         printf("->  [DEBUG]  Size Field 1: %d, Total Packet Size: %d\n", size_field_1, total_packet_size);
         U8 debugPeek[total_packet_size];

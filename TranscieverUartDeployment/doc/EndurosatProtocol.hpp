@@ -134,4 +134,3 @@ namespace Svc {
 }
 
 #endif   // SVC_ENDUROSAT_PROTOCOL_HPP
-
