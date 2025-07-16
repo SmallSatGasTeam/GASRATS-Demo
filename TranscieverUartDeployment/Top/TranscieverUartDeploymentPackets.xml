@@ -81,7 +81,6 @@
         <channel name="Components.UHFTransceiverManager.lowPowerMode"/>
         <channel name="Components.UHFTransceiverManager.response1"/> 
         <channel name="Components.UHFTransceiverManager.responseStatus"/> 
-        <channel name="Components.UHFTransceiverManager.recvStatus"/>
 
     </packet>
 

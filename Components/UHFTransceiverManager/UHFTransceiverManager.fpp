@@ -52,6 +52,9 @@ module Components {
         # Events
         ###############################################################################
 
+        ## ---------------------------------------------------------------------------
+        ## I2C Events
+        ## ---------------------------------------------------------------------------
         event UHFSuccess \
             severity activity high \
             format "The UHF sent the data"
@@ -75,18 +78,36 @@ module Components {
         event UHFOtherError \
             severity warning high \
             format "UHF Other"
-        @ Allocation failed event
-        event MemoryAllocationFailed() \
-            severity warning low \
-            format "Failed to allocate memory"
+        
+        ## ---------------------------------------------------------------------------
+        ## UART Events
+        ## ---------------------------------------------------------------------------
+        event UHFUartSuccess \
+            severity activity high \
+            format "UART transmit successful"
 
+        event UHFUartError \
+            severity warning high \
+            format "UART transmit error"
+
+        event UHFUartRetry \
+            severity warning low \
+            format "UART retry"
         event UHFUartNotReady \
             severity warning high \
             format "UART is not ready to send data"
 
         event transmitDataSuccess \
             severity activity high \
-            format "Data was successfully transmitted"
+            format "Data was successfully transmitted via UART"
+
+        ## ---------------------------------------------------------------------------
+        ## Other Events
+        ## ---------------------------------------------------------------------------
+
+        event MemoryAllocationFailed() \
+            severity warning low \
+            format "Failed to allocate memory"
 
         event debuggingEvent(response: string) \
             severity activity high \
@@ -121,9 +142,6 @@ module Components {
 
         @ responseStatus [STRING] : Status of response. Either OK or ERR
         telemetry responseStatus: bool
-
-        telemetry recvStatus: U8
-
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #

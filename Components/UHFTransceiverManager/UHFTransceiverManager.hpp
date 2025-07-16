@@ -44,11 +44,13 @@ namespace Components {
       // \brief configureRFSettings_cmdHandler : This command handler configures the RF settings, ensuring that the frequency, beacon transmission period, and other relevant settings are configured. 
       void configureRFSettings_cmdHandler(FwOpcodeType opCode, U32 cmdSeq) override;
       
+      // \brief sendData_cmdHandler : This command handler allows us to send a string of data (for testing)
       void sendData_cmdHandler(FwOpcodeType opCode, U32 cmdSeq, const Fw::CmdStringArg& data) override;
 
       // ----------------------------------------------------------------------
       // Port Handlers
       // ----------------------------------------------------------------------
+
 
       void uartRecv_handler(FwIndexType portNum, Fw::Buffer& recvBuffer, const Drv::RecvStatus& recvStatus) override;
       void uartReady_handler(FwIndexType portNum) override;
@@ -57,9 +59,9 @@ namespace Components {
       // ----------------------------------------------------------------------
 
       struct Response {
-          Fw::String fullResponse;
-          bool status;
-          U32 size;
+          Fw::String fullResponse; //<- The response returned
+          bool status; //<- The status of the response (true = OK, false = ERR)
+          U32 size; //<- The size of the response
       };
 
       // ----------------------------------------------------------------------
@@ -74,6 +76,8 @@ namespace Components {
 
       //! Log I2C transaction status
       void checkI2cStatus(Drv::I2cStatus status);
+
+      void checkUartStatus(Drv::SendStatus status);
 
       //! Send a command via UART or I2C
       void sendCommand(const char* message, const char* command, bool useUart);

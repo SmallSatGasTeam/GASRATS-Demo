@@ -179,6 +179,7 @@ namespace Components {
     } 
     else {
       Drv::SendStatus status = this->uartSend_out(0, sendBuffer);
+      this->checkUartStatus(status);
       // this->deallocate_out(0, sendBuffer);
       if (status.e != Drv::SendStatus::SEND_OK) {
         this->m_reinitialize = true; // Set the reinitialize flag to true
@@ -224,6 +225,8 @@ namespace Components {
     } else {
       r.status = true;
     }
+
+    // Need more logic to determine if buffer is a Endurosat packet
 
     return r;
   }
@@ -303,6 +306,7 @@ namespace Components {
 
     // Send serialized command out over UART
     Drv::SendStatus status = this->uartSend_out(0, writeBuffer);
+    checkUartStatus(status);
 
     // Check the status of the send operation
     if (status.e != Drv::SendStatus::SEND_OK) {
@@ -342,6 +346,25 @@ namespace Components {
       case Drv::I2cStatus::I2C_OTHER_ERR:
        this->log_WARNING_HI_UHFOtherError();
        break;
+      
+      default:
+        break;
+    }
+  }
+
+  void UHFTransceiverManager::checkUartStatus(Drv::SendStatus status) {
+    switch (status) {
+      case Drv::SendStatus::SEND_OK:
+        this->log_ACTIVITY_HI_UHFUartSuccess();
+        break;
+
+      case Drv::SendStatus::SEND_RETRY:
+        this->log_WARNING_LO_UHFUartRetry();
+        break;
+
+      case Drv::SendStatus::SEND_ERROR:
+        this->log_WARNING_HI_UHFUartError();
+        break;
       
       default:
         break;
