@@ -176,17 +176,18 @@ void setupTopology(const TopologyState& state) {
                                   Drv::LinuxUartDriver::PARITY_NONE,
                                   Svc::DeframerCfg::RING_BUFFER_SIZE)) {
             printf("Failed to open UART device %s at baud rate %" PRIu32 "\n", state.uartDevice, state.baudRate);
+        } else {
+            LinuxUartDriver.start();
         }
     }
 
     //Configure i2c Device
-    const char* device1 = "/dev/i2c-1";
-    i2cLinuxDriver.open(device1);
+    const char* device1 = "/dev/i2c-1"; // NOTE device1 may change based on device
+    if (!i2cLinuxDriver.open(device1)) {
+        printf("Failed to open I2C device: %s\n", device1);
+    }
 
-    const char* device2 = "/dev/ttyAMA0";
-    LinuxUartDriver.open(device2, LinuxUartDriver.BAUD_115K, LinuxUartDriver.NO_FLOW, LinuxUartDriver.PARITY_NONE, 128);
-    LinuxUartDriver.start();
-
+    
 }
 
 // Variables used for cycle simulation
