@@ -32,7 +32,7 @@ namespace Components {
       //! Send a UART buffer
       void transmitData(Fw::Buffer);
 
-      //! Deallocate buffer (typically used by the framer)
+      //! Deallocate buffer *Includes logic to check if buffer is valid. (typically used by the framer)
       void deallocate_buffer(Fw::Buffer& buffer);
 
     private:
@@ -42,7 +42,7 @@ namespace Components {
       // ----------------------------------------------------------------------
 
       // \brief configureRFSettings_cmdHandler : This command handler configures the RF settings, ensuring that the frequency, beacon transmission period, and other relevant settings are configured. 
-      void configureRFSettings_cmdHandler(FwOpcodeType opCode, U32 cmdSeq) override;
+      void configureSettings_cmdHandler(FwOpcodeType opCode, U32 cmdSeq) override;
       
       // \brief sendData_cmdHandler : This command handler allows us to send a string of data (for testing)
       void sendData_cmdHandler(FwOpcodeType opCode, U32 cmdSeq, const Fw::CmdStringArg& data) override;
@@ -83,7 +83,7 @@ namespace Components {
       void sendCommand(const char* message, const char* command, bool useUart);
 
       //! Send I2C command and return read buffer
-      Fw::Buffer sendI2cCommand(const char* command, U32 writeSize, U32 readSize);
+      Fw::Buffer sendI2cCmd(const char* command, U32 writeSize, U32 readSize);
 
       //! Format a response buffer and command as a telemetry string
       Fw::String responseToString(U8 command, Fw::Buffer readBuffer);
@@ -92,7 +92,9 @@ namespace Components {
       void configureSettings();
 
       //! Send raw UART command
-      void sendUartCommand(const char* command, U32 writeSize);
+      void sendUartCmd(const char* command, U32 writeSize);
+
+      bool isEndurosatPacket(Fw::Buffer buffer);
 
       
 

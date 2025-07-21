@@ -44,9 +44,6 @@ namespace Svc {
     };
 
     bool EndurosatDeframing::EndurosatValidate(Types::CircularBuffer& ring, U32 size) {
-        // !!! Debugging output to trace the validation process
-        // printf("[DEBUG]  Validating ring buffer of size %d\n", size);
-        // !!! End of Debugging output
         if (ring.get_allocated_size() < size) { 
             return false;
         }
@@ -58,7 +55,6 @@ namespace Svc {
         U8 crc_low = data[size];
         U8 crc_high = data[size + 1];
         U16 given_crc = static_cast<U16>(crc_high) << 8 | crc_low;
-        // printf("->  [DEBUG]  Expected CRC16: %x  Given CRC16: %x\n", expected_crc, given_crc);
         return given_crc == expected_crc;
     }
 
@@ -87,68 +83,41 @@ namespace Svc {
         return true;
     }
 
-    // Might need to have a main method that calls either EndurosatFraming::frame or Fprime::frame, 
-    // because there are communication packets that fprime creates that might only work with fprime framing. 
-
     // -------------------------------------------------------------------------
     // Framing and Deframing Protocol Implementation
     // -------------------------------------------------------------------------
 
     void EndurosatFraming::frame(const U8* const data, const U32 size, Fw::ComPacket::ComPacketType packet_type) {
-        // // Based on what the packet type is, we can call the appropriate framing function
-        printf("[DEBUG]  Framing with packet type %d\n", packet_type);
-
-        if (packet_type == Fw::ComPacket::FW_PACKET_UNKNOWN || packet_type == Fw::ComPacket::FW_PACKET_COMMAND || 
-            packet_type == Fw::ComPacket::FW_PACKET_TELEM || packet_type == Fw::ComPacket::FW_PACKET_LOG ||
-            packet_type == Fw::ComPacket::FW_PACKET_IDLE) {
-            // For these packet types, we use the F
-            printf("[DEBUG]  Framing with FPrimeFrame\n");
-            FPrimeFrame(data, size, packet_type);
-        } else {
-            printf("[DEBUG]  Framing with EndurosatFrame\n");
+        // Based on what the packet type is, we can call the appropriate framing function
+        if (packet_type == Fw::ComPacket::FW_PACKET_DP || packet_type == Fw::ComPacket::FW_PACKET_FILE) {
             EndurosatFrame(data, size, packet_type);
+        } else {
+            FPrimeFrame(data, size, packet_type);
         }
-
     }
 
     void EndurosatFraming::EndurosatFrame(const U8* const data, const U32 size, Fw::ComPacket::ComPacketType packet_type) {
-        // !!! Debugging output to trace the framing process
-        printf("\n");
-        printf("Frame Report: \n");
-        printf("->  [DEBUG] Framing data of size %d with packet type %d\n", size, packet_type);
-        printf("->  [DEBUG] Data: ");
-        for (U32 i = 0; i < size; ++i) {
-            printf(" %02X", data[i]);
-        }
-        printf("\n");
-        // !!! End of Debugging output
-
         // Check if the data pointer and interface are valid
         FW_ASSERT(data != nullptr);
         FW_ASSERT(m_interface != nullptr);
 
         // Estimate the total size of the radio packet
-        const U32 preamble_ax25_len = 8;
-        const U32 start_flag_len = 1;
-        const U32 addr_len = 14; // 7 dest + 7 source (callsign(6) + ssid(1))
-        const U32 ctrl_pid_len = 2;
-        const U32 FCS_ax25_len = 2;
-        const U32 end_flag_len = 1;
-        const U32 postamble_len = 3;
+        const U32 PREAMBLE_AX25_LENGTH = 8;
+        const U32 START_FLAG_LENGTH = 1;
+        const U32 ADDR_LEN = 14; // 7 dest + 7 source (callsign(6) + ssid(1))
+        const U32 CTRL_PID_LEN = 2;
+        const U32 FCS_AX25_LEN = 2;
+        const U32 END_FLAG_LEN = 1;
+        const U32 POSTAMBLE_LEN = 3;
 
-        const U32 ax25_len = preamble_ax25_len + start_flag_len + addr_len + ctrl_pid_len + size + FCS_ax25_len + end_flag_len + postamble_len;
+        const U32 ax25_len = PREAMBLE_AX25_LENGTH + START_FLAG_LENGTH + ADDR_LEN + CTRL_PID_LEN + size + FCS_AX25_LEN + END_FLAG_LEN + POSTAMBLE_LEN;
 
-        const U32 radio_preamble_len = 5;
-        const U32 sync_word_len = 1;
-        const U32 length_byte_len = 1;
-        const U32 crc16_len = 2;
+        const U32 RADIO_PREAMBLE_LEN = 5;
+        const U32 SYNC_WORD_LEN = 1;
+        const U32 LENGTH_BYTE_LEN = 1;
+        const U32 CRC16_LEN = 2;
 
-        const U32 total_len = radio_preamble_len + sync_word_len + length_byte_len + ax25_len + crc16_len;
-        
-        // !!! Debugging output to trace the framing process
-        printf("->  [DEBUG] Total packet length: %d bytes\n", total_len);
-        printf("->  [DEBUG] AX.25 frame length: %d bytes\n", ax25_len);
-        // !!! End of Debugging output
+        const U32 total_len = RADIO_PREAMBLE_LEN + SYNC_WORD_LEN + LENGTH_BYTE_LEN + ax25_len + CRC16_LEN;
 
         // Allocate buffer for the radio packet
         Fw::Buffer buffer = m_interface->allocate(total_len); 
@@ -216,8 +185,8 @@ namespace Svc {
         FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
 
         // Compute CRC over AX.25 data (after preamble and start flag)
-        const U8* ax25_start = buffer.getData() + radio_preamble_len + sync_word_len + length_byte_len + preamble_ax25_len + 1; // <- Points to the start of the AX.25 frame data
-        const U32 ax25_crc_len = addr_len + ctrl_pid_len + size; // <- Tells us how many bytes to include in the CRC calculation 
+        const U8* ax25_start = buffer.getData() + RADIO_PREAMBLE_LEN + SYNC_WORD_LEN + LENGTH_BYTE_LEN + PREAMBLE_AX25_LENGTH + 1; // <- Points to the start of the AX.25 frame data
+        const U32 ax25_crc_len = ADDR_LEN + CTRL_PID_LEN + size; // <- Tells us how many bytes to include in the CRC calculation 
 
 
         U16 crc_ax25 = calculate_crc16(ax25_start, ax25_crc_len); // <- CRC16 calculation over the AX.25 frame data
@@ -239,8 +208,8 @@ namespace Svc {
         }
 
         // Compute radio packet CRC (starts at length byte, spans AX.25 frame)
-        const U8* radio_crc_start = buffer.getData() + radio_preamble_len + sync_word_len; //<- Points to the start of the radio packet data, which includes the length byte and the AX.25 frame
-        const U32 radio_crc_len = length_byte_len + ax25_len; //<- Tells us how many bytes to include in the CRC calculation for the radio packet
+        const U8* radio_crc_start = buffer.getData() + RADIO_PREAMBLE_LEN + SYNC_WORD_LEN; //<- Points to the start of the radio packet data, which includes the length byte and the AX.25 frame
+        const U32 radio_crc_len = LENGTH_BYTE_LEN + ax25_len; //<- Tells us how many bytes to include in the CRC calculation for the radio packet
 
         U16 crc_radio = calculate_crc16(radio_crc_start, radio_crc_len); //<- CRC16 calculation over the radio packet data
         status = serializer.serialize(static_cast<U8>((crc_radio >> 8) & 0xFF));
@@ -248,29 +217,13 @@ namespace Svc {
         status = serializer.serialize(static_cast<U8>(crc_radio & 0xFF));
         FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
         
-
         // Set actual size (tells the buffer how much data is actually in it)
         buffer.setSize(total_len);
 
-        const char*  framedData = reinterpret_cast<char*>(buffer.getData());
-        printf("->  [DEBUG] Data: ");
-        for (U32 i = 0; i < buffer.getSize(); ++i) {
-            printf(" %02X", framedData[i]);
-        }
-        printf("\n");
-
-        // Send the buffer to the interface
-        // m_interface->send(buffer);
-
-
         m_uhfManager->transmitData(buffer);
-
-        // !!! Debugging output to trace the framing process
-        printf("->  [DEBUG] Framing complete. Total size: %d bytes\n", total_len);
     }
 
     void EndurosatFraming::FPrimeFrame(const U8* const data, const U32 size, Fw::ComPacket::ComPacketType packet_type) {
-        printf("[DEBUG]   Packet type: %d\n", packet_type);
         FW_ASSERT(data != nullptr);
         FW_ASSERT(m_interface != nullptr);
         // Use of I32 size is explicit as ComPacketType will be specifically serialized as an I32
@@ -330,21 +283,26 @@ namespace Svc {
     }
 
     DeframingProtocol::DeframingStatus EndurosatDeframing::deframe(Types::CircularBuffer& ring, U32& needed) {
-        if (isEnduroSatFramed(ring)) {
-            return this->EndurosatDeframe(ring, needed);
-        } else {
-            return this->FPrimeDeframe(ring, needed);
+        if (this->framer == UNKNOWN){ 
+            if (isEnduroSatFramed(ring)) {
+                this->framer = ENDUROSAT;
+            } else {
+                this->framer = FPRIME;
+            }
+        } 
+
+        DeframingStatus status = (this->framer == ENDUROSAT) ? this->EndurosatDeframe(ring, needed) : this->FPrimeDeframe(ring, needed);
+
+        if (status == DEFRAMING_STATUS_SUCCESS || status == DEFRAMING_INVALID_CHECKSUM) {
+            this->framer = UNKNOWN;
         }
+
+        return status;
     }
 
     
 
     DeframingProtocol::DeframingStatus EndurosatDeframing::EndurosatDeframe(Types::CircularBuffer& ring, U32& needed) {
-        // !!! Debugging output to trace the deframing process
-        printf("\n");
-        printf("Deframe Report: \n");
-        // printf("->  [DEBUG] Deframing from ring buffer of size %d\n", ring.get_allocated_size());
-        // !!! End of Debugging output
         FW_ASSERT(this->m_interface != nullptr);
 
         // just go through the ring and read all the data 
@@ -370,17 +328,6 @@ namespace Svc {
         needed = size_field_1 + 9;
         U8 total_packet_size = size_field_1 + 9; // add the size of the other fixed sized sections
 
-        // !!! Debugging output to trace the peeked data
-        printf("->  [DEBUG]  Size Field 1: %d, Total Packet Size: %d\n", size_field_1, total_packet_size);
-        U8 debugPeek[total_packet_size];
-        ring.peek(debugPeek, total_packet_size, 0);
-        printf("->  [DEBUG]  Peeked data from ring buffer (%d bytes):", total_packet_size+2);
-        for (U32 i = 0; i < sizeof(debugPeek) + 2; i++) {
-            printf(" %02X", debugPeek[i]);
-        }
-        printf("\n");
-        // !!! End of Debugging output
-
         // check that it's bigger than we expected
         if (total_packet_size > ring.get_capacity()) {
             // size is too large so we don't give a 'needed' since it would overflow
@@ -402,7 +349,7 @@ namespace Svc {
         buffer.setSize(total_packet_size);
         Fw::SerializeStatus status = ring.peek(buffer.getData(), total_packet_size, EndurosatFrameHeader::SIZE_ENDUROSAT);
         FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
-        m_interface->route(buffer); // really not sure what this is doing
+        m_interface->route(buffer); // We need to route Endurosat packets using our own custom route function, currently it just sends them into the void.
 
         return DeframingProtocol::DEFRAMING_STATUS_SUCCESS;
     }

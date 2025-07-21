@@ -120,7 +120,13 @@ namespace Svc {
             //! \return true if the buffer is valid, false otherwise
             bool FPrimevalidate(Types::CircularBuffer& ring, U32 size); 
 
-            
+            enum protocol {
+                UNKNOWN,
+                ENDUROSAT,
+                FPRIME
+            };
+
+            protocol framer;
         
     };
     

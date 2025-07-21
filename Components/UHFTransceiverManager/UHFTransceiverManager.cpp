@@ -34,12 +34,11 @@ namespace Components {
   // ----------------------------------------------------------------------
 
   void UHFTransceiverManager ::
-    configureRFSettings_cmdHandler(
+    configureSettings_cmdHandler(
         FwOpcodeType opCode,
         U32 cmdSeq
     )
   {
-    printf("UHFTransceiverManager::configureRFSettings_cmdHandler(opCode=%d, cmdSeq=%d)\n", opCode, cmdSeq);
     configureSettings();
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
@@ -51,13 +50,7 @@ namespace Components {
         const Fw::CmdStringArg& data
     )
   {
-    Fw::String str("---sendData_cmdHandler was used---");
-    this->log_ACTIVITY_HI_debuggingEvent(str);
-    
-    const char* dataPtr = data.toChar();
-    U32 size = strlen(dataPtr) + 1; // +1 for carriage return
-    sendUartCommand(data.toChar(), size);
-
+    sendCommand("Data from sendData_cmdHandler", data.toChar(), true);
     this->cmdResponse_out(opCode, cmdSeq, Fw::CmdResponse::OK);
   }
 
@@ -68,34 +61,34 @@ namespace Components {
         const Drv::RecvStatus& recvStatus
     )
   {
-    Fw::String str("---uartRecv_handler was used---");
-    this->log_ACTIVITY_HI_debuggingEvent(str);
-
-
-
-    Response r = parseBuffer(recvBuffer);
-    this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
-
-    if (recvBuffer.isValid()) {
+    if (recvStatus.e != Drv::RecvStatus::RECV_OK) {
       this->deallocate_out(0, recvBuffer);
+      return;
     }
 
+    if (isEndurosatPacket(recvBuffer)) {
+      // Route incoming data to the deframer
+      this->framedOut_out(0, recvBuffer, recvStatus);
+    } 
+    else {
+      // Treat incoming data as a response
+      Response r = parseBuffer(recvBuffer);
+      this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
+      if (recvBuffer.isValid()) {
+        this->deallocate_out(0, recvBuffer);
+      }
+    }
   }
 
   void UHFTransceiverManager ::
     uartReady_handler(FwIndexType portNum)
   {
-    Fw::String str("---uartReady_handler was used---");
-    this->log_ACTIVITY_HI_debuggingEvent(str);
-
     Fw::Success radioSuccess = Fw::Success::SUCCESS;
     if (this->isConnected_comStatus_OutputPort(0) && this->m_reinitialize) {
         this->m_reinitialize = false;
         this->comStatus_out(0, radioSuccess);
     }
   }
-
-
 
   // ----------------------------------------------------------------------
   // User defined methods
@@ -110,25 +103,24 @@ namespace Components {
     // ---------------------------------------------------------------------------------------
     // Testing how we would send data over the transceiver
     // ---------------------------------------------------------------------------------------
-    char data[91] = "Hello World! Hello World! Hello World! Hello World! Hello World! Hello World! Hello World!"; // data to send
+    const char* data = "Hello World!"; // data to send
     sendDataBuffer(data); // Send the buffer out over the framer interface
     // ---------------------------------------------------------------------------------------
     // END OF TESTING
     // ---------------------------------------------------------------------------------------
   }
 
-  // This is just a reusable method to send a command, it logs the command being sent
   void UHFTransceiverManager::sendCommand(const char* message, const char* command, bool useUart) {
     // log an event
     Fw::String str(message);
     this->log_ACTIVITY_HI_debuggingEvent(str);
 
     // send the command
-
     if (useUart) {
-      sendUartCommand(command, strlen(command)+1);
-    } else {
-      Fw::Buffer readBuffer = sendI2cCommand(command, strlen(command)+1, 64);
+      sendUartCmd(command, strlen(command)+1);
+    } 
+    else {
+      Fw::Buffer readBuffer = sendI2cCmd(command, strlen(command)+1, 64);
       Response r = parseBuffer(readBuffer);
       this->log_ACTIVITY_HI_debuggingEvent(r.fullResponse);
       if (readBuffer.isValid()) {
@@ -138,11 +130,27 @@ namespace Components {
 
   }
 
-  void UHFTransceiverManager::sendDataBuffer(const char* data) {
-    // Log event
-    Fw::String str("---Sending Data Buffer---");
-    this->log_ACTIVITY_HI_debuggingEvent(str);
+  bool UHFTransceiverManager::isEndurosatPacket(Fw::Buffer buffer) {
+    const U32 size = buffer.getSize();
+    U8* data = buffer.getData();
 
+    // Check to see if there is enough data
+    if (size < 6) {
+      return false;
+    }
+
+    // Check for 5-byte preamble : 0xAA
+    for (int i = 0; i < 5; ++i) {
+      if (data[i] != 0xAA) {
+        return false;
+      }
+    }
+
+    // Check for 1-byte sync word : 0x7E
+    return data[5] = 0x7E;
+  }
+
+  void UHFTransceiverManager::sendDataBuffer(const char* data) {
     // Initalize writeBuffer and verify it can be sent, if not deallocate it
     Fw::Buffer writeBuffer = this->allocate_out(0, strlen(data)); // Allocate buffer of size: length of data
     if (writeBuffer.getSize() < strlen(data)) {
@@ -163,19 +171,16 @@ namespace Components {
     }
     sb.serialize(dataBufferTemp, strlen(data), true);
 
-    Fw::String str1("");
-    str1.format("Data being sent: %s", dataBufferTemp);
-    this->log_ACTIVITY_HI_debuggingEvent(str1);
+    // Send dataBuffer out
     this->sendBuffer_out(0, writeBuffer);
     
-    
+    // Log success
     this->log_ACTIVITY_HI_transmitDataSuccess();
   }
   
   void UHFTransceiverManager::transmitData(Fw::Buffer sendBuffer) {
     if (!sendBuffer.isValid()) {
-      Fw::String str("sendBuffer was invalid");
-      this->log_ACTIVITY_HI_debuggingEvent(str);
+      this->log_WARNING_HI_transmitDataFailure();
     } 
     else {
       Drv::SendStatus status = this->uartSend_out(0, sendBuffer);
@@ -195,43 +200,33 @@ namespace Components {
   }
 
   void UHFTransceiverManager::deallocate_buffer(Fw::Buffer& buffer) {
-    // !!! Debugging output to trace the deallocation process
-    printf("Buffer size: %d\n", buffer.getSize());
-    printf("Buffer data: \n");
-    for (U32 i = 0; i < buffer.getSize(); i++) {
-      printf("%02X ", static_cast<U8*>(buffer.getData())[i]);
-    }
-    printf("\n");
-    // !!! End of Debugging output
-
     // Deallocate the buffer if it is valid
     if (buffer.isValid()) {
       this->deallocate_out(0, buffer);
+      this->log_WARNING_LO_MemoryAllocationFailed();
     }
   }
 
   UHFTransceiverManager::Response UHFTransceiverManager::parseBuffer(Fw::Buffer buffer){
     char* data = reinterpret_cast<char*>(buffer.getData());
-    U8 size = buffer.getSize(); //! Size of readBuffer
+    U8 size = buffer.getSize(); 
 
-    Response r; //! Response struct for storing contents and length of readBuffer
-    r.fullResponse = data; // Convert contents of read buffer to char array
-    r.size = size;
+    Response uartResponse; 
+    uartResponse.fullResponse = data; 
+    uartResponse.size = size;
 
     // Logic to determine what data is found in the fullResponse.
-    // Checking status
-    if (data[0] != 79) {
-      r.status = false;
+    //  Checking for generic UART responses "OK+...", "ERR...", etc.
+    if (data[0] == 'O' && data[1] == 'K') {
+      uartResponse.status = true;
     } else {
-      r.status = true;
+      uartResponse.status = false;
     }
 
-    // Need more logic to determine if buffer is a Endurosat packet
-
-    return r;
+    return uartResponse;
   }
 
-  Fw::Buffer UHFTransceiverManager::sendI2cCommand(const char* command, U32 writeSize, U32 readSize) {
+  Fw::Buffer UHFTransceiverManager::sendI2cCmd(const char* command, U32 writeSize, U32 readSize) {
     Fw::Buffer writeBuffer = this->allocate_out(0, writeSize);
     Fw::Buffer readBuffer = this->allocate_out(0, readSize);
 
@@ -273,11 +268,10 @@ namespace Components {
     return readBuffer;
   }
 
-  void UHFTransceiverManager::sendUartCommand(const char* command, U32 writeSize) {
+  void UHFTransceiverManager::sendUartCmd(const char* command, U32 writeSize) {
     // Check m_reinitialize flag to see if we need to reinitialize the component
     if (this->m_reinitialize) {
       this->log_WARNING_HI_UHFUartNotReady();
-      // TODO: Research into how complex adding a priority queue would be.
       return;
     }
     Fw::Buffer writeBuffer = this->allocate_out(0, writeSize);
@@ -295,7 +289,6 @@ namespace Components {
     sb.setBuffLen(writeSize);
     sb.resetSer();
     
-
     // Serialize each byte into the write buffer
     U8 dataBufferTemp[writeSize];
     for (int i = 0; i < (writeSize-1); i++) {

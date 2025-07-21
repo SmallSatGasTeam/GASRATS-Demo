@@ -5,7 +5,7 @@ module Components {
         ##############################################################################
         # Commands
         ##############################################################################
-        async command configureRFSettings() opcode 0x01
+        async command configureSettings() opcode 0x01
 
         async command sendData($data: string) opcode 0x02 
 
@@ -46,6 +46,9 @@ module Components {
 
         @ bufferSend : This port is used to send buffers (data) to the framer to send over the antenna.
         output port sendBuffer: Fw.BufferSend
+
+        @ framedOut : Port for sending framed input (radio packet) to deframer
+        output port framedOut: Drv.ByteStreamRecv
 
 
         ###############################################################################
@@ -101,6 +104,10 @@ module Components {
             severity activity high \
             format "Data was successfully transmitted via UART"
 
+        event transmitDataFailure \
+            severity warning high \
+            format "Data transmission via UART Failed"
+
         ## ---------------------------------------------------------------------------
         ## Other Events
         ## ---------------------------------------------------------------------------
@@ -142,6 +149,9 @@ module Components {
 
         @ responseStatus [STRING] : Status of response. Either OK or ERR
         telemetry responseStatus: bool
+
+        @ endurosatPacketsReceived [U8] : How many Endurosat Packets have been received
+        telemetry endurosatPacketsReceived: U8
 
         ###############################################################################
         # Standard AC Ports: Required for Channels, Events, Commands, and Parameters  #

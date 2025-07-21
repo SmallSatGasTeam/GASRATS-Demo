@@ -159,6 +159,7 @@ module TranscieverUartDeployment {
       # Other connections
       UHFTransceiverManager.comStatus -> comQueue.comStatusIn
       UHFTransceiverManager.sendBuffer -> comQueue.buffQueueIn[0] # Inject dataBuffer directly into the bufferQueue
+      UHFTransceiverManager.framedOut -> deframer.framedIn
       
     }
 
