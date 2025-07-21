@@ -24,6 +24,7 @@ set(MOD_DEPS
     Fw/Time
     Utils/Hash
     Utils/Types
+    Components/UHFTransceiverManager // Added to allow connection to UHF Transceiver Manager component
 )
 
 register_fprime_module()
