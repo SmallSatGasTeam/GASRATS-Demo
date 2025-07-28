@@ -350,6 +350,7 @@ namespace Svc {
         buffer.setSize(total_packet_size);
         Fw::SerializeStatus status = ring.peek(buffer.getData(), total_packet_size, EndurosatFrameHeader::SIZE_ENDUROSAT);
         FW_ASSERT(status == Fw::FW_SERIALIZE_OK, status);
+        
         m_interface->route(buffer); // We need to route Endurosat packets using our own custom route function, currently it just sends them into the void.
 
         return DeframingProtocol::DEFRAMING_STATUS_SUCCESS;
