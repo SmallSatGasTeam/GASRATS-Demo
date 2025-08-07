@@ -181,11 +181,11 @@ void setupTopology(const TopologyState& state) {
         }
     }
 
-    //Configure i2c Device
-    const char* device1 = "/dev/i2c-1"; // NOTE device1 may change based on device
-    if (!i2cLinuxDriver.open(device1)) {
-        printf("Failed to open I2C device: %s\n", device1);
-    }
+    // //Configure i2c Device
+    // const char* device1 = "/dev/i2c-1"; // NOTE device1 may change based on device
+    // if (!i2cLinuxDriver.open(device1)) {
+    //     printf("Failed to open I2C device: %s\n", device1);
+    // }
 
     
 }
