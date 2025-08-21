@@ -27,12 +27,6 @@ Fw::MallocAllocator mallocator;
 Svc::EndurosatFraming framing; // using our own custom implementation!
 Svc::EndurosatDeframing deframing; // using our own custom implementation!
 
-// // The reference topology uses the F´ packet protocol when communicating with the ground and therefore uses the F´
-// // framing and deframing implementations.
-// Svc::FprimeFraming framing;
-// Svc::FprimeDeframing deframing;
-
-
 Svc::ComQueue::QueueConfigurationTable configurationTable;
 
 // The reference topology divides the incoming clock signal (1Hz) into sub-signals: 1Hz, 1/2Hz, and 1/4Hz with 0 offset
