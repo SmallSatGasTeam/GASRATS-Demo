@@ -27,6 +27,7 @@ set(MOD_DEPS
     Fw/Time
     Utils/Hash
     Utils/Types
+    Components/UHFTransceiverManager
 )
 
 register_fprime_module()
@@ -73,14 +74,12 @@ Svc::EndurosatDeframing deframing; // using our own custom implementation!
 - This means that, in order to actually test/use this deployment, you need to have a transciever correctly wired to the pi, the transicever on the pi connected to an antenna, and your computer also connected to a transciever that's connected to an antenna to actually be able to use the custom framer.
 - This is the whole point of the custom framer, it formats the data to be sent to the satellite over the transcievers.
 
-### Testing the framer
+### Using the deployment
 
-- Unfortunately, I haven't been able to test this part before leaving for the summer, so idk if it actually works.
+- Use `./FirstTimeCompile32.sh -p [pi-num] -d TransceiverUartDeployment` to send the code the pi.
+- After you SSH into the pi, use `./TransceiverUartDeployment -a 0.0.0.0 -p 50000 -b 115200 -d /dev/ttyAMA0` to run the code on the pi. The arguments `-a` & `-p` are used to be able to connect to configure TCP, and the arguments `-b` & `-d` are used to configure UART.
+- Once we are in space we will have one deployment with TCP and UART (the ground station) and another with just UART (the satellite). TCP essentially gives us F' GDS.
 
-### What I do know about using the deployment
-
-- When you run the gds via the deployment, you'll need to set a baud rate for the UART driver so it communicates at the rate the transicever expects it to.
-    - I do not know exactly how to set the baud rate, but I think that it's just some flag that you supply to the `fprime-gds` command.
 
 ## Helpful resources
 
