@@ -168,18 +168,22 @@ void setupTopology(const TopologyState& state) {
     }
 
     //Configure i2c Device
+    #ifndef VIRTUAL
     const char* device = "/dev/i2c-1";
     i2cDriver.open(device);
+    #endif
 
     //Get Boot Time
     flightLogic.setTime();
     imuInterface.startup();
 
     //Configure GPIO ports
+    #ifndef VIRTUAL
     bool gpio_success = gpioDriver.open(HEARTBEAT_GPIO+512, Drv::LinuxGpioDriver::GpioDirection::GPIO_OUT);
     if (!gpio_success) {
         Fw::Logger::logMsg("[ERROR] Failed to open GPIO pin\n");
     }
+    #endif
 }
 
 // Variables used for cycle simulation
