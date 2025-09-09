@@ -25,4 +25,5 @@ Use these instructions unless you already have Linux or WSL.
 # Running Locally
 
 1. Run the command: `cd GASRATS-Demo`.
-2. Run the command: `bash startLocal.sh`.
+2. Run the command: `. fprime-venv/bin/activate`.
+3. Run the command: `bash startLocal.sh`.
