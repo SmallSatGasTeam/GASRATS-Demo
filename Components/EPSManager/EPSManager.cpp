@@ -38,7 +38,7 @@ namespace Components {
     )
   {
     // TODO return
-    //!!! This is code to sepslate the EPS. The code will only be run if VIRTUAL is defined
+    //!!! This is code to simulate the EPS. The code will only be run if VIRTUAL is defined
     // #ifdef VIRTUAL
     std::normal_distribution<float> currentDistribution(3,.5);
     std::normal_distribution<float> voltageDistribution(7,1);

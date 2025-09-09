@@ -64,8 +64,10 @@ namespace Components {
     config.serialize(sampleRate);
 
     //Write the values to the imu and check if it was written successfully
+    #ifndef VIRTUAL
     this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuConfig));
     this->checkStatus(this->i2cWrite_out(0, this->ADDRESS, imuTwo));
+    #endif
 
     //Deallocate the buffers to avoid a memory leak
     this->deallocate_out(0,imuConfig);
