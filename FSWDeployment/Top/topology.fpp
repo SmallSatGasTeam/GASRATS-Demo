@@ -34,8 +34,8 @@ module FSWDeployment {
     instance fileManager
     instance fileUplink
     instance framer
-    # instance gpioDriver
-    # instance i2cDriver
+    instance gpioDriver
+    instance i2cDriver
     instance posixTime
     instance prmDb
     instance rateGroup1
@@ -163,18 +163,18 @@ module FSWDeployment {
       transmissionManager.beaconState -> flightLogic.beaconState
       transmissionManager.sendData -> dummyTranceiverDriver.sendTransToGround
       dummyTranceiverDriver.recvTransFromGround -> transmissionManager.recvData
-      # imuInterface.requestI2CData -> i2cDriver.read
-      # imuInterface.i2cWrite -> i2cDriver.write
+      imuInterface.requestI2CData -> i2cDriver.read
+      imuInterface.i2cWrite -> i2cDriver.write
       dataCollector.ping[0] -> imuInterface.dataRequest
       imuInterface.gyroData -> dataCollector.imuIncoming
       imuInterface.allocate -> bufferManager.bufferGetCallee
       imuInterface.deallocate -> bufferManager.bufferSendIn
-      # epsManager.i2cReadWrite -> i2cDriver.writeRead
+      epsManager.i2cReadWrite -> i2cDriver.writeRead
       epsManager.allocate -> bufferManager.bufferGetCallee
       epsManager.deallocate -> bufferManager.bufferSendIn
       epsManager.epsData -> dataCollector.epsIncoming
       $health.WdogStroke -> watchDog.healthIn
-      # watchDog.heartBeatOut -> gpioDriver.gpioWrite
+      watchDog.heartBeatOut -> gpioDriver.gpioWrite
     }
 
   }

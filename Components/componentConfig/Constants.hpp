@@ -49,7 +49,4 @@
 
 #define HEARTBEAT_GPIO 25
 
-#define VIRTUAL
-
-
 #endif

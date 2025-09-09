@@ -127,7 +127,7 @@ module FSWDeployment {
   # ----------------------------------------------------------------------
 
   @ Communications driver. May be swapped with other com drivers like UART or TCP
-  instance comDriver: Drv.TcpClient base id 0x4000
+  instance comDriver: Drv.TcpServer base id 0x4000
 
   instance framer: Svc.Framer base id 0x4100
 
@@ -153,9 +153,9 @@ module FSWDeployment {
 
   instance epsManager: Components.EPSManager base id 0x4D00
 
-  # instance i2cDriver: Drv.LinuxI2cDriver base id 0x4E00
+  instance i2cDriver: Drv.LinuxI2cDriver base id 0x4E00
 
-  # instance gpioDriver: Drv.LinuxGpioDriver base id 0x4F00
+  instance gpioDriver: Drv.LinuxGpioDriver base id 0x4F00
 
   instance watchDog: Components.WatchDog base id 0x5000
   
