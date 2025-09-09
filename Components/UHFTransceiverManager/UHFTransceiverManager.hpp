@@ -40,9 +40,6 @@ namespace Components {
       // ----------------------------------------------------------------------
       // Command Handlers
       // ----------------------------------------------------------------------
-
-      // \brief configureRFSettings_cmdHandler : This command handler configures the RF settings, ensuring that the frequency, beacon transmission period, and other relevant settings are configured. 
-      void configureSettings_cmdHandler(FwOpcodeType opCode, U32 cmdSeq) override;
       
       // \brief sendData_cmdHandler : This command handler allows us to send a string of data (for testing)
       void sendData_cmdHandler(FwOpcodeType opCode, U32 cmdSeq, const Fw::CmdStringArg& data) override;

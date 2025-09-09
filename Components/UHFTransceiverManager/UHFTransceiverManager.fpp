@@ -5,9 +5,8 @@ module Components {
         ##############################################################################
         # Commands
         ##############################################################################
-        async command configureSettings() opcode 0x01
 
-        async command sendData($data: string) opcode 0x02 
+        async command sendData($data: string) opcode 0x01 
 
 
         ##############################################################################
