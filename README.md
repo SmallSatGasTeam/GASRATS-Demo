@@ -1,45 +1,28 @@
-# GASRATS-FSW
+# Docker Setup Instructions
 
-This is the prototype for the GASRATS-FSW. Besides the Flight Logic component, all other components are shells used to show off Flight Logic functionality. At the moment, Flight Logic is configured with these capabilities: 
+Use these instructions unless you already have Linux or WSL.
 
-- Check EPS data to verify health deploy conditions.
-- Delay deployment for x minutes as specified in the [config file](./Components/componentConfig/Constants.hpp). This is to meet Nanoracks'.
-- Prompt the [Antenna Manager](./Components/AntennaDeploy/) to deploy the antenna.
-- Prompt the [Camera Manager](./Components/CameraManager/) to deploy the camera.
-- Use the beaconState flag to transition the beacon between OFF, INITIAL, and STANDARD states.
-- Prompt the [Camera Manager](./Components/CameraManager/) to take a photo
-- Reboot the system if the antenna or the camera fails to deploy.
-- Use the lowPower flag to send the system into lowPower mode.
+1. Download [VS Code](https://code.visualstudio.com/download).
+2. Download [Docker](https://docs.docker.com/get-started/get-docker/).
+3. Download the [docker zip file](https://drive.google.com/file/d/1db0IgZ0olbIIAIe3irgGLI8xdNowJkdL/view?usp=sharing).
+4. Unzip the docker folder.
+5. Open the folder with the docker file in the terminal. If on windows, find the folder with the docker file, then right click and select *Open in Terminal*.
+6. In the terminal type out and run this command: `docker build -t fprime-image .`
+7. In the terminal type out and run this command: `docker create -it --name fprime-container fprime-image`.
+8. Open up docker desktop.
+9. Go to the container tab and start the container labeled _fprime-container_.
+10. Open VS Code
+11. Go to the extensions tab then search for and download the _docker_ and _Dev Containers_ extensions.
+12. Go to the new docker tab, right click the fprime-container and select _Attach to VS Code_.
+13. Once the new VS Code window opens, click the tab for _File_, then _Open Folder_, and then select the folder `/home/ubuntu/gas_container`.
+14. Finally, run the command: `bash fprimeSetup.sh`.
 
-Additionally, if run on GAS pi0 a picture can be taken and downlinked using the GDS and existing fprime infrastructure.
+# Linux and WSL Instructions
 
-The ability to save and read system flags between reboots and bootup health checks still needs to be added to the Flight Logic component.
+1. Download the [setup script](https://drive.google.com/file/d/1I5pNPaUdPW7tc2SMeh0j0IWNb_cGyUDq/view?usp=sharing)
+2. Move the file to the desired folder and run it by running `bash fprimeBashSetup.sh`.
 
-For more information on Flight Logic see the [Flight Logic Docs](./Components/FlightLogic/docs/sdd.md).
+# Running Locally
 
-For more information about the beacon see the [Transmission Manager Docs](./Components/TransmissionManager/docs/sdd.md).
-
-## Running on a Laptop
-
-To run this code on a laptop, make sure VIRTUAL is defined in the [config file](./Components/componentConfig/Constants.hpp) uncommenting `#Define VIRTUAL` if it wasn't previously uncommented. Next, ensure line 127 in [instances.fpp](./FSWDeployment/Top/instances.fpp) reads `instance comDriver: Drv.TcpClient base id 0x4000`.
-
-
-Then generate the program, build the program, and run fprime-gds from the [FSWDeployment folder](./FSWDeployment/Top/).
-
-## Running on a pi
-
-To run this code on a pi, comment out VIRTUAL in the [config file](./Components/componentConfig/Constants.hpp). Next change line 127 in instances.fpp to `instance comDriver: Drv.TcpServer base id 0x4000`.
-
-Generate and build the program using arm-hf-linux cross-compiler and upload the executable file to a pi of your choice. (GAS pi 0 is best if you have access to it.) After the executable is uploaded, find it on the pi and run it using `sudo ./FSWDeployment -a 0.0.0.0 -p 50000`. Finally, on your own computer run `fprime-gds -n --dictionary build-artifacts/arm-hf-linux/FSWDeployment/dict/FSWDeploymentTopologyAppDictionary.xml --ip-client --ip-address <address of your pi>`.
-
-Alternatively, the [FirstTimeCompile32.sh](./FirstTimeCompile32.sh) will install the build tools for the cross-compiler and then automatically generate, build, and upload the executable to pi0.
-
-If you already have the arm-hf-linux, generate for arm-hf-linux and then run [CompileForPi32.sh](./CompileForPi32.sh) to automatically build the project, upload it to pi0, and start the gds.
-
-Both scripts still require manually running the executable file on the pi.
-
-
-## Component Connection Diagram
-
-![FSWDeployment Diagram](./FSWDeployment%20Visualization.png)
-
+1. Run the command: `cd GASRATS-Demo`.
+2. Run the command: `bash startLocal.sh`.
