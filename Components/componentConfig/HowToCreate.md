@@ -1,1 +1,0 @@
-Just run `fpp-to-cpp CustomConstants.fpp` and that'll auto-generate the corresponding cpp and hpp files
