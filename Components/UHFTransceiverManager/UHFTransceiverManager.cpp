@@ -34,7 +34,7 @@ namespace Components {
   // ----------------------------------------------------------------------
 
   void UHFTransceiverManager ::
-    configureSettings_cmdHandler(
+    transmit_cmdHandler(
         FwOpcodeType opCode,
         U32 cmdSeq
     )
@@ -95,16 +95,25 @@ namespace Components {
   // ----------------------------------------------------------------------
 
   void UHFTransceiverManager::configureSettings() {
-    sendCommand("---Reading source callsign---", this->READ_SOURCE_CALLSIGN, false);
-    sendCommand("---Reading destination callsign---", this->READ_DESTINATION_CALLSIGN, false);
-    sendCommand("---Reading status control word---", this->READ_SCW, false);
     sendCommand("---Turning on pipe mode---", this->WRITE_SCW_PIPE_ON, false);
 
     // ---------------------------------------------------------------------------------------
     // Testing how we would send data over the transceiver
     // ---------------------------------------------------------------------------------------
+
     const char* data = "Hello World!"; // data to send
     sendDataBuffer(data); // Send the buffer out over the framer interface
+
+
+    const char* new_data = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    sendDataBuffer(new_data); // Send the buffer out over the framer interface
+
+
+    sendDataBuffer(data); // Send the buffer out over the framer interface
+
+
+    sendDataBuffer(data); // Send the buffer out over the framer interface
+
     // ---------------------------------------------------------------------------------------
     // END OF TESTING
     // ---------------------------------------------------------------------------------------
